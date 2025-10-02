@@ -1,7 +1,0 @@
-/**
- * @license
- * Copyright Tyler Technologies, Inc. 
- * License: Apache-2.0
- */
-import { type IIconButtonComponent } from '../../icon-button/icon-button';
-export declare function createToggleElement(iconName: string): IIconButtonComponent;

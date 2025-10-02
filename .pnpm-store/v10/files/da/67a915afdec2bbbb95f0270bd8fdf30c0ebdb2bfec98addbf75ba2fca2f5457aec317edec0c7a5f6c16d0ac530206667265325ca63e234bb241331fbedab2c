@@ -1,2 +1,0 @@
-export * from './profile-link';
-export declare function defineProfileLinkComponent(): void;

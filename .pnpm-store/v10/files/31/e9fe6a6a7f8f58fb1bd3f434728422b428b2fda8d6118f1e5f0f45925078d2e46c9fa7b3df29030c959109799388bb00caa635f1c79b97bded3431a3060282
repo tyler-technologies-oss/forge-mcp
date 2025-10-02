@@ -1,9 +1,0 @@
-/**
- * @license
- * Copyright Tyler Technologies, Inc. 
- * License: Apache-2.0
- */
-import { LitElement } from 'lit';
-export declare class BaseLitElement extends LitElement {
-    adoptedCallback(): void;
-}

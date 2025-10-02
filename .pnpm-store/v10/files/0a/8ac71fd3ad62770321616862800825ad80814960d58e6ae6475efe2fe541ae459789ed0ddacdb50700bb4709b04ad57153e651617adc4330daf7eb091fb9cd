@@ -1,2 +1,0 @@
-export * from './busy-indicator';
-export declare function defineBusyIndicatorComponent(): void;
