@@ -1,4 +1,4 @@
-# Tyler Forge™ Documentation for Claude
+# Tyler Forge™ MCP Server
 
 Get instant access to Tyler Forge™ web component documentation directly in AI clients. Ask questions, generate code examples, and explore design system details.
 
