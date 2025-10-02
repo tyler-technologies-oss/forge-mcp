@@ -1,0 +1,6 @@
+function composeSlottedTextContent(nodes) {
+  return nodes.map((node) => node.textContent).join(" ").trim();
+}
+export {
+  composeSlottedTextContent
+};

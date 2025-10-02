@@ -1,0 +1,10 @@
+import { BusyIndicatorComponentTagName, BusyIndicatorComponent } from "./busy-indicator.mjs";
+import { tryDefine } from "@tylertech/forge-core";
+function defineBusyIndicatorComponent() {
+  tryDefine(BusyIndicatorComponentTagName, BusyIndicatorComponent);
+}
+export {
+  BusyIndicatorComponent,
+  BusyIndicatorComponentTagName,
+  defineBusyIndicatorComponent
+};

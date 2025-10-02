@@ -1,0 +1,2 @@
+export * from './quantity-field';
+export declare function defineQuantityFieldComponent(): void;

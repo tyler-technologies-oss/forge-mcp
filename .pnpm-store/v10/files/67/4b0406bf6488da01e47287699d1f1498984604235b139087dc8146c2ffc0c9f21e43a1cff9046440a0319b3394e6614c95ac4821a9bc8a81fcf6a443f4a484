@@ -1,0 +1,26 @@
+/**
+ * @license
+ * Copyright Tyler Technologies, Inc. 
+ * License: Apache-2.0
+ */
+@use './core';
+
+//
+// Host
+//
+
+:host {
+  @include core.host;
+}
+
+//
+// Base
+//
+
+.forge-key {
+  @include core.tokens;
+}
+
+.forge-key {
+  @include core.base;
+}

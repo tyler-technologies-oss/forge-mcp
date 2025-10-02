@@ -1,0 +1,26 @@
+import recommended_default from "./recommended.js";
+
+//#region src/configs/strict.ts
+/**
+* Strict ESLint configuration for JavaScript files.
+*/
+var strict_default = (plugin) => [...recommended_default(plugin), {
+	name: "@tylertech-eslint/strict-config",
+	rules: {
+		"no-prototype-builtins": "error",
+		"no-async-promise-executor": "error",
+		"no-case-declarations": "error",
+		"no-extra-boolean-cast": "error",
+		"no-useless-escape": "error",
+		"prefer-rest-params": "error",
+		"no-loss-of-precision": "error",
+		"dot-notation": "error",
+		"prefer-object-has-own": "error",
+		"arrow-body-style": ["warn", "as-needed"],
+		"no-undef": "error",
+		camelcase: "error"
+	}
+}];
+
+//#endregion
+export { strict_default as default };

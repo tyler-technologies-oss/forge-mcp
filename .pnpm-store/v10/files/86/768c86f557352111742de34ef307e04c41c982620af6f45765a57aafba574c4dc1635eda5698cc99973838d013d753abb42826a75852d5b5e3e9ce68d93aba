@@ -1,0 +1,228 @@
+import type { DefineComponent } from "vue";
+import type {
+  BusyIndicatorComponent,
+  ConfirmationDialogComponent,
+  QuantityFieldComponent,
+  ResponsiveToolbarComponent,
+  ThemeToggleComponent,
+  UserProfileComponent,
+  Event,
+  ProfileLinkComponent,
+} from "../index.d.ts";
+
+type BusyIndicatorComponentProps = {
+  /** Indicates whether the busy indicator is open. */
+  open?: BusyIndicatorComponent["open"];
+  /** Whether the busy indicator is fullscreen or inline. */
+  mode?: BusyIndicatorComponent["mode"];
+  /** The title text to display. */
+  "title-text"?: BusyIndicatorComponent["titleText"];
+  /** The heading level for the title. */
+  "heading-level"?: BusyIndicatorComponent["headingLevel"];
+  /** The message to display. */
+  message?: BusyIndicatorComponent["message"];
+  /** The accessible label for dialog. */
+  label?: BusyIndicatorComponent["label"];
+  /** The accessible description for dialog. */
+  description?: BusyIndicatorComponent["description"];
+  /** Indicates whether the cancel button is displayed. */
+  cancelable?: BusyIndicatorComponent["cancelable"];
+  /** The variant of the busy indicator.
+- `spinner` (default): displays a spinner.
+- `progress`: displays a progress bar.
+- `message-only`: No progress indicator is displayed. */
+  variant?: BusyIndicatorComponent["variant"];
+  /** Indicates whether the loading indicator is determinate. */
+  determinate?: BusyIndicatorComponent["determinate"];
+  /** The progress amount for the progress bar. */
+  progress?: BusyIndicatorComponent["progress"];
+  /** The buffer amount for the progress bar. */
+  buffer?: BusyIndicatorComponent["buffer"];
+  /** Indicates whether the busy indicator surface should be transparent (no background or elevation). */
+  transparent?: BusyIndicatorComponent["transparent"];
+
+  /** Fired when the cancel button is clicked. */
+  "onforge-busy-indicator-cancel"?: (e: CustomEvent<CustomEvent<void>>) => void;
+};
+
+type ConfirmationDialogComponentProps = {
+  /** Indicates whether the confirmation dialog is open */
+  open?: ConfirmationDialogComponent["open"];
+  /** The accessible label for dialog */
+  label?: ConfirmationDialogComponent["label"];
+  /** The accessible description for dialog */
+  description?: ConfirmationDialogComponent["description"];
+  /** Indicates whether the confirmation dialog is in a busy state */
+  "is-busy"?: ConfirmationDialogComponent["isBusy"];
+  /** ARIA label for the the busy indicator when loading */
+  "busy-label"?: ConfirmationDialogComponent["busyLabel"];
+
+  /** Fired when an action button is clicked. Will contain `false` if the secondary button is clicked, `true` if the primary button is clicked. */
+  "onforge-confirmation-dialog-action"?: (e: CustomEvent<CustomEvent<ConfirmationDialogActionEventData>>) => void;
+};
+
+type QuantityFieldComponentProps = {
+  /** Indicates whether the field is invalid. */
+  invalid?: QuantityFieldComponent["invalid"];
+  /** Indicates whether the field is required. */
+  required?: QuantityFieldComponent["required"];
+  /** The accessible label for the decrement button. */
+  "decrement-label"?: QuantityFieldComponent["decrementLabel"];
+  /** The accessible label for the increment button. */
+  "increment-label"?: QuantityFieldComponent["incrementLabel"];
+};
+
+type ResponsiveToolbarComponentProps = {
+  /** Hides the divider */
+  "no-border"?: ResponsiveToolbarComponent["noBorder"];
+  /** Controls whether a bottom divider (default) or top divider (true) is used. */
+  inverted?: ResponsiveToolbarComponent["inverted"];
+  /** Controls the delay in milliseconds to throttle resize events */
+  "resize-delay"?: ResponsiveToolbarComponent["resizeDelay"];
+
+  /** Dispatched when the overflow state changes. */
+  "onforge-responsive-toolbar-update"?: (e: CustomEvent<CustomEvent<ResponsiveToolbarUpdateEventData>>) => void;
+};
+
+type ThemeToggleComponentProps = {
+  /** Fired when the theme is changed */
+  "onforge-theme-toggle-update"?: (e: CustomEvent<CustomEvent<ThemeToggleThemeEventData>>) => void;
+};
+
+type UserProfileComponentProps = {
+  /** The full name of the user */
+  "full-name"?: UserProfileComponent["fullName"];
+  /** The email address of the user */
+  email?: UserProfileComponent["email"];
+  /** ARIA label for the user profile avatar button */
+  "button-label"?: UserProfileComponent["buttonLabel"];
+  /** Indicates whether the theme toggle is visible */
+  "theme-toggle"?: UserProfileComponent["themeToggle"];
+
+  /** Fired when the sign out button is clicked. */
+  "onforge-user-profile-sign-out"?: (e: CustomEvent<Event>) => void;
+};
+
+type ProfileLinkComponentProps = {};
+
+export type CustomElements = {
+  /**
+   *
+   * ---
+   *
+   *
+   * ### **Events:**
+   *  - **forge-busy-indicator-cancel** - Fired when the cancel button is clicked.
+   *
+   * ### **Slots:**
+   *  - **title** - The title text to display.
+   * - **message** - The message to display.
+   * - **cancel-text** - The text for the cancel button.
+   */
+  "forge-busy-indicator": DefineComponent<BusyIndicatorComponentProps>;
+
+  /**
+   *
+   * ---
+   *
+   *
+   * ### **Events:**
+   *  - **forge-confirmation-dialog-action** - Fired when an action button is clicked. Will contain `false` if the secondary button is clicked, `true` if the primary button is clicked.
+   *
+   * ### **Slots:**
+   *  - **title** - The title of the dialog
+   * - **message** - The dialog message
+   * - **secondary-button-text** - The text used in the secondary action button
+   * - **primary-button-text** - The text used in the primary action button
+   */
+  "forge-confirmation-dialog": DefineComponent<ConfirmationDialogComponentProps>;
+
+  /**
+   *
+   * ---
+   *
+   *
+   * ### **Slots:**
+   *  - _default_ - Reserved for the `<input>` element.
+   * - **label** - The label for the field.
+   * - **decrement-button** - The decrement button.
+   * - **decrement-icon** - The icon for the decrement button.
+   * - **increment-button** - The increment button.
+   * - **increment-icon** - The icon for the increment button.
+   * - **support-text** - The support text for the field.
+   */
+  "forge-quantity-field": DefineComponent<QuantityFieldComponentProps>;
+
+  /**
+   *
+   * ---
+   *
+   *
+   * ### **Events:**
+   *  - **forge-responsive-toolbar-update** - Dispatched when the overflow state changes.
+   *
+   * ### **Slots:**
+   *  - **before-start** - Maps to the toolbar before-start slot
+   * - **start** - Maps to the toolbar start slot
+   * - **end-large** - The content you want to render at larger sizes in the toolbar end slot
+   * - **end-small** - The content you want to render at smaller sizes in the toolbar end slot
+   * - **after-end** - Maps to the toolbar after-end slot
+   */
+  "forge-responsive-toolbar": DefineComponent<ResponsiveToolbarComponentProps>;
+
+  /**
+   *
+   * ---
+   *
+   *
+   * ### **Events:**
+   *  - **forge-theme-toggle-update** - Fired when the theme is changed
+   *
+   * ### **Methods:**
+   *  - **setTheme(value: _ThemeToggleTheme_): _void_** - Sets the current theme.
+   *
+   * ### **Slots:**
+   *  - **title** - The title shown above the toggle buttons
+   */
+  "forge-theme-toggle": DefineComponent<ThemeToggleComponentProps>;
+
+  /**
+   *
+   * ---
+   *
+   *
+   * ### **Events:**
+   *  - **forge-user-profile-sign-out** - Fired when the sign out button is clicked.
+   *
+   * ### **Methods:**
+   *  - **setTheme(value: _ThemeToggleTheme_): _void_** - Sets the theme for the theme toggle.
+   *
+   * ### **Slots:**
+   *  - **link** - Slot for additional profile navigation links
+   * - **sign-out-button-text** - Slot for the sign out button text
+   */
+  "forge-user-profile": DefineComponent<UserProfileComponentProps>;
+
+  /**
+   *
+   * ---
+   *
+   *
+   * ### **Slots:**
+   *  - **icon** - The icon to display in the profile link.
+   * - _default_ - The `<a>` element for the link.
+   */
+  "forge-profile-link": DefineComponent<ProfileLinkComponentProps>;
+};
+
+declare module "vue" {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface GlobalComponents extends CustomElements {}
+}
+
+declare global {
+  namespace JSX {
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    interface IntrinsicElements extends CustomElements {}
+  }
+}

@@ -1,0 +1,51 @@
+/**
+ * @license
+ * Copyright Tyler Technologies, Inc. 
+ * License: Apache-2.0
+ */
+export type SupportedDateFormats = 'MM/DD/YYYY' | 'MM/DD/YY' | 'DD/MMM/YYYY' | 'MM-DD-YYYY' | 'MM-DD-YY' | 'DD-MMM-YYYY' | 'YYYY-MM-DD' | 'YYYY-MMM-DD' | 'DD.MM.YYYY' | 'DD.MM.YY';
+export declare const ISO_8601_REGEX: RegExp;
+export declare const ISO_TIMEZONE_REGEX: RegExp;
+/**
+ * Parses a date string value to a `Date` object in local time.
+ * Supports multiple formats as defined in SupportedDateFormats.
+ *
+ * @param value The date string value to parse
+ * @param format Optional format hint for better parsing accuracy
+ * @returns Parsed Date object or null if parsing fails
+ */
+export declare function parseDateString(value: string, format?: SupportedDateFormats): Date | null;
+/**
+ * Formats a Date object to a specified string format.
+ *
+ * @param date The Date object to format
+ * @param format The desired output format (defaults to 'MM/DD/YYYY')
+ * @returns Formatted date string
+ * @throws Error if date is invalid or format is unsupported
+ */
+export declare function formatDate(date: Date, format?: SupportedDateFormats): string;
+/**
+ * Determines if two date objects are equal.
+ *
+ * Note: Time values are ignored.
+ * @param first The date to compare.
+ * @param second The date to compare the first date to.
+ * @returns A boolean whether the two dates are equivalent.
+ */
+export declare function isSameDate(first?: Date | null, second?: Date | null): boolean;
+/**
+ * Returns the last date on a month.
+ *
+ * @param month The month.
+ * @param year The year of the month, needed for February otherwise optional.
+ * @returns The last date of the given month.
+ */
+export declare function getLastDateOfMonth(month: number, year?: number): Date;
+/**
+ * Returns the number of days in a month.
+ *
+ * @param month The month to find the length of.
+ * @param year The year to check within, needed for February otherwise optional.
+ * @returns The number of days in the month.
+ */
+export declare function getMonthLength(month: number, year?: number): number;

@@ -1,0 +1,34 @@
+import { createRule } from "../utils/create-rule.js";
+
+//#region src/rules/invalid-relative-import-prefix.ts
+const RULE_NAME = "invalid-relative-import-prefix";
+var invalid_relative_import_prefix_default = createRule({
+	name: RULE_NAME,
+	meta: {
+		type: "suggestion",
+		docs: { description: "Avoids inconsistent import paths." },
+		schema: [],
+		messages: { invalidRelativeImportPrefix: "Relative import statements cannot start with \"./../" },
+		fixable: "code"
+	},
+	defaultOptions: [],
+	create: function(context) {
+		function reportIfInvalidRelativeImport(node) {
+			const importSource = node.source.value.trim();
+			const invalidRelativeImportStart = importSource.substring(0, 5);
+			if (typeof invalidRelativeImportStart === "string" && invalidRelativeImportStart === "./../") context.report({
+				messageId: "invalidRelativeImportPrefix",
+				node: node.source,
+				fix: function(fixer) {
+					return fixer.replaceTextRange([node.source.range[0], node.source.range[0] + 3], `${node.source.raw[0]}../`);
+				}
+			});
+		}
+		return { ImportDeclaration(node) {
+			reportIfInvalidRelativeImport(node);
+		} };
+	}
+});
+
+//#endregion
+export { RULE_NAME, invalid_relative_import_prefix_default as default };

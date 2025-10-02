@@ -1,0 +1,55 @@
+/**
+ * @license
+ * Copyright Tyler Technologies, Inc. 
+ * License: Apache-2.0
+ */
+import { PropertyValues, TemplateResult } from 'lit';
+import { CUSTOM_ELEMENT_NAME_PROPERTY } from '@tylertech/forge-core';
+import { BaseLitElement } from '../core/base/base-lit-element';
+export interface ICardComponent extends BaseLitElement {
+    raised: boolean;
+}
+declare global {
+    interface HTMLElementTagNameMap {
+        'forge-card': ICardComponent;
+    }
+}
+export declare const CARD_TAG_NAME: keyof HTMLElementTagNameMap;
+/**
+ * @tag forge-card
+ *
+ * @summary Cards group related content and actions together in a single container.
+ *
+ * @attribute {boolean} [no-padding=false] - Removes the default padding from the card.
+ *
+ * @cssproperty --forge-card-background - The background color of the card.
+ * @cssproperty --forge-card-height - The height of the card.
+ * @cssproperty --forge-card-width - The width of the card.
+ * @cssproperty --forge-card-outline-color - The outline color of the card.
+ * @cssproperty --forge-card-outline-width - The outline width of the card.
+ * @cssproperty --forge-card-outline-style - The outline style of the card.
+ * @cssproperty --forge-card-elevation - The elevation/shadow of the card.
+ * @cssproperty --forge-card-padding - The padding of the card.
+ * @cssproperty --forge-card-shape - The shape (border-radius) of the card.
+ * @cssproperty --forge-card-overflow - The overflow of the card.
+ * @cssproperty --forge-card-raised-elevation - The elevation/shadow of the card when raised.
+ * @cssproperty --forge-card-raised-outline-width - The outline width of the card when raised.
+ *
+ * @csspart root - The root container element.
+ *
+ * @state raised - The state of the card when raised.
+ *
+ * @cssclass forge-card - The card container element _(required)_.
+ * @cssclass forge-card--raised - The card container element when raised _(required)_.
+ */
+export declare class CardComponent extends BaseLitElement implements ICardComponent {
+    #private;
+    static styles: import("lit").CSSResult;
+    /** @deprecated Used for compatibility with legacy Forge @customElement decorator. */
+    static [CUSTOM_ELEMENT_NAME_PROPERTY]: keyof HTMLElementTagNameMap;
+    /** Whether the card has elevation or not. */
+    raised: boolean;
+    constructor();
+    willUpdate(changedProperties: PropertyValues<this>): void;
+    render(): TemplateResult;
+}

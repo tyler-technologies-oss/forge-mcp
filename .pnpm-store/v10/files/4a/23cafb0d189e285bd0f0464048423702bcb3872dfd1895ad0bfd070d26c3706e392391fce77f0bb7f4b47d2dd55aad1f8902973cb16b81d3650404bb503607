@@ -1,0 +1,11 @@
+/**
+ * @license
+ * Copyright Tyler Technologies, Inc. 
+ * License: Apache-2.0
+ */
+import { defineCustomElement } from '@tylertech/forge-core';
+import { MeterComponent } from './meter';
+export * from './meter';
+export function defineMeterComponent() {
+    defineCustomElement(MeterComponent);
+}

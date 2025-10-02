@@ -1,0 +1,12 @@
+/**
+ * @license
+ * Copyright Tyler Technologies, Inc. 
+ * License: Apache-2.0
+ */
+import { defineCustomElement } from '@tylertech/forge-core';
+import { AvatarComponent } from './avatar';
+export * from './avatar';
+export * from './avatar-constants';
+export function defineAvatarComponent() {
+    defineCustomElement(AvatarComponent);
+}

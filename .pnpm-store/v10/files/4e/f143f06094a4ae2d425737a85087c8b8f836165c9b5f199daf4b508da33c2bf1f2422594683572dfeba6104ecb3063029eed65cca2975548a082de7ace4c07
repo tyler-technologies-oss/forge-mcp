@@ -1,0 +1,6 @@
+//#region package.json
+var name = "@tylertech-eslint/eslint-plugin";
+var version = "3.0.0";
+
+//#endregion
+export { name, version };

@@ -1,0 +1,50 @@
+import { LitElement, PropertyValues, TemplateResult, CSSResult } from 'lit';
+declare global {
+    interface HTMLElementTagNameMap {
+        'forge-responsive-toolbar': ResponsiveToolbarComponent;
+    }
+    interface HTMLElementEventMap {
+        'forge-responsive-toolbar-update': CustomEvent<ResponsiveToolbarUpdateEventData>;
+    }
+}
+export type ResponsiveToolbarState = 'small' | 'large';
+export interface ResponsiveToolbarUpdateEventData {
+    state: ResponsiveToolbarState;
+}
+export declare const ResponsiveToolbarComponentTagName: keyof HTMLElementTagNameMap;
+/**
+ * @tag forge-responsive-toolbar
+ *
+ * @slot before-start - Maps to the toolbar before-start slot
+ * @slot start - Maps to the toolbar start slot
+ * @slot end-large - The content you want to render at larger sizes in the toolbar end slot
+ * @slot end-small - The content you want to render at smaller sizes in the toolbar end slot
+ * @slot after-end - Maps to the toolbar after-end slot
+ *
+ * @state small - The title is overlapping the actions, the large end slot is hidden.
+ * @state large - The title is not overlapping the actions, the small end slot is hidden.
+ *
+ * @event {CustomEvent<ResponsiveToolbarUpdateEventData>} forge-responsive-toolbar-update - Dispatched when the overflow state changes.
+ */
+export declare class ResponsiveToolbarComponent extends LitElement {
+    #private;
+    static styles: CSSResult;
+    /** Hides the divider */
+    noBorder: boolean;
+    /** Controls whether a bottom divider (default) or top divider (true) is used. */
+    inverted: boolean;
+    /** Controls the delay in milliseconds to throttle resize events */
+    resizeDelay: number;
+    constructor();
+    disconnectedCallback(): void;
+    willUpdate(changedProperties: PropertyValues<this>): void;
+    private _initializeResizeController;
+    /**
+     * Determines if the title is overlapping the actions and sets the internal
+     * state to reflect that. This will toggle the visibility of the small and
+     * large content slots.
+     */
+    private _handleResize;
+    private _emitOverflowEvent;
+    render(): TemplateResult;
+}

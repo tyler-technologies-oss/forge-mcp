@@ -1,0 +1,10 @@
+import { QuantityFieldComponentTagName, QuantityFieldComponent } from "./quantity-field.mjs";
+import { tryDefine } from "@tylertech/forge-core";
+function defineQuantityFieldComponent() {
+  tryDefine(QuantityFieldComponentTagName, QuantityFieldComponent);
+}
+export {
+  QuantityFieldComponent,
+  QuantityFieldComponentTagName,
+  defineQuantityFieldComponent
+};

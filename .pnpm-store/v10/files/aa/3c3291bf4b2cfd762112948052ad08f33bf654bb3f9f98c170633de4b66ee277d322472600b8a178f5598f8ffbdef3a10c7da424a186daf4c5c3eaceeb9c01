@@ -1,0 +1,44 @@
+/**
+ * @license
+ * Copyright Tyler Technologies, Inc. 
+ * License: Apache-2.0
+ */
+@use 'sass:map';
+
+@mixin position-abs-zero($position: absolute) {
+  position: $position;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+@mixin overflow($overflow: auto) {
+  @if $overflow == hidden {
+    overflow: hidden;
+  }
+  @if $overflow == auto {
+    overflow: auto;
+  }
+  @if $overflow == overflow-x {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  @if $overflow == overflow-y {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}
+
+@mixin visually-hidden() {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

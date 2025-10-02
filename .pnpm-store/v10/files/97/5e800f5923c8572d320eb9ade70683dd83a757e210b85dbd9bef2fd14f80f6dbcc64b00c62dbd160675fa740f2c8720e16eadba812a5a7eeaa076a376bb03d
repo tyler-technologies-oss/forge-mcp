@@ -1,0 +1,44 @@
+import { createRule } from "../utils/create-rule.js";
+
+//#region src/rules/require-private-modifier.ts
+const ALLOWED_MEMBERS = ["constructor"];
+const RULE_NAME = "require-private-modifier";
+var require_private_modifier_default = createRule({
+	name: RULE_NAME,
+	meta: {
+		type: "suggestion",
+		docs: { description: "Requires properties or methods that start with an underscore to be marked with a private modifier." },
+		schema: [],
+		messages: { requirePrivateModifier: "'{{nodeInfo}}' must be marked as private or protected if it starts with an underscore" },
+		fixable: "code"
+	},
+	defaultOptions: [],
+	create: function(context) {
+		function checkNode(node) {
+			const isPrivate = node.accessibility === "private" || node.accessibility === "protected";
+			const propertyName = node.key.name;
+			if (isPrivate && !propertyName.startsWith("_") && !ALLOWED_MEMBERS.includes(propertyName)) context.report({
+				data: {
+					type: node.type,
+					nodeInfo: `_${propertyName}`
+				},
+				messageId: "requirePrivateModifier",
+				node,
+				fix: function(fixer) {
+					return fixer.insertTextBefore(node.key, "_");
+				}
+			});
+		}
+		return {
+			PropertyDefinition(node) {
+				checkNode(node);
+			},
+			MethodDefinition(node) {
+				checkNode(node);
+			}
+		};
+	}
+});
+
+//#endregion
+export { RULE_NAME, require_private_modifier_default as default };

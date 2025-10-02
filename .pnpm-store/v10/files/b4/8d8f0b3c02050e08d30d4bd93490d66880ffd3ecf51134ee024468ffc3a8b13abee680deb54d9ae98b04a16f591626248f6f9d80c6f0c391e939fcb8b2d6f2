@@ -1,0 +1,2 @@
+export * from './theme-toggle';
+export declare function defineThemeToggleComponent(): void;

@@ -1,0 +1,63 @@
+import { LitElement, PropertyValues, TemplateResult } from 'lit';
+declare global {
+    interface HTMLElementTagNameMap {
+        'forge-busy-indicator': BusyIndicatorComponent;
+    }
+    interface HTMLElementEventMap {
+        'forge-busy-indicator-cancel': CustomEvent<void>;
+    }
+}
+export type BusyIndicatorMode = 'fullscreen' | 'inline';
+export type BusyIndicatorVariant = 'spinner' | 'progress' | 'message-only';
+export type BusyIndicatorFocusMode = 'auto' | 'manual';
+export declare const BusyIndicatorComponentTagName: keyof HTMLElementTagNameMap;
+/**
+ * @tag forge-busy-indicator
+ *
+ * @slot title - The title text to display.
+ * @slot message - The message to display.
+ * @slot cancel-text - The text for the cancel button.
+ *
+ * @event {CustomEvent<void>} forge-busy-indicator-cancel - Fired when the cancel button is clicked.
+ */
+export declare class BusyIndicatorComponent extends LitElement {
+    #private;
+    static styles: import('lit').CSSResult;
+    /** Indicates whether the busy indicator is open. */
+    open: boolean;
+    /** Whether the busy indicator is fullscreen or inline. */
+    mode: BusyIndicatorMode;
+    /** The title text to display. */
+    titleText?: string;
+    /** The heading level for the title. */
+    headingLevel: 1 | 2 | 3 | 4 | 5 | 6;
+    /** The message to display. */
+    message?: string;
+    /** The accessible label for dialog. */
+    label: string | undefined;
+    /** The accessible description for dialog. */
+    description: string | undefined;
+    /** Indicates whether the cancel button is displayed. */
+    cancelable: boolean;
+    /**
+     * The variant of the busy indicator.
+     * - `spinner` (default): displays a spinner.
+     * - `progress`: displays a progress bar.
+     * - `message-only`: No progress indicator is displayed.
+     * @default message
+     */
+    variant: BusyIndicatorVariant;
+    /** Indicates whether the loading indicator is determinate. */
+    determinate: boolean;
+    /** The progress amount for the progress bar. */
+    progress: number;
+    /** The buffer amount for the progress bar. */
+    buffer: number;
+    /** Indicates whether the busy indicator surface should be transparent (no background or elevation). */
+    transparent: boolean;
+    private readonly _slottedTitleNodes;
+    private readonly _slottedMessageNodes;
+    disconnectedCallback(): void;
+    willUpdate(changedProperties: PropertyValues<this>): void;
+    render(): TemplateResult;
+}

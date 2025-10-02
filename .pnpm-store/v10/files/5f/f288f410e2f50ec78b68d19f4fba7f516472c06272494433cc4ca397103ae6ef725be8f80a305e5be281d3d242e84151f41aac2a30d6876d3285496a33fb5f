@@ -1,0 +1,2 @@
+export * from './user-profile';
+export declare function defineUserProfileComponent(): void;

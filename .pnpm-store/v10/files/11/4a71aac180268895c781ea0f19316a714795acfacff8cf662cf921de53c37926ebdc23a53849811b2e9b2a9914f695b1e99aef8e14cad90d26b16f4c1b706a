@@ -1,0 +1,17 @@
+import { LitElement, TemplateResult } from 'lit';
+declare global {
+    interface HTMLElementTagNameMap {
+        'forge-profile-link': ProfileLinkComponent;
+    }
+}
+export declare const ProfileLinkComponentTagName: keyof HTMLElementTagNameMap;
+/**
+ * @tag forge-profile-link
+ *
+ * @slot icon - The icon to display in the profile link.
+ * @slot - The `<a>` element for the link.
+ */
+export declare class ProfileLinkComponent extends LitElement {
+    static styles: import('lit').CSSResult;
+    render(): TemplateResult;
+}

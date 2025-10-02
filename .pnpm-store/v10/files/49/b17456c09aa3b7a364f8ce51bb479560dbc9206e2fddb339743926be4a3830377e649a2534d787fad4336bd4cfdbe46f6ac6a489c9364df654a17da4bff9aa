@@ -1,0 +1,2 @@
+export * from './confirmation-dialog';
+export declare function defineConfirmationDialogComponent(): void;

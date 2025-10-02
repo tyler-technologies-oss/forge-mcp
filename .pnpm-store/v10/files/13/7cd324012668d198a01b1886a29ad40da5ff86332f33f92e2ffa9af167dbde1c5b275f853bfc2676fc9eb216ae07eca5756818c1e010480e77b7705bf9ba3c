@@ -1,0 +1,11 @@
+/**
+ * @license
+ * Copyright Tyler Technologies, Inc. 
+ * License: Apache-2.0
+ */
+import { LitElement } from 'lit';
+/**
+ * Readopts styles for the given element in the context of its new window.
+ * @param element The element to readopt styles for.
+ */
+export declare function readoptLitElementStyles(element: LitElement): void;

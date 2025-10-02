@@ -1,0 +1,69 @@
+/**
+ * @license
+ * Copyright Tyler Technologies, Inc. 
+ * License: Apache-2.0
+ */
+import { PositionPlacement } from '../core/utils/position-utils';
+import { IOverlayOffset, OverlayFlipState, OverlayPlacement, OverlayShiftState } from '../overlay/overlay-constants';
+import { ListDropdownHeaderBuilder, ListDropdownFooterBuilder } from './list-dropdown-constants';
+export interface IListDropdownAwareCore {
+    popupClasses: string | string[];
+    popupHeaderBuilder: ListDropdownHeaderBuilder;
+    popupFooterBuilder: ListDropdownHeaderBuilder;
+    syncPopupWidth: boolean;
+    optionLimit: number;
+    observeScroll: boolean;
+    observeScrollThreshold: number;
+    constrainPopupWidth: boolean;
+    wrapOptionText: boolean;
+    popoverPlacement: OverlayPlacement;
+    popoverOffset: IOverlayOffset;
+    popoverFlip: OverlayFlipState;
+    popoverShift: OverlayShiftState;
+    popoverFallbackPlacements: PositionPlacement[] | null;
+}
+export declare abstract class ListDropdownAwareCore implements IListDropdownAwareCore {
+    protected _popupClasses: string | string[];
+    protected _popupHeaderBuilder: ListDropdownHeaderBuilder;
+    protected _popupFooterBuilder: ListDropdownFooterBuilder;
+    protected _syncPopupWidth: boolean;
+    protected _optionLimit: number;
+    protected _observeScroll: boolean;
+    protected _observeScrollThreshold: number;
+    protected _constrainPopupWidth: boolean;
+    protected _wrapOptionText: boolean;
+    protected _popoverPlacement: OverlayPlacement;
+    protected _popoverOffset: IOverlayOffset;
+    protected _popoverFlip: OverlayFlipState;
+    protected _popoverShift: OverlayShiftState;
+    protected _popoverFallbackPlacements: PositionPlacement[] | null;
+    get syncPopupWidth(): boolean;
+    set syncPopupWidth(value: boolean);
+    get popupClasses(): string | string[];
+    set popupClasses(value: string | string[]);
+    get observeScroll(): boolean;
+    set observeScroll(value: boolean);
+    get observeScrollThreshold(): number;
+    set observeScrollThreshold(value: number);
+    get optionLimit(): number;
+    set optionLimit(value: number);
+    get popupHeaderBuilder(): ListDropdownHeaderBuilder;
+    set popupHeaderBuilder(value: ListDropdownHeaderBuilder);
+    get popupFooterBuilder(): ListDropdownFooterBuilder;
+    set popupFooterBuilder(value: ListDropdownFooterBuilder);
+    get constrainPopupWidth(): boolean;
+    set constrainPopupWidth(value: boolean);
+    get wrapOptionText(): boolean;
+    set wrapOptionText(value: boolean);
+    get popoverPlacement(): OverlayPlacement;
+    set popoverPlacement(value: OverlayPlacement);
+    get popoverOffset(): IOverlayOffset;
+    set popoverOffset(value: IOverlayOffset);
+    get popoverFlip(): OverlayFlipState;
+    set popoverFlip(value: OverlayFlipState);
+    get popoverShift(): OverlayShiftState;
+    set popoverShift(value: OverlayShiftState);
+    get popoverFallbackPlacements(): PositionPlacement[] | null;
+    set popoverFallbackPlacements(value: PositionPlacement[] | null);
+    protected _applySelection(): void;
+}

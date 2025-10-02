@@ -1,0 +1,10 @@
+import { UserProfileComponentTagName, UserProfileComponent } from "./user-profile.mjs";
+import { tryDefine } from "@tylertech/forge-core";
+function defineUserProfileComponent() {
+  tryDefine(UserProfileComponentTagName, UserProfileComponent);
+}
+export {
+  UserProfileComponent,
+  UserProfileComponentTagName,
+  defineUserProfileComponent
+};

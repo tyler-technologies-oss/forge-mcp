@@ -1,0 +1,7 @@
+import { ESLintUtils } from "@typescript-eslint/utils";
+
+//#region src/utils/create-rule.ts
+const createRule = ESLintUtils.RuleCreator((ruleName) => `https://github.com/tyler-technologies-oss/eslint-rules/tree/main/packages/eslint-plugin/docs/rules/${ruleName}.md`);
+
+//#endregion
+export { createRule };

@@ -1,0 +1,192 @@
+/**
+ * @license
+ * Copyright Tyler Technologies, Inc. 
+ * License: Apache-2.0
+ */
+import { PropertyValues, TemplateResult } from 'lit';
+import { Theme } from '../../constants';
+import { CUSTOM_ELEMENT_NAME_PROPERTY } from '@tylertech/forge-core';
+import { BaseLitElement } from '../../core/base/base-lit-element';
+export declare const METER_TAG_NAME: keyof HTMLElementTagNameMap;
+export type MeterDirection = 'horizontal' | 'vertical';
+export type MeterDensity = 'default' | 'small' | 'medium' | 'large';
+export type MeterShape = 'default' | 'round' | 'squared';
+export type MeterInnerShape = 'default' | 'inherit';
+export type MeterStatus = 'optimal' | 'suboptimal' | 'least-optimal';
+export type MeterTheme = Theme | 'default';
+export type MeterValueMode = 'manual' | 'percentage' | 'value';
+/**
+ * @tag forge-meter
+ *
+ * @summary Meters display a scalar value within a defined range.
+ *
+ * @attribute {string} aria-valuetext - Defines a text alternative for the current value. Set this if it would be inaccurate to read the value as a percentage.
+ *
+ * @state vertical - Applied when the meter is oriented vertically.
+ * @state optimum-value - Applied when the value is within the optimum range.
+ * @state suboptimum-value - Applied when the value is within the suboptimum range.
+ * @state least-optimum-value - Applied when the value is within the least optimum range.
+ *
+ * @cssproperty --forge-meter-background - The background color of the meter.
+ * @cssproperty --forge-meter-color - The color of the meter's bar.
+ * @cssproperty --forge-meter-height - The block size of the meter.
+ * @cssproperty --forge-meter-shape - The border radius of the meter.
+ * @cssproperty --forge-meter-bar-inner-shape - The border radius of the meter's bar.
+ * @cssproperty --forge-meter-tickmarks - The number of tickmarks to display.
+ * @cssproperty --forge-meter-tickmark-opacity - The opacity of the tickmarks.
+ * @cssproperty --forge-meter-transition-duration - The duration of transitions.
+ * @cssproperty --forge-meter-transition-timing - The timing function of transitions.
+ * @cssproperty --forge-theme-success - The color of the bar when the value is optimal.
+ * @cssproperty --forge-theme-success-container-low - The color of the track when the value is optimal.
+ * @cssproperty --forge-theme-warning - The color of the bar when the value is suboptimal.
+ * @cssproperty --forge-theme-warning-container-low - The color of the track when the value is suboptimal.
+ * @cssproperty --forge-theme-error - The color of the bar when the value is least optimal.
+ * @cssproperty --forge-theme-error-container-low - The color of the track when the value is least optimal.
+ *
+ * @csspart root - The root container element.
+ * @csspart track - The element comprising the meter's background.
+ * @csspart bar - The bar representing the value.
+ *
+ * @slot - The default slot for the meter's label.
+ * @slot value - A textual representation of the meter's value.
+ */
+export declare class MeterComponent extends BaseLitElement {
+    static styles: import("lit").CSSResult;
+    static formAssociated: boolean;
+    /** @deprecated Used for compatibility with legacy Forge @customElement decorator. */
+    static [CUSTOM_ELEMENT_NAME_PROPERTY]: keyof HTMLElementTagNameMap;
+    /**
+     * The current value of the meter.
+     * @default 0
+     * @attribute
+     */
+    value: number;
+    /**
+     * The minimum value of the meter.
+     * @default 0
+     * @attribute
+     */
+    min: number;
+    /**
+     * The maximum value of the meter.
+     * @default 1
+     * @attribute
+     */
+    max: number;
+    /**
+     * The low value threshold.
+     * @default 0
+     * @attribute
+     */
+    low: number | null | undefined;
+    /**
+     * The high value threshold.
+     * @default 1
+     * @attribute
+     */
+    high: number | null | undefined;
+    /**
+     * Indicates the region of the optimum value.
+     * @default 1
+     * @attribute
+     */
+    optimum: number | null | undefined;
+    /**
+     * Whether to display tickmarks.
+     * @default false
+     * @attribute
+     */
+    tickmarks: boolean;
+    /**
+     * Whether the current value is displayed as a percentage or raw value. When set to `'manual'`
+     * the value text is not shown automatically but can still be set manually via the value slot.
+     * @default 'manual'
+     * @attribute value-mode
+     */
+    valueMode: MeterValueMode;
+    /**
+     * Whether the meter is oriented horizontally or vertically.
+     * @default 'horizontal'
+     * @attribute
+     */
+    direction: MeterDirection;
+    /**
+     * The shape of the meter.
+     * @default 'default'
+     * @attribute
+     */
+    shape: MeterShape;
+    /**
+     * The shape of the bar.
+     * @default 'default'
+     * @attribute inner-shape
+     */
+    innerShape: MeterInnerShape;
+    /**
+     * The density of the meter.
+     * @default 'medium'
+     * @attribute
+     */
+    density: MeterDensity;
+    /**
+     * The theme of the meter.
+     * @default 'default'
+     * @attribute
+     */
+    theme: MeterTheme;
+    /**
+     * Whether the theme is muted.
+     * @default false
+     * @attribute
+     */
+    muted: boolean;
+    /**
+     * Gets the percentage of the meter that's filled.
+     * @readonly
+     */
+    get percentage(): number;
+    get labels(): NodeList;
+    get form(): HTMLFormElement | null;
+    private _percentage;
+    private _status;
+    private _segmented;
+    private _grouped;
+    private _hasSlottedContent;
+    private _defaultNodes;
+    private _valueNodes;
+    private _internals;
+    constructor();
+    connectedCallback(): void;
+    willUpdate(changedProperties: PropertyValues<this>): void;
+    render(): TemplateResult;
+    /**
+     * Determines the percentage of the meter that's filled and whether the value is optimal,
+     * suboptimal, or least optimal.
+     */
+    private _getStatus;
+    /**
+     * Determines whether low and high ranges are set. The meter is segmented if either the low or
+     * high property is defined.
+     *
+     * When the meter is segmented the default or themed color scheme is replaced by semantic colors
+     * corresponding to optimal, suboptimal, and least optimal values.
+     */
+    private _getSegmented;
+    /**
+     * Checks if the meter is part of a group and inherits the min and max values.
+     */
+    private _getGrouped;
+    /**
+     * Checks whether the meter has any slotted content.
+     */
+    private _handleSlotChange;
+    /**
+     * Updates the internal state of the meter based on the current status.
+     */
+    private _setValueState;
+}
+declare global {
+    interface HTMLElementTagNameMap {
+        'forge-meter': MeterComponent;
+    }
+}

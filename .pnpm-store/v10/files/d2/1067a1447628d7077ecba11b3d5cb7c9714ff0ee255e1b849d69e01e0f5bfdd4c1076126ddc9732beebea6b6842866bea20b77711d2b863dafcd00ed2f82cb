@@ -1,0 +1,10 @@
+import { ThemeToggleComponentTagName, ThemeToggleComponent } from "./theme-toggle.mjs";
+import { tryDefine } from "@tylertech/forge-core";
+function defineThemeToggleComponent() {
+  tryDefine(ThemeToggleComponentTagName, ThemeToggleComponent);
+}
+export {
+  ThemeToggleComponent,
+  ThemeToggleComponentTagName,
+  defineThemeToggleComponent
+};

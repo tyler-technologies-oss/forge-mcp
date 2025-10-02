@@ -1,0 +1,189 @@
+import { unsafeCSS, LitElement, html } from "lit";
+import { property, queryAssignedNodes, query, customElement } from "lit/decorators.js";
+import { when } from "lit/directives/when.js";
+import { styleMap } from "lit/directives/style-map.js";
+import styles from "./confirmation-dialog.scss.mjs";
+import { defineButtonComponent, defineDialogComponent, defineCircularProgressComponent, defineIconButtonComponent, IconRegistry } from "@tylertech/forge";
+import { tylIconClose } from "@tylertech/tyler-icons";
+import { composeSlottedTextContent } from "../utils/slot-utils.mjs";
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __typeError = (msg) => {
+  throw TypeError(msg);
+};
+var __decorateClass = (decorators, target, key, kind) => {
+  var result = kind > 1 ? void 0 : kind ? __getOwnPropDesc(target, key) : target;
+  for (var i = decorators.length - 1, decorator; i >= 0; i--)
+    if (decorator = decorators[i])
+      result = (kind ? decorator(target, key, result) : decorator(result)) || result;
+  if (kind && result) __defProp(target, key, result);
+  return result;
+};
+var __accessCheck = (obj, member, msg) => member.has(obj) || __typeError("Cannot " + msg);
+var __privateGet = (obj, member, getter) => (__accessCheck(obj, member, "read from private field"), getter ? getter.call(obj) : member.get(obj));
+var __privateAdd = (obj, member, value) => member.has(obj) ? __typeError("Cannot add the same private member more than once") : member instanceof WeakSet ? member.add(obj) : member.set(obj, value);
+var __privateSet = (obj, member, value, setter) => (__accessCheck(obj, member, "write to private field"), member.set(obj, value), value);
+var __privateMethod = (obj, member, method) => (__accessCheck(obj, member, "access private method"), method);
+var _primaryButtonWidth, _ConfirmationDialogComponent_instances, title_get, _titleSlot, closeIconButton_get, _secondaryButtonSlot, primaryButtonSlot_get, busyIndicator_get, secondaryButton_get, primaryButton_get, onAction_fn, onBeforeClose_fn, handleSlotChange_fn;
+const ConfirmationDialogComponentTagName = "forge-confirmation-dialog";
+let ConfirmationDialogComponent = class extends LitElement {
+  constructor() {
+    super(...arguments);
+    __privateAdd(this, _ConfirmationDialogComponent_instances);
+    this.open = false;
+    this.isBusy = false;
+    this.busyLabel = "Loading";
+    __privateAdd(this, _primaryButtonWidth);
+    __privateAdd(this, _titleSlot, html`<slot name="title" id="confirmation-dialog-title" class="title"></slot> `);
+    __privateAdd(this, _secondaryButtonSlot, html`<slot name="secondary-button-text" id="secondary-button-slot"></slot>`);
+  }
+  willUpdate(changedProperties) {
+    if (changedProperties.has("isBusy")) {
+      __privateSet(this, _primaryButtonWidth, this.isBusy && this._primaryButtonRef ? `${this._primaryButtonRef.clientWidth}px` : void 0);
+    }
+  }
+  render() {
+    const showTitleContainer = this._slottedTitleNodes.length > 0;
+    return html`
+      <forge-dialog
+        @slotchange=${__privateMethod(this, _ConfirmationDialogComponent_instances, handleSlotChange_fn)}
+        @forge-dialog-before-close=${__privateMethod(this, _ConfirmationDialogComponent_instances, onBeforeClose_fn)}
+        @forge-dialog-close=${() => this.isBusy = false}
+        fullscreen-threshold="0"
+        ?open=${this.open}
+        .label=${this.label || composeSlottedTextContent(this._slottedTitleNodes) || ""}
+        .description=${this.description || composeSlottedTextContent(this._slottedMessageNodes) || ""}>
+        <div class="outer-container">
+          <div class="title-container" style=${styleMap({ display: showTitleContainer ? "grid" : "none" })}>
+            ${__privateGet(this, _ConfirmationDialogComponent_instances, title_get)}
+            <div class="close-button-container">${__privateGet(this, _ConfirmationDialogComponent_instances, closeIconButton_get)}</div>
+          </div>
+          <div class="message-container">
+            <slot name="message" id="confirmation-message"></slot>
+          </div>
+          <div class="actions-container">${__privateGet(this, _ConfirmationDialogComponent_instances, secondaryButton_get)} ${__privateGet(this, _ConfirmationDialogComponent_instances, primaryButton_get)}</div>
+        </div>
+      </forge-dialog>
+    `;
+  }
+};
+_primaryButtonWidth = /* @__PURE__ */ new WeakMap();
+_ConfirmationDialogComponent_instances = /* @__PURE__ */ new WeakSet();
+title_get = function() {
+  const showTitle = this._slottedTitleNodes.length > 0;
+  return when(
+    showTitle,
+    () => html` <h1>${__privateGet(this, _titleSlot)}</h1>`,
+    () => html`${__privateGet(this, _titleSlot)}`
+  );
+};
+_titleSlot = /* @__PURE__ */ new WeakMap();
+closeIconButton_get = function() {
+  return html`
+      <forge-icon-button autofocus aria-label="Close confirmation dialog" @click=${() => __privateMethod(this, _ConfirmationDialogComponent_instances, onAction_fn).call(this, false)}>
+        <forge-icon name="close"></forge-icon>
+      </forge-icon-button>
+    `;
+};
+_secondaryButtonSlot = /* @__PURE__ */ new WeakMap();
+primaryButtonSlot_get = function() {
+  return this.isBusy ? __privateGet(this, _ConfirmationDialogComponent_instances, busyIndicator_get) : html`<slot name="primary-button-text" id="primary-button-slot">Confirm</slot>`;
+};
+busyIndicator_get = function() {
+  return html`<forge-circular-progress slot="end" aria-label=${this.busyLabel}> </forge-circular-progress>`;
+};
+secondaryButton_get = function() {
+  const showSecondaryButton = this._slottedSecondaryButtonTextNodes.length > 0;
+  return when(
+    showSecondaryButton,
+    () => html` <forge-button
+          variant="outlined"
+          ?disabled=${this.isBusy}
+          id="secondary-button"
+          @click=${() => __privateMethod(this, _ConfirmationDialogComponent_instances, onAction_fn).call(this, false)}>
+          ${__privateGet(this, _secondaryButtonSlot)}
+        </forge-button>`,
+    () => html`${__privateGet(this, _secondaryButtonSlot)}`
+  );
+};
+primaryButton_get = function() {
+  return html`<forge-button
+      ?disabled=${this.isBusy}
+      variant="raised"
+      id="primary-button"
+      style=${styleMap({ minWidth: __privateGet(this, _primaryButtonWidth) })}
+      @click=${() => __privateMethod(this, _ConfirmationDialogComponent_instances, onAction_fn).call(this, true)}>
+      ${__privateGet(this, _ConfirmationDialogComponent_instances, primaryButtonSlot_get)}
+    </forge-button>`;
+};
+onAction_fn = function(value, reason = "action", lightDismissEvt) {
+  const actionEvent = new CustomEvent("forge-confirmation-dialog-action", {
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+    detail: {
+      value,
+      reason
+    }
+  });
+  this.dispatchEvent(actionEvent);
+  if (actionEvent.defaultPrevented && lightDismissEvt) {
+    lightDismissEvt?.preventDefault();
+  } else if (!actionEvent.defaultPrevented) {
+    this.open = false;
+    this.isBusy = false;
+  }
+};
+onBeforeClose_fn = function(evt) {
+  if (evt.detail.reason === "backdrop") {
+    evt.preventDefault();
+    return;
+  }
+  __privateMethod(this, _ConfirmationDialogComponent_instances, onAction_fn).call(this, false, "light-dismiss", evt);
+};
+handleSlotChange_fn = function(evt) {
+  const slotName = evt.target.name;
+  if (["title", "secondary-button-text", "primary-button-text"].includes(slotName)) {
+    this.requestUpdate();
+  }
+};
+defineButtonComponent();
+defineDialogComponent();
+defineCircularProgressComponent();
+defineIconButtonComponent();
+IconRegistry.define([tylIconClose]);
+ConfirmationDialogComponent.styles = unsafeCSS(styles);
+__decorateClass([
+  property({ type: Boolean, attribute: "open" })
+], ConfirmationDialogComponent.prototype, "open", 2);
+__decorateClass([
+  property()
+], ConfirmationDialogComponent.prototype, "label", 2);
+__decorateClass([
+  property()
+], ConfirmationDialogComponent.prototype, "description", 2);
+__decorateClass([
+  property({ type: Boolean, attribute: "is-busy" })
+], ConfirmationDialogComponent.prototype, "isBusy", 2);
+__decorateClass([
+  property({ type: String, attribute: "busy-label" })
+], ConfirmationDialogComponent.prototype, "busyLabel", 2);
+__decorateClass([
+  queryAssignedNodes({ slot: "title", flatten: true })
+], ConfirmationDialogComponent.prototype, "_slottedTitleNodes", 2);
+__decorateClass([
+  queryAssignedNodes({ slot: "message", flatten: true })
+], ConfirmationDialogComponent.prototype, "_slottedMessageNodes", 2);
+__decorateClass([
+  queryAssignedNodes({ slot: "secondary-button-text", flatten: true })
+], ConfirmationDialogComponent.prototype, "_slottedSecondaryButtonTextNodes", 2);
+__decorateClass([
+  query("#primary-button")
+], ConfirmationDialogComponent.prototype, "_primaryButtonRef", 2);
+ConfirmationDialogComponent = __decorateClass([
+  customElement(ConfirmationDialogComponentTagName)
+], ConfirmationDialogComponent);
+export {
+  ConfirmationDialogComponent,
+  ConfirmationDialogComponentTagName
+};

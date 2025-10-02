@@ -1,0 +1,27 @@
+/**
+ * @license
+ * Copyright Tyler Technologies, Inc. 
+ * License: Apache-2.0
+ */
+import { getShadowElement } from '@tylertech/forge-core';
+import { BaseButtonAdapter } from '../button/base/base-button-adapter';
+import { FLOATING_ACTION_BUTTON_CONSTANTS } from './floating-action-button-constants';
+export class FloatingActionButtonAdapter extends BaseButtonAdapter {
+    constructor(component) {
+        super(component);
+        this._labelSlotElement = getShadowElement(this._component, FLOATING_ACTION_BUTTON_CONSTANTS.selectors.LABEL_SLOT);
+    }
+    initialize() {
+        super.initialize();
+        this._labelSlotElement.addEventListener('slotchange', () => this._detectExtendedState());
+        this._detectExtendedState();
+    }
+    toggleDefaultPopoverIcon(value) {
+        super.toggleDefaultPopoverIcon(value);
+        this._detectExtendedState();
+    }
+    _detectExtendedState() {
+        const isExtended = this._labelSlotElement.assignedNodes().length > 0 || this._component.popoverIcon;
+        this._rootElement.classList.toggle(FLOATING_ACTION_BUTTON_CONSTANTS.classes.EXTENDED, isExtended);
+    }
+}

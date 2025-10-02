@@ -1,0 +1,35 @@
+import rules_default from "./rules/index.js";
+import recommended_default from "./configs/recommended.js";
+import strict_default from "./configs/strict.js";
+import ts_recommended_default from "./configs/ts-recommended.js";
+import ts_stylisitic_default from "./configs/ts-stylisitic.js";
+import ts_strict_default from "./configs/ts-strict.js";
+import { name, version } from "./package.js";
+
+//#region src/index.ts
+const plugin = {
+	meta: {
+		name,
+		version
+	},
+	rules: rules_default
+};
+const recommended = recommended_default(plugin);
+const strict = strict_default(plugin);
+const tsRecommended = ts_recommended_default(plugin);
+const tsStylistic = ts_stylisitic_default(plugin);
+const tsStrict = ts_strict_default(plugin);
+const configs = {
+	recommended,
+	strict,
+	tsRecommended,
+	tsStylistic,
+	tsStrict
+};
+var src_default = {
+	...plugin,
+	configs
+};
+
+//#endregion
+export { src_default as default, recommended, strict, tsRecommended, tsStrict, tsStylistic };

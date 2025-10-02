@@ -1,0 +1,30 @@
+import { LitElement, TemplateResult } from 'lit';
+declare global {
+    interface HTMLElementTagNameMap {
+        'forge-theme-toggle': ThemeToggleComponent;
+    }
+    interface HTMLElementEventMap {
+        'forge-theme-toggle-update': CustomEvent<ThemeToggleUpdateEventData>;
+    }
+}
+export declare const ThemeToggleComponentTagName: keyof HTMLElementTagNameMap;
+export type ThemeToggleTheme = 'light' | 'dark' | 'system';
+export interface ThemeToggleUpdateEventData {
+    theme: ThemeToggleTheme;
+}
+/**
+ * @tag forge-theme-toggle
+ *
+ * @slot title - The title shown above the toggle buttons
+ *
+ * @event {CustomEvent<ThemeToggleThemeEventData>} forge-theme-toggle-update - Fired when the theme is changed
+ */
+export declare class ThemeToggleComponent extends LitElement {
+    #private;
+    static styles: import('lit').CSSResult;
+    private _theme;
+    constructor();
+    render(): TemplateResult;
+    /** Sets the current theme. */
+    setTheme(value: ThemeToggleTheme): void;
+}

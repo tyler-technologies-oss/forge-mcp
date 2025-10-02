@@ -1,0 +1,35 @@
+/**
+ * @license
+ * Copyright Tyler Technologies, Inc. 
+ * License: Apache-2.0
+ */
+import { TemplateResult } from 'lit';
+import { CUSTOM_ELEMENT_NAME_PROPERTY } from '@tylertech/forge-core';
+import { BaseLitElement } from '../../core/base/base-lit-element';
+export declare const KEY_TAG_NAME: keyof HTMLElementTagNameMap;
+/**
+ * @tag forge-key
+ *
+ * @summary Keys present key items to label a chart or data visualization.
+ *
+ * @slot - The default slot for key items.
+ *
+ * @cssproperty --forge-key-gap - The spacing between key items.
+ * @cssproperty --forge-key-direction - The direction that items are laid out in the key.
+ *
+ * @csspart root - The root element.
+ */
+export declare class KeyComponent extends BaseLitElement {
+    static styles: import("lit").CSSResult;
+    /** @deprecated Used for compatibility with legacy Forge @customElement decorator. */
+    static [CUSTOM_ELEMENT_NAME_PROPERTY]: keyof HTMLElementTagNameMap;
+    private _internals;
+    constructor();
+    connectedCallback(): void;
+    render(): TemplateResult;
+}
+declare global {
+    interface HTMLElementTagNameMap {
+        'forge-key': KeyComponent;
+    }
+}
