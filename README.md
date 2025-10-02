@@ -64,7 +64,7 @@ The following tools are available for interacting with Tyler Forge documentation
 
 ### Resources
 
-The following **streamlined resources** are available for reference via a progressive disclosure model (reduced from 79+ to 9 core resources plus individual components):
+The following **streamlined resources** are available for reference via a progressive disclosure model:
 
 | Resource URI | Description |
 |--------------|-------------|
