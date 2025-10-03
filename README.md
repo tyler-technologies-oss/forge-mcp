@@ -33,6 +33,61 @@ when needed.
 All documentation is either pulled from the Custom Elements Manifest (CEM) files included with each Tyler Forge package, as well as information that was
 sourced from the documentation site at [https://forge.tylerdev.io](https://forge.tylerdev.io).
 
+## Setup
+
+### Claude Desktop
+
+```json
+{
+  "mcpServers": {
+    "forge": {
+      "command": "npx",
+      "args": ["-y", "@tylertech/forge-mcp@latest"]
+    }
+  }
+}
+```
+
+### Claude Code
+
+```bash
+claude mcp add forge -- npx -y @tylertech/forge-mcp@latest
+```
+
+> See the [Claude Code MCP documentation](https://docs.claude.com/en/docs/claude-code/mcp) for more information.
+
+### VS Code
+
+Add the Forge MCP server to the `.vscode/mcp.json` configuration file in your project, or use the Command Palette to add it via "MCP: Add Server...".
+
+```json
+{
+  "mcpServers": {
+    "forge-mcp": {
+      "command": "npx",
+      "args": ["-y", "@tylertech/forge-mcp@latest"]
+    }
+  }
+}
+```
+
+> **Note:** You may need to start the server manually after adding it to the config file. Use the "MCP: List Servers" command from the Command Palette.
+
+See the [VS Code MCP docs](https://code.visualstudio.com/docs/copilot/customization/mcp-servers) for more info.
+
+### Best Practices
+
+When using any AI-powered tool, it's important to follow best practices to ensure effective usage and accurate results:
+
+- **Be Specific**: Clearly define your questions or requests to get the most relevant information. Using vague prompts can lead to inaccurate or incorrect responses.
+- **Plan Ahead**: Spend time outlining and planning your prompts, and break things down into smaller tasks. This can significantly improve the quality of the responses.
+- **Validate**: Always cross-check critical information with official documentation or trusted sources. AI output may not always be accurate.
+- **Provide Context**: When writing prompts, provide relevant context to help the AI understand your needs better.
+- **Use Examples**: When possible, provide examples or screenshots of what you're looking for to guide the AI's responses.
+- **Limit Scope**: Break down complex queries into smaller, manageable parts for better clarity and responses.
+
+If there's one thing to take away, it's to be specific and spend time up front planning and structuring your prompts. This will lead to more accurate and useful results. In the end, these tools are here to assist you, and they can get things wrong even with the best prompts and context. Always verify and review the output for accuracy.
+
 ## Important Note
 
 **ALWAYS** validate the output from any AI tool for accuracy. While this MCP server is designed to provide accurate information, it may not always be perfect
@@ -94,42 +149,6 @@ The following **streamlined resources** are available for reference via a progre
 | `forge://icons` | Complete guide to installing and using Tyler Forge icons |
 
 > **Note**: Granular component resources (`/properties`, `/methods`, `/events`, etc.) have been removed to reduce complexity. Use the **tools** for granular access to specific component information.
-
-## Setup
-
-### Claude Desktop
-
-```json
-{
-  "mcpServers": {
-    "forge": {
-      "command": "npx",
-      "args": ["-y", "@tylertech/forge-mcp@latest"]
-    }
-  }
-}
-```
-
-### Claude Code
-
-```bash
-claude mcp add forge -- npx -y @tylertech/forge-mcp@latest
-```
-
-> See the [Claude Code MCP documentation](https://docs.claude.com/en/docs/claude-code/mcp) for more information.
-
-### Best Practices
-
-When using any AI-powered tool, it's important to follow best practices to ensure effective usage and accurate results:
-
-- **Be Specific**: Clearly define your questions or requests to get the most relevant information. Using vague prompts can lead to inaccurate or incorrect responses.
-- **Plan Ahead**: Spend time outlining and planning your prompts, and break things down into smaller tasks. This can significantly improve the quality of the responses.
-- **Validate**: Always cross-check critical information with official documentation or trusted sources. AI output may not always be accurate.
-- **Provide Context**: When writing prompts, provide relevant context to help the AI understand your needs better.
-- **Use Examples**: When possible, provide examples or screenshots of what you're looking for to guide the AI's responses.
-- **Limit Scope**: Break down complex queries into smaller, manageable parts for better clarity and responses.
-
-If there's one thing to take away, it's to be specific and spend time up front planning and structuring your prompts. This will lead to more accurate and useful results. In the end, these tools are here to assist you, and they can get things wrong even with the best prompts and context. Always verify and review the output for accuracy.
 
 ## Development
 

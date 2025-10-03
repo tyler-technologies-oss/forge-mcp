@@ -4,6 +4,9 @@
   "description": "MCP server for Tyler Forge™ web component library documentation",
   "main": "dist/index.js",
   "type": "module",
+  "bin": {
+    "forge-mcp": "dist/index.js"
+  },
   "scripts": {
     "prepare": "husky install",
     "build": "tsc && node scripts/bundle-manifests.js",
