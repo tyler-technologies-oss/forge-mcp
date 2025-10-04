@@ -50,6 +50,7 @@ export class ComponentDocumentationTool extends BaseToolHandler<ComponentDocumen
                 'slots',
                 'css-custom-properties',
                 'css-parts',
+                'css-classes',
                 'states',
               ],
             },
@@ -195,6 +196,7 @@ export class ComponentDocumentationTool extends BaseToolHandler<ComponentDocumen
       slots: 'components/component-slots.md',
       'css-custom-properties': 'components/component-css-properties.md',
       'css-parts': 'components/component-css-parts.md',
+      'css-classes': 'components/component-css-classes.md',
       states: 'components/component-states.md',
     };
 
