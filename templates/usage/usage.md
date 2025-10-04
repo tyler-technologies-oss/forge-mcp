@@ -107,6 +107,20 @@ document.querySelector("forge-autocomplete").addEventListener("forge-autocomplet
 
 ## Styling Components
 
+### CSS Classes (CSS-Only Variants)
+Some Forge components provide CSS-only variants through CSS classes. These are designed for styling native HTML elements when you need only the visual appearance without component functionality:
+
+```html
+<!-- Use CSS classes on native elements for appearance-only styling -->
+<button class="forge-button forge-button--raised">Native Button with Forge Styling</button>
+<div class="forge-card">
+  <h3>Native div with Forge card styling</h3>
+  <p>Content styled to match Forge components</p>
+</div>
+```
+
+**Important**: CSS classes are intended for native HTML elements only. Do not apply these classes to Forge components themselves.
+
 ### CSS Custom Properties
 Tyler Forge components can be customized using CSS custom properties:
 
