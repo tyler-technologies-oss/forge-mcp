@@ -62,12 +62,13 @@ Add the Forge MCP server to the `.vscode/mcp.json` configuration file in your pr
 
 ```json
 {
-  "mcpServers": {
-    "forge-mcp": {
-      "command": "npx",
-      "args": ["-y", "@tylertech/forge-mcp@latest"]
+    "servers": {
+        "forge": {
+            "command": "npx",
+            "args": ["-y", "@tylertech/forge-mcp@latest"],
+            "type": "stdio"
+        }
     }
-  }
 }
 ```
 
