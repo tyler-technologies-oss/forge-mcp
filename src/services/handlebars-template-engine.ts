@@ -57,6 +57,7 @@ export class HandlebarsTemplateEngine {
     Handlebars.registerHelper('join', join);
     Handlebars.registerHelper('eq', eq);
     Handlebars.registerHelper('inc', inc);
+    Handlebars.registerHelper('and', and);
   }
 
   /**
@@ -215,6 +216,15 @@ export function eq(a: any, b: any): boolean {
  */
 export function inc(value: number): number {
   return value + 1;
+}
+
+/**
+ * Logical AND helper
+ */
+export function and(...args: any[]): boolean {
+  // Remove the last argument which is the Handlebars options object
+  const values = args.slice(0, -1);
+  return values.every(Boolean);
 }
 
 // Singleton instance
