@@ -30,7 +30,7 @@ export class ValidateComponentApiTool extends BaseToolHandler<ComponentApiValida
   constructor() {
     super(
       'validate_component_api',
-      'Validate Tyler Forge component API usage after code generation. Checks that properties, attributes, events, methods, slots, CSS properties, parts, and classes are valid. Use this tool to verify component usage is correct.',
+      'Validate Tyler Forge component-specific API usage after code generation. DO NOT use this tool to validate standard HTML attributes (id, class, style, etc.), ARIA attributes (aria-*), or data attributes (data-*) - these are valid on all elements. Only validate component-specific properties, attributes, events, methods, slots, CSS properties, parts, and classes.',
     );
   }
 

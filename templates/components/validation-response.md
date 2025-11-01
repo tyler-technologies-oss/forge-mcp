@@ -6,13 +6,21 @@
 ## Summary
 
 - ✅ **Valid APIs:** {{validApis.length}}
-- ❌ **Invalid APIs:** {{invalidApis.length}}
+- ❌ **Unmatched APIs:** {{invalidApis.length}}
 - ⚠️ **Deprecated APIs:** {{deprecatedApis.length}}
 
-{{#if invalidApis.length}}
-## ❌ Invalid APIs
+## 📋 Important Context
 
-These APIs do not exist on this component:
+**Standard HTML attributes are always valid:** Standard HTML attributes (aria-*, data-*, id, class, role, tabindex, etc.) are valid on all web components even if not listed in metadata. Do NOT remove these attributes.
+
+**This tool validates API names only:** Only use this tool to fix incorrect component-specific API names (properties, attributes, events, methods, slots, CSS properties/parts/classes). Replace unmatched component APIs with the correct names from the "Available APIs" section below.
+
+**For structural validation:** Do NOT restructure code based on this tool alone. Use the component usage examples tool to verify correct component structure and patterns.
+
+{{#if invalidApis.length}}
+## ❌ Unmatched APIs
+
+These APIs were not found in component metadata. Standard HTML/ARIA/data-* attributes can be safely ignored. For component-specific APIs, check Available APIs below for correct names:
 
 {{#each invalidApis}}
 - **`{{name}}`** ({{apiType}})
@@ -43,7 +51,7 @@ These APIs are correctly available:
 {{#if invalidApis.length}}
 ## 📚 Available APIs
 
-For reference, here are the relevant available APIs for this component:
+Component-specific APIs available (use these to replace unmatched component APIs):
 
 {{#if availableApis.properties.length}}
 **Properties:**
