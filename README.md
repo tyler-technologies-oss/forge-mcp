@@ -8,6 +8,7 @@ Get instant access to Tyler Forge™ web component documentation directly in AI 
 
 - **Discover components** - Find the right component for your needs
 - **Generate code** - Get framework-specific examples (Angular, React, Vue, Svelte)
+- **Validate APIs** - Verify that component properties, attributes, events, and other APIs are correctly used
 - **Access design tokens** - Use colors, spacing, typography consistently
 - **Learn best practices** - Get implementation guidance and accessibility tips
 
@@ -106,6 +107,7 @@ The following tools are available for interacting with Tyler Forge documentation
 | `get_component_docs` | Get comprehensive documentation for Tyler Forge components in various formats: full API reference, summary overview, or structural usage examples. Returns component list when no component specified. |
 | `list_components` | Browse all available Tyler Forge components with descriptions. Returns a comprehensive table of all components with their purpose and capabilities. |
 | `find_components` | Search Tyler Forge components by name, description, or functionality with enhanced fuzzy matching. Supports multi-term queries like "app bar drawer". Returns all components when no query provided. |
+| `validate_component_api` | Validate Tyler Forge component API usage after code generation. Checks that properties, attributes, events, methods, slots, CSS properties, parts, and classes are valid. |
 | **Design System Tools** ||
 | `get_design_tokens` | Get Tyler Forge design tokens for consistent styling. Access color palettes, spacing scales, typography, animation, and other design system values. |
 | `setup_typography` | Access Tyler Forge typography setup instructions including font families, type scales, weights, and practical usage guidelines for consistent text styling. |
