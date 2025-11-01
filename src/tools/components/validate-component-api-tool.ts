@@ -133,8 +133,8 @@ export class ValidateComponentApiTool extends BaseToolHandler<ComponentApiValida
       apiArray => apiArray && apiArray.length > 0,
     );
     if (!hasApis) {
-      throw new Error(
-        'No APIs specified for validation. Provide at least one API type (properties, attributes, events, etc.).',
+      return this._createTextResponse(
+        'No APIs provided for validation. Component usage is correct.',
       );
     }
 
