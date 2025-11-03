@@ -6,6 +6,7 @@ export * from './tool-registry.js';
 export * from './components/get-component-docs-tool.js';
 export * from './components/list-components-tool.js';
 export * from './components/find-components-tool.js';
+export * from './components/validate-component-api-tool.js';
 
 // Usage and framework tools
 export * from './usage/get-usage-guide-tool.js';
@@ -27,6 +28,7 @@ import { ToolRegistry } from './tool-registry.js';
 import { ComponentDocumentationTool } from './components/get-component-docs-tool.js';
 import { ListComponentsTool } from './components/list-components-tool.js';
 import { SearchComponentsTool } from './components/find-components-tool.js';
+import { ValidateComponentApiTool } from './components/validate-component-api-tool.js';
 
 // Design system tools
 import { DesignTokensTool } from './design-system/get-design-tokens-tool.js';
@@ -51,6 +53,7 @@ export function createToolRegistry(): ToolRegistry {
   registry.register(new ComponentDocumentationTool());
   registry.register(new ListComponentsTool());
   registry.register(new SearchComponentsTool());
+  registry.register(new ValidateComponentApiTool());
 
   // Register design system tools
   registry.register(new DesignTokensTool());
