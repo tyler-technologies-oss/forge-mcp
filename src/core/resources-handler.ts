@@ -9,9 +9,7 @@ export class ResourcesHandler {
   private _resourceManager = getResourceManager();
 
   public async initialize(): Promise<void> {
-    // Initializing Tyler Forge Documentation MCP Server
     await this._resourceManager.initialize();
-    // Tyler Forge Documentation MCP Server initialized successfully
   }
 
   public registerHandlers(server: Server): void {
