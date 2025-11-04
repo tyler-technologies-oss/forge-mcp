@@ -36,28 +36,44 @@ sourced from the documentation site at [https://forge.tylerdev.io](https://forge
 
 ## Setup
 
-### Claude Desktop
-
-```json
-{
-  "mcpServers": {
-    "forge": {
-      "command": "npx",
-      "args": ["-y", "@tylertech/forge-mcp@latest"]
-    }
-  }
-}
-```
-
 ### Claude Code
 
 ```bash
-claude mcp add forge -- npx -y @tylertech/forge-mcp@latest
+claude mcp add -t stdio -s [scope] forge -- npx -y @tylertech/forge-mcp@latest
 ```
 
-> See the [Claude Code MCP documentation](https://docs.claude.com/en/docs/claude-code/mcp) for more information.
+> The `[scope]` must be `user`, `project` or `local`. See the [Claude Code MCP documentation](https://docs.claude.com/en/docs/claude-code/mcp) for more information.
+
+### Codex CLI
+
+Add the following to your `config.toml` (which defaults to `~/.codex/config.toml`, but refer to the configuration documentation for more advanced setups):
+
+```toml
+[mcp_servers.forge]
+command = "npx"
+args = ["-y", "@tylertech/forge-mcp@latest"]
+```
+
+### Gemini CLI
+
+```bash
+gemini mcp add -t stdio -s [scope] forge npx -y @tylertech/forge-mcp@latest
+```
+
+> The `[scope]` must be `user`, `project` or `local`.
 
 ### VS Code
+
+- Open the Command Palette (`Cmd+Shift+P` or `Ctrl+Shift+P`)
+- Choose `MCP: Add Server...`
+- Choose `Command (stdio)`
+- Enter `npx -y @tylertech/forge-mcp@latest`
+- Name the server `forge`
+- Choose if you want to use it as a `Global` or `Workspace` MCP server
+
+> See the [VS Code MCP docs](https://code.visualstudio.com/docs/copilot/customization/mcp-servers) for more info.
+
+#### Manual Configuration
 
 Add the Forge MCP server to the `.vscode/mcp.json` configuration file in your project, or use the Command Palette to add it via "MCP: Add Server...".
 
@@ -73,9 +89,27 @@ Add the Forge MCP server to the `.vscode/mcp.json` configuration file in your pr
 }
 ```
 
-> **Note:** You may need to start the server manually after adding it to the config file. Use the "MCP: List Servers" command from the Command Palette.
+> **Note:** You may need to start the server manually after adding it to the config file. Use the `MCP: List Servers` command from the Command Palette.
 
-See the [VS Code MCP docs](https://code.visualstudio.com/docs/copilot/customization/mcp-servers) for more info.
+
+### Claude Desktop
+
+- Open `Settings`
+- Choose `Developer`
+- Click on `Edit Config`
+
+This will open your file explorer to the directory where the `claude_desktop_config.json` file lives. Edit the file to include the following configuration:
+
+```json
+{
+  "mcpServers": {
+    "forge": {
+      "command": "npx",
+      "args": ["-y", "@tylertech/forge-mcp@latest"]
+    }
+  }
+}
+```
 
 ### Best Practices
 
@@ -86,7 +120,7 @@ When using any AI-powered tool, it's important to follow best practices to ensur
 - **Validate**: Always cross-check critical information with official documentation or trusted sources. AI output may not always be accurate.
 - **Provide Context**: When writing prompts, provide relevant context to help the AI understand your needs better.
 - **Use Examples**: When possible, provide examples or screenshots of what you're looking for to guide the AI's responses.
-- **Limit Scope**: Break down complex queries into smaller, manageable parts for better clarity and responses.
+- **Limit Scope**: Break down complex queries into smaller, manageable parts for better clarity and responses. For lengthy conversations, periodically compact or clear context to maintain relevance.
 
 If there's one thing to take away, it's to be specific and spend time up front planning and structuring your prompts. This will lead to more accurate and useful results. In the end, these tools are here to assist you, and they can get things wrong even with the best prompts and context. Always verify and review the output for accuracy.
 
@@ -96,6 +130,16 @@ If there's one thing to take away, it's to be specific and spend time up front p
 and LLMs are known to hallucinate at times. Always cross-check critical information with the official Tyler Forge™ documentation or trusted sources.
 
 ## Capabilities
+
+### Prompts
+
+#### forge_mode
+
+Sets some baseline rules when running Forge-specific tasks/queries.
+
+You can trigger this prompt in your AI client by specifying the prompt name (if supported), typically via a slash command or prompt selection. The
+`forge_mode` prompt accepts a `task` parameter where you can describe your specific task/query. This helps guide the LLM to use the correct MCP
+server tools, as well as includes some rules and best practices when outputting Tyler Forge-related code.
 
 ### Tools
 
