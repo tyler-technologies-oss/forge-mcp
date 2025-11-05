@@ -34,11 +34,11 @@ importers:
         specifier: ^3.0.0
         version: 3.0.0(eslint@9.39.1(jiti@2.6.0))(typescript@5.9.3)
       '@tylertech/forge':
-        specifier: ^3.11.0
-        version: 3.11.0
+        specifier: ^3.12.0
+        version: 3.12.0
       '@tylertech/forge-extended':
         specifier: ^1.2.0
-        version: 1.2.0(@tylertech/forge@3.11.0)
+        version: 1.2.0(@tylertech/forge@3.12.0)
       '@types/node':
         specifier: ^24.10.0
         version: 24.10.0
@@ -779,8 +779,8 @@ packages:
     peerDependencies:
       '@tylertech/forge': ^3.0.0
 
-  '@tylertech/forge@3.11.0':
-    resolution: {integrity: sha512-+jB0qz2xxr6H2y2fSoN13ZTMDGa/1ERKO2Q5DVC/rrEOUnhH+DlJcdsCEHNhJm21LxpNYfPMGWeVGMmbh7Fz4w==}
+  '@tylertech/forge@3.12.0':
+    resolution: {integrity: sha512-K6H3zNbowrDnqphAUsSPvfPmgUc+koQqMbzRSKcieUojvUjO3z6HzTd1PVkxpiwm4NzCL/2vEA+YCR5jLlXT8Q==}
 
   '@tylertech/tyler-icons@2.0.4':
     resolution: {integrity: sha512-CyYcR9I62m4jJqDocJwgSuil/VkugdGGWubTZEJvbx1bXSbEZOST5W33H2GFqkTPmNOUB4na+zptj3puz1NxRA==}
@@ -3296,15 +3296,15 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@tylertech/forge-extended@1.2.0(@tylertech/forge@3.11.0)':
+  '@tylertech/forge-extended@1.2.0(@tylertech/forge@3.12.0)':
     dependencies:
       '@lit-labs/observers': 2.0.6
-      '@tylertech/forge': 3.11.0
+      '@tylertech/forge': 3.12.0
       '@tylertech/forge-core': 3.2.1
       '@tylertech/tyler-icons': 2.0.4
       lit: 3.3.0
 
-  '@tylertech/forge@3.11.0':
+  '@tylertech/forge@3.12.0':
     dependencies:
       '@floating-ui/dom': 1.7.4
       '@tylertech/forge-core': 3.2.1
