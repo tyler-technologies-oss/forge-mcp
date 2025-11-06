@@ -29,7 +29,7 @@
   </forge-app-bar-search>
 
   <!-- From the @tylertech/forge-extended package -->
-  <forge-user-profile-button slot="end"></forge-user-profile-button>
+  <forge-user-profile slot="end"></forge-user-profile>
 </forge-app-bar>
 ```
 
@@ -67,6 +67,89 @@
 <forge-app-bar-search slot="center">
   <input type="text" placeholder="Search...">
 </forge-app-bar-search>
+```
+
+## App Bar User Profile (forge-user-profile)
+
+```html
+<!-- The theme-mode="scoped" attribute is REQUIRED on the app-bar to avoid theming issues -->
+<forge-app-bar theme-mode="scoped" title-text="Forge Extended">
+  <forge-user-profile slot="end" full-name="First Last" email="first.last@tylertech.com" button-label="Open the user profile dropdown" theme-toggle>
+    <!-- Only add profile links if necessary, these are not required and should be left out until necessary -->
+    <forge-profile-link slot="link">
+      <forge-icon slot="icon" name="settings"></forge-icon>
+      <a href="http://www.google.com" target="_blank">Settings</a>
+    </forge-profile-link>
+    <forge-profile-link slot="link">
+      <forge-icon slot="icon" name="account"></forge-icon>
+      <a href="http://www.google.com" target="_blank">Profile</a>
+    </forge-profile-link>
+
+    <!-- Useful for localization purposes -->
+    <span slot="sign-out-button-text">Sign Out</span>
+  </forge-user-profile>
+</forge-app-bar>
+```
+
+## App Bar App Launcher (forge-app-bar-app) Extended Component
+
+The `<forge-app-launcher>` component is designed to be used within a `<forge-app-bar>`, typically placed in the end slot alongside other user-related actions like the user profile component. This ensures consistent navigation structure throughout applications.
+
+When using the app launcher, you can provide two primary data sources:
+
+- `relatedApps`: An array of applications relevant to the current user's context, displayed in the default view.
+- `allApps`: An array of all available applications within the ecosystem.
+
+To do so, this requires the use of JavaScript to set the properties on the component instance.
+
+```html
+<!-- The theme-mode="scoped" attribute is REQUIRED on the app-bar to avoid theming issues -->
+<forge-app-bar theme-mode="scoped">
+  <forge-app-launcher slot="end" id="app-launcher"></forge-app-launcher>
+</forge-app-bar>
+
+<script>
+  const appLauncher = document.querySelector('#app-launcher');
+
+  const relatedApps = [
+    {
+      label: 'Project Management',
+      iconName: 'assignment',
+      uri: 'https://project-management.example.com',
+      target: '_blank'
+    },
+    {
+      label: 'Time Tracking',
+      iconName: 'access_time',
+      uri: ''
+      target: '_blank'
+    }
+  ];
+
+  const allApps = [
+    {
+      label: 'Payments Administration',
+      iconName: 'payment',
+      uri: 'https://payments-admin.example.com',
+      target: '_blank'
+    },
+    {
+      label: 'PEP Administration',
+      iconName: 'admin_panel_settings',
+      uri: 'https://pep-admin.example.com',
+      target: '_blank'
+    },
+    {
+      label: 'User Management',
+      iconName: 'people',
+      uri: 'https://user-management.example.com',
+      target: '_blank'
+    }
+  ];
+
+  appLauncher.relatedApps = relatedApps;
+  appLauncher.allApps = allApps;
+</script>
 ```
 
 ## Autocomplete (forge-autocomplete)
@@ -1033,4 +1116,87 @@ It's common to use the `ToastService` from `@tylertech/forge-angular` to show to
 const viewSwitcher = document.querySelector('forge-view-switcher');
 viewSwitcher.index = 1; // Switch to second view
 </script>
+```
+
+## Busy Indicator (forge-busy-indicator) Extended Component
+
+Busy indicators are typically shown and hidden programmatically via JavaScript.
+
+If using Angular, prefer the use of the `BusyIndicatorService` from `@tylertech/forge-extended-angular` to show and hide busy indicators.
+
+If using inline via HTML, you can toggle the `open` property via JavaScript like so:
+
+```html
+<forge-button variant="raised">Show Busy Indicator</forge-button>
+<forge-busy-indicator></forge-busy-indicator>
+```
+
+## Confirmation Dialog (forge-confirmation-dialog) Extended Component
+
+Confirmation dialogs are typically shown programmatically via JavaScript.
+
+If using Angular, prefer the use of the `ConfirmationDialogService` from `@tylertech/forge-extended-angular` to show confirmation dialogs.
+
+If using inline via HTML, you can set the dialog content via slots and toggle the `open` property via JavaScript like so:
+
+```html
+<forge-button variant="raised">Show Confirmation Dialog</forge-button>
+<forge-confirmation-dialog>
+  <span slot="title">Delete selected images?</span>
+  <span slot="message">Images will be permanently removed from your account and all synced devices.</span>
+  <span slot="secondary-button-text">No</span>
+  <span slot="primary-button-text">Yes</span>
+</forge-confirmation-dialog>
+```
+
+## Multi-Select Header (forge-multi-select-header) Extended Component
+
+```html
+<forge-multi-select-header>
+  <span slot="select-all-button-text">Select All</span>
+  <forge-icon-button slot="actions" aria-label="Select all items">
+    <forge-icon name="download"></forge-icon>
+  </forge-icon-button>
+  <forge-icon-button slot="actions" aria-label="Clear selection">
+    <forge-icon name="delete"></forge-icon>
+  </forge-icon-button>
+  <forge-menu slot="actions">
+    <forge-icon-button aria-label="More actions">
+      <forge-icon name="more_vert"></forge-icon>
+    </forge-icon-button>
+  </forge-menu>
+</forge-multi-select-header>
+```
+
+## Quantity Field (forge-quantity-field) Extended Component
+
+```html
+<forge-quantity-field>
+  <label slot="label" for="quantity">Quantity</label>
+  <input id="quantity" type="number" value="1" aria-label="Set a quantity" step="2">
+  <span slot="support-text">Enter a quantity</span>
+</forge-quantity-field>
+```
+
+## Responsive Toolbar (forge-responsive-toolbar) Extended Component
+
+```html
+<forge-responsive-toolbar>
+  <forge-icon-button aria-label="Icon button demo" slot="before-start">
+    <forge-icon name="arrow_back" external></forge-icon>
+  </forge-icon-button>
+  <div slot="start" class="title forge-typography--heading4">User management</div>
+  <forge-stack inline alignment="center" slot="end-large">
+    <forge-button variant="text">Add User </forge-button> 
+    <forge-button variant="outlined">Remove User</forge-button> 
+    <forge-button variant="raised">Third action</forge-button> 
+  </forge-stack>
+  <div slot="end-small">
+    <forge-menu id="example-menu">
+      <forge-icon-button aria-label="Open menu">
+        <forge-icon name="more_vert" external></forge-icon>
+      </forge-icon-button>
+    </forge-menu>
+  </div>
+</forge-responsive-toolbar>
 ```
