@@ -41,9 +41,9 @@ export class CEMLoader {
   /**
    * Discover and load Custom Elements Manifest data from Tyler Tech packages.
    *
-   * Uses a two-tier loading strategy:
+   * Uses a hybrid loading strategy:
    * 1. Attempts dynamic package discovery from installed packages
-   * 2. Falls back to bundled manifests if no packages found
+   * 2. Loads bundled manifests for packages not found in step 1
    * 3. Builds component lookup map for efficient access
    *
    * @param workingDirectory - Optional starting directory for package discovery (defaults to process.cwd())
@@ -53,12 +53,20 @@ export class CEMLoader {
     // First try to load from user's installed packages
     await this.loadFromPackageDiscovery(workingDirectory);
 
-    // If no packages found, try bundled manifests as fallback
-    if (this._loadedPackages.length === 0) {
-      await this.loadFromBundledManifests();
+    // Load bundled manifests for packages not already loaded
+    const bundledPackages =
+      await this._bundledManifestLoader.loadBundledManifests();
+    const loadedPackageNames = new Set(
+      this._loadedPackages.map(p => p.packageName),
+    );
+
+    for (const bundledPackage of bundledPackages) {
+      if (!loadedPackageNames.has(bundledPackage.packageName)) {
+        this._loadedPackages.push(bundledPackage);
+      }
     }
 
-    // If still no manifests, throw error
+    // If no manifests loaded, throw error
     if (this._loadedPackages.length === 0) {
       throw new Error(
         'No Tyler Tech packages or bundled manifests found. ' +
@@ -66,6 +74,10 @@ export class CEMLoader {
       );
     }
 
+    // Merge all loaded manifests and build component map
+    this._cemData = this._mergeManifests(
+      this._loadedPackages.map(p => p.content),
+    );
     this._buildComponentsMap();
   }
 
@@ -81,12 +93,6 @@ export class CEMLoader {
         await this._packageDiscovery.discoverTylerTechPackages({
           startPath,
         });
-
-      if (this._loadedPackages.length > 0) {
-        this._cemData = this._mergeManifests(
-          this._loadedPackages.map(p => p.content),
-        );
-      }
     } catch {
       // Package discovery failed, will try bundled manifests as fallback
       // Don't throw - let bundled manifests be tried as fallback
