@@ -1,5 +1,13 @@
 # @tylertech/forge-mcp
 
+## 1.0.1
+
+### Patch Changes
+
+- 0a8b91d: update forge mode with rules for using forge vs forge-extended
+- e847a70: Allow using bundled manifest if package is not installed
+- 0a8b91d: fix usage examples for forge extended
+
 ## 1.0.0
 
 ### Major Changes
