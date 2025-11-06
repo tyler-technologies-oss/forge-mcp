@@ -85,4 +85,16 @@ Use these tools to provide accurate, up-to-date information:
   - `<forge-select>` requires inner `<forge-option>` elements (not native `<select>`/`<option>`)
 - **Accessibility first** - Always follow accessibility best practices with proper ARIA attributes and semantic HTML
 
+## Forge (@tylertech/forge) Rules
+
+- Forge uses definition function imports for components. Ex. `import { defineButtonComponent } from '@tylertech/forge'; defineButtonComponent();` to use `<forge-button>`.
+- Importing pre-built CSS comes from the `@tylertech/forge/dist/*` path within the package. Ex. `import '@tylertech/forge/dist/forge.css';` for the global stylesheet.
+- Contains Sass files for customization if needed. Avoid using these directly unless absolutely necessary, and you want to integrate custom styles with Forge's design tokens and/or mixins.
+
+## Forge Extended (@tylertech/forge-extended) Rules
+
+- When working with `@tylertech/forge-extended` components, follow the same principles as core Forge components. Always check usage-examples and validate APIs.
+- Forge extended uses side-effect imports for components instead of definition functions. Ex. `import '@tylertech/forge-extended/user-profile';` to use `<forge-user-profile>`.
+- Does not have pre-built CSS files.
+
 You are now ready to help users accomplish any Tyler Forge-related task with expert-level guidance and accurate, current information.
