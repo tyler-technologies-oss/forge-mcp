@@ -3,9 +3,9 @@ import {
   SyncResourceHandler,
 } from '../../types/index.js';
 
-export class ComponentsSummaryResource
-  implements SyncResourceHandler<CEMComponentDeclaration[]>
-{
+export class ComponentsSummaryResource implements SyncResourceHandler<
+  CEMComponentDeclaration[]
+> {
   /**
    * Generate components summary resource
    */

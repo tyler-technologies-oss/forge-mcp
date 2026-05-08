@@ -5,9 +5,7 @@ import {
 } from '../../types/index.js';
 import { getTemplateEngine } from '../../services/handlebars-template-engine.js';
 
-export class ComponentSummaryResource
-  implements AsyncResourceHandler<CEMComponentDeclaration>
-{
+export class ComponentSummaryResource implements AsyncResourceHandler<CEMComponentDeclaration> {
   private _templateEngine = getTemplateEngine();
 
   public async get(component: CEMComponentDeclaration): Promise<string> {

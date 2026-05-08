@@ -10,9 +10,7 @@ import { getTemplatePath } from '../../utils/path-utils.js';
  *
  * Subclasses only need to provide the template filename in their constructor.
  */
-export abstract class BaseTemplateResource
-  implements AsyncResourceHandler<void>
-{
+export abstract class BaseTemplateResource implements AsyncResourceHandler<void> {
   protected readonly _templateFilePath: string;
 
   /**
