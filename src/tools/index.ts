@@ -21,6 +21,9 @@ export * from './design-system/setup-typography-tool.js';
 export * from './design-system/setup-icons-tool.js';
 export * from './design-system/find-icons-tool.js';
 
+// Blocks tools
+export * from './blocks/index.js';
+
 // Registry factory function
 import { ToolRegistry } from './tool-registry.js';
 
@@ -42,6 +45,9 @@ import { FrameworkSetupTool } from './framework/setup-framework-tool.js';
 
 // Migration tools
 import { VersionMigrationTool } from './migrate/get-version-migration-tool.js';
+
+// Blocks tools
+import { GetBlocksTool } from './blocks/get-blocks-tool.js';
 
 /**
  * Create and configure the default tool registry with all available tools
@@ -67,6 +73,9 @@ export function createToolRegistry(): ToolRegistry {
 
   // Register migration tools
   registry.register(new VersionMigrationTool());
+
+  // Register blocks tools
+  registry.register(new GetBlocksTool());
 
   return registry;
 }
