@@ -874,21 +874,16 @@ menu.options = [
 
 ## Select (forge-select)
 
-The select component uses a native `change` event to notify of selection changes, so you can listen for it like this:
-
-```javascript
-const select = document.querySelector('forge-select');
-select.addEventListener('change', (event) => {
-  console.log('Selected value:', event.target.value);
-});
-```
-
 ```html
-<forge-select>
+<forge-select label="Choose an option">
   <forge-option value="option1">Option 1</forge-option>
   <forge-option value="option2">Option 2</forge-option>
 </forge-select>
 ```
+
+**Important**:
+- Uses a native `change` event to notify of selection changes.
+- Uses the `label` property/attribute for setting the label DO NOT USE a `<label>` element.
 
 ## Select Dropdown (forge-select-dropdown)
 

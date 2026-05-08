@@ -3,9 +3,9 @@ import {
   SyncResourceHandler,
 } from '../../types/index.js';
 
-export class ComponentsListResource
-  implements SyncResourceHandler<CEMComponentDeclaration[]>
-{
+export class ComponentsListResource implements SyncResourceHandler<
+  CEMComponentDeclaration[]
+> {
   public get(components: CEMComponentDeclaration[]): string {
     if (components.length === 0) {
       return 'No components available.';

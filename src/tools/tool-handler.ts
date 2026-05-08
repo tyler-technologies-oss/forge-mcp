@@ -27,9 +27,9 @@ export interface ToolHandler<TInput extends ToolInput = ToolInput> {
 /**
  * Abstract base class providing common tool functionality
  */
-export abstract class BaseToolHandler<TInput extends ToolInput = ToolInput>
-  implements ToolHandler<TInput>
-{
+export abstract class BaseToolHandler<
+  TInput extends ToolInput = ToolInput,
+> implements ToolHandler<TInput> {
   constructor(
     protected readonly name: string,
     protected readonly description: string,

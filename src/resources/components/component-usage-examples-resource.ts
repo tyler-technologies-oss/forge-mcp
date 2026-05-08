@@ -2,9 +2,9 @@ import { AsyncResourceHandler } from '../../types/index.js';
 import { promises as fs } from 'fs';
 import { getTemplatePath } from '../../utils/path-utils.js';
 
-export class ComponentUsageExamplesResource
-  implements AsyncResourceHandler<string | string[]>
-{
+export class ComponentUsageExamplesResource implements AsyncResourceHandler<
+  string | string[]
+> {
   private _template: string | null = null;
 
   /**

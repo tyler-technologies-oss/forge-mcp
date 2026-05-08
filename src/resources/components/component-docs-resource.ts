@@ -11,9 +11,7 @@ import {
   createMarkdownTable,
 } from '../../services/handlebars-template-engine.js';
 
-export class ComponentDocsResource
-  implements AsyncResourceHandler<CEMComponentDeclaration>
-{
+export class ComponentDocsResource implements AsyncResourceHandler<CEMComponentDeclaration> {
   private _templateEngine = getTemplateEngine();
 
   /**
