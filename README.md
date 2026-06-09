@@ -44,6 +44,27 @@ claude mcp add -t stdio -s [scope] forge -- npx -y @tylertech/forge-mcp@latest
 
 > The `[scope]` must be `user`, `project` or `local`. See the [Claude Code MCP documentation](https://docs.claude.com/en/docs/claude-code/mcp) for more information.
 
+#### Plugin Installation (Recommended)
+
+For the best experience with Claude Code, install the Forge plugin which bundles the MCP server with a `/forge-design` skill that provides expert guidance for building UIs with Tyler Forge:
+
+**From GitHub:**
+```bash
+/plugin install forge-design@tylertech/forge-mcp
+```
+
+**From local directory (for development):**
+```bash
+claude --plugin-dir /path/to/forge-mcp/plugin
+```
+
+The plugin provides:
+- **MCP Server** - Automatic access to all Forge documentation and tools
+- **`/forge-design` Skill** - Expert guidance for building UIs following Forge design patterns
+- **Pre-built Blocks** - Access to reference implementations via `get_forge_blocks`
+
+Once installed, invoke the skill with `/forge-design` before any UI task to get expert-level Forge guidance.
+
 ### Codex CLI
 
 Add the following to your `config.toml` (which defaults to `~/.codex/config.toml`, but refer to the configuration documentation for more advanced setups):

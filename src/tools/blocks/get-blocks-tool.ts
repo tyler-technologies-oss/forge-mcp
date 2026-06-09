@@ -4,9 +4,9 @@ import { readFile } from 'fs/promises';
 import { resolve } from 'path';
 
 // Local path for testing - blocks source location
-const BLOCKS_BASE_PATH =
-  '/Users/nick.andrews@tylertech.com/Desktop/dev/forge/blocks';
-const BLOCKS_MANIFEST_PATH = resolve(BLOCKS_BASE_PATH, 'dist/manifest.json');
+const BLOCKS_BASE_PATH = '/Users/nick.andrews@tylertech.com/Desktop/dev/forge';
+const BLOCKS_DIST_PATH = resolve(BLOCKS_BASE_PATH, 'blocks/dist');
+const BLOCKS_MANIFEST_PATH = resolve(BLOCKS_DIST_PATH, 'manifest.json');
 
 interface BlockInfo {
   id: string;
@@ -23,20 +23,17 @@ interface BlocksManifest {
 }
 
 export interface GetBlocksInput extends ToolInput {
+  query?: string;
   blockId?: string;
+  category?: string;
+  limit?: number;
 }
 
 export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
   constructor() {
     super(
       'get_forge_blocks',
-      `Get Forge UI code blocks - pre-built patterns demonstrating correct Forge component usage.
-
-**Two modes:**
-1. **List blocks** (no parameters): Returns the full blocks manifest as JSON. Analyze block descriptions to find patterns matching the required UI functionality. Multiple blocks can be combined.
-2. **Get block content** (with blockId): Returns the full HTML code for a specific block.
-
-**Workflow:** First call without parameters to get the manifest, analyze descriptions to identify relevant blocks, then fetch specific blocks by ID.`,
+      'Get Forge UI code blocks - pre-built patterns and examples that demonstrate correct Forge component usage. Use this FIRST before generating any Forge UI code to ensure accurate patterns. Can list/search blocks or fetch specific block content.',
     );
   }
 
@@ -47,10 +44,25 @@ export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
       inputSchema: {
         type: 'object',
         properties: {
+          query: {
+            type: 'string',
+            description:
+              'Describe the UI functionality you need (e.g., "form with validation", "data table with sorting", "user profile card"). Searches block descriptions to find matching functionality. Results are ranked by relevance - top results may be usable directly, while lower-ranked results can serve as starting points.',
+          },
           blockId: {
             type: 'string',
             description:
-              'Block ID to fetch full HTML content for (e.g., "src/blocks/forms/login"). Omit to get the blocks manifest for analysis.',
+              'Specific block ID to fetch the full HTML content for (e.g., "src/blocks/forms/login").',
+          },
+          category: {
+            type: 'string',
+            description:
+              'Filter blocks by category (e.g., "forms", "tables", "application-layout").',
+          },
+          limit: {
+            type: 'number',
+            description:
+              'Maximum number of blocks to return when listing (default: 20).',
           },
         },
         required: [],
@@ -61,7 +73,7 @@ export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
   public async execute(
     args: GetBlocksInput,
   ): Promise<import('@modelcontextprotocol/sdk/types.js').CallToolResult> {
-    const { blockId } = args;
+    const { query, blockId, category, limit = 20 } = args;
 
     try {
       const manifest = await this._loadManifest();
@@ -71,8 +83,8 @@ export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
         return await this._getBlockContent(blockId, manifest);
       }
 
-      // Otherwise, return the manifest for analysis
-      return this._getManifest(manifest);
+      // Otherwise, list/search blocks
+      return this._listBlocks(manifest, query, category, limit);
     } catch (error) {
       throw new Error(
         `Failed to fetch blocks: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -83,26 +95,6 @@ export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
   private async _loadManifest(): Promise<BlocksManifest> {
     const content = await readFile(BLOCKS_MANIFEST_PATH, 'utf-8');
     return JSON.parse(content);
-  }
-
-  private _getManifest(
-    manifest: BlocksManifest,
-  ): import('@modelcontextprotocol/sdk/types.js').CallToolResult {
-    const sections: string[] = [];
-    sections.push('# Forge UI Blocks Manifest');
-    sections.push('');
-    sections.push(
-      'Analyze the block descriptions below to find patterns matching the required UI functionality.',
-    );
-    sections.push(
-      'Multiple blocks can be combined. Use `blockId` parameter to fetch full HTML code.',
-    );
-    sections.push('');
-    sections.push('```json');
-    sections.push(JSON.stringify(manifest, null, 2));
-    sections.push('```');
-
-    return this._createTextResponse(sections.join('\n'));
   }
 
   private async _getBlockContent(
@@ -122,8 +114,8 @@ export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
       );
     }
 
-    // Read the block file content
-    const blockFilePath = resolve(BLOCKS_BASE_PATH, block.file);
+    // Read the block file content from dist directory
+    const blockFilePath = resolve(BLOCKS_DIST_PATH, block.file);
     const content = await readFile(blockFilePath, 'utf-8');
 
     const sections: string[] = [];
@@ -144,5 +136,241 @@ export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
     );
 
     return this._createTextResponse(sections.join('\n'));
+  }
+
+  private _listBlocks(
+    manifest: BlocksManifest,
+    query?: string,
+    category?: string,
+    limit: number = 20,
+  ): import('@modelcontextprotocol/sdk/types.js').CallToolResult {
+    let blocks = manifest.blocks;
+
+    // Filter by category if specified
+    if (category) {
+      const categoryLower = category.toLowerCase();
+      blocks = blocks.filter(b => {
+        const blockCategory = b.id.split('/')[2]; // e.g., "src/blocks/forms/login" -> "forms"
+        return blockCategory?.toLowerCase() === categoryLower;
+      });
+    }
+
+    // Filter and score by query if specified
+    if (query) {
+      const searchTerms = query
+        .toLowerCase()
+        .split(/[\s-_]+/)
+        .filter(t => t.length > 1);
+
+      // Score each block for relevance
+      const scoredBlocks = blocks.map(block => {
+        const score = this._calculateRelevanceScore(block, searchTerms);
+        return { block, score };
+      });
+
+      // Filter to blocks with any relevance, then sort by score descending
+      blocks = scoredBlocks
+        .filter(({ score }) => score > 0)
+        .sort((a, b) => b.score - a.score)
+        .map(({ block }) => block);
+    }
+
+    // Apply limit
+    const limitedBlocks = blocks.slice(0, limit);
+    const hasMore = blocks.length > limit;
+
+    const sections: string[] = [];
+    sections.push('# Forge UI Blocks');
+    sections.push('');
+    sections.push(
+      'Pre-built code patterns demonstrating correct Forge component usage.',
+    );
+    sections.push(
+      '**Results are ranked by functionality match.** Top results may fit your needs directly; others can serve as starting points for similar UI patterns.',
+    );
+    sections.push('');
+
+    if (query) {
+      sections.push(`**Search:** "${query}"`);
+    }
+    if (category) {
+      sections.push(`**Category:** ${category}`);
+    }
+    sections.push(`**Found:** ${blocks.length} block(s)`);
+    sections.push('');
+
+    // Available categories
+    sections.push('## Categories');
+    sections.push('');
+    sections.push(manifest.categories.map(c => `- ${c}`).join('\n'));
+    sections.push('');
+
+    // Blocks table
+    sections.push('## Available Blocks');
+    sections.push('');
+    sections.push('| Name | Description | Tags | ID |');
+    sections.push('|------|-------------|------|-----|');
+
+    for (const block of limitedBlocks) {
+      const escapedDesc = block.description.replace(/\|/g, '\\|');
+      const tags = block.tags.slice(0, 3).join(', ');
+      sections.push(
+        `| ${block.name} | ${escapedDesc} | ${tags} | ${block.id} |`,
+      );
+    }
+
+    if (hasMore) {
+      sections.push('');
+      sections.push(
+        `*Showing ${limitedBlocks.length} of ${blocks.length} blocks. Use \`limit\` parameter to see more.*`,
+      );
+    }
+
+    sections.push('');
+    sections.push('## Usage');
+    sections.push('');
+    sections.push(
+      'To get the full code for a specific block, call this tool with the `blockId` parameter:',
+    );
+    sections.push('```');
+    sections.push('get_forge_blocks(blockId: "src/blocks/forms/login")');
+    sections.push('```');
+
+    return this._createTextResponse(sections.join('\n'));
+  }
+
+  /**
+   * Calculate a relevance score for a block based on search terms.
+   * Heavily weights description matches to surface blocks with matching functionality.
+   */
+  private _calculateRelevanceScore(
+    block: BlockInfo,
+    searchTerms: string[],
+  ): number {
+    let score = 0;
+    const nameLower = block.name.toLowerCase();
+    const descLower = block.description.toLowerCase();
+    const tagsLower = block.tags.map(t => t.toLowerCase());
+
+    // Tokenize description for word-level matching
+    const descWords = descLower.split(/[\s,.\-_()]+/).filter(w => w.length > 2);
+
+    for (const term of searchTerms) {
+      // Name matches (moderate weight - helps with direct lookups)
+      if (nameLower.includes(term)) {
+        score += 10;
+        // Exact word match in name bonus
+        if (nameLower.split(/[\s\-_]+/).includes(term)) {
+          score += 5;
+        }
+      }
+
+      // Description matches (HEAVILY weighted - this is where functionality is described)
+      if (descLower.includes(term)) {
+        score += 25; // High base score for description match
+
+        // Exact word match in description (not just substring)
+        if (descWords.includes(term)) {
+          score += 15; // Bonus for exact word match
+        }
+
+        // Functional keyword bonus - terms that indicate core functionality
+        const functionalKeywords = [
+          'form',
+          'table',
+          'list',
+          'card',
+          'modal',
+          'dialog',
+          'menu',
+          'nav',
+          'search',
+          'filter',
+          'sort',
+          'edit',
+          'delete',
+          'create',
+          'add',
+          'upload',
+          'download',
+          'export',
+          'import',
+          'login',
+          'auth',
+          'submit',
+          'validate',
+          'input',
+          'select',
+          'checkbox',
+          'radio',
+          'toggle',
+          'pagination',
+          'grid',
+          'layout',
+          'header',
+          'footer',
+          'sidebar',
+          'panel',
+          'tab',
+          'accordion',
+          'dropdown',
+          'button',
+          'icon',
+          'notification',
+          'alert',
+          'toast',
+          'badge',
+          'avatar',
+          'profile',
+          'settings',
+          'dashboard',
+          'chart',
+          'graph',
+          'data',
+          'display',
+          'empty',
+          'loading',
+          'error',
+          'success',
+          'warning',
+          'info',
+        ];
+        if (functionalKeywords.includes(term)) {
+          score += 10; // Extra bonus for core functional terms
+        }
+      }
+
+      // Tag matches (good weight - tags indicate features/capabilities)
+      for (const tag of tagsLower) {
+        if (tag.includes(term)) {
+          score += 15;
+          // Exact tag match bonus
+          if (tag === term) {
+            score += 10;
+          }
+        }
+      }
+    }
+
+    // Multi-term match bonus: reward blocks that match multiple search terms
+    const matchedTerms = searchTerms.filter(
+      term =>
+        nameLower.includes(term) ||
+        descLower.includes(term) ||
+        tagsLower.some(t => t.includes(term)),
+    );
+    if (matchedTerms.length > 1) {
+      score += matchedTerms.length * 8; // Bonus per additional matched term
+    }
+
+    // Coverage bonus: if most/all search terms match, this is likely a great fit
+    const coverageRatio = matchedTerms.length / searchTerms.length;
+    if (coverageRatio >= 0.75) {
+      score += 20; // Strong coverage bonus
+    } else if (coverageRatio >= 0.5) {
+      score += 10; // Moderate coverage bonus
+    }
+
+    return score;
   }
 }

@@ -1,0 +1,9 @@
+{
+  "name": "forge-skill-testing",
+  "description": "TEST - Tyler Forge design system patterns and pre-built UI blocks",
+  "version": "1.0.0",
+  "author": {
+    "name": "Tyler Technologies"
+  },
+  "keywords": ["forge", "tyler", "design-system", "web-components", "ui"]
+}
