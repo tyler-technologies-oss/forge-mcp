@@ -1,22 +1,10 @@
-# Dialog Patterns
+# Dialog Rules
 
-Reference for Forge dialog components.
-
----
-
-## Dialog Structure
-
-Dialogs use `<forge-scaffold>` for proper layout:
-
-| Slot | Purpose |
-|------|---------|
-| `header` | Dialog title bar with close button |
-| `body` | Main dialog content |
-| `footer` | Action buttons |
+Dialogs use `<forge-scaffold>` for proper layout with header, body, and footer slots.
 
 ---
 
-## Dialog Rules
+## Rules
 
 1. **Use `aria-labelledby` on dialogs** pointing to the title element
 2. **Close button must have `aria-label="Close dialog"`**

@@ -1,48 +1,9 @@
-# React Integration
+# React Rules
 
-Reference for using Tyler Forge with React.
+## Rules
 
----
-
-## Package Import
-
-**Always use `@tylertech/forge-react` package** for React applications.
-
----
-
-## Component Naming
-
-React components use **capitalized names** instead of kebab-case:
-
-| Web Component | React Component |
-|---------------|-----------------|
-| `<forge-button>` | `<ForgeButton>` |
-| `<forge-card>` | `<ForgeCard>` |
-| `<forge-text-field>` | `<ForgeTextField>` |
-| `<forge-icon>` | `<ForgeIcon>` |
-| `<forge-icon-button>` | `<ForgeIconButton>` |
-| `<forge-select>` | `<ForgeSelect>` |
-| `<forge-checkbox>` | `<ForgeCheckbox>` |
-| `<forge-dialog>` | `<ForgeDialog>` |
-| `<forge-table>` | `<ForgeTable>` |
-| `<forge-app-layout>` | `<ForgeAppLayout>` |
-
----
-
-## Property Naming
-
-React uses camelCase for properties:
-
-| HTML Attribute | React Property |
-|----------------|----------------|
-| `label-position` | `labelPosition` |
-| `aria-label` | `aria-label` (unchanged) |
-| `class` | `className` |
-
----
-
-## React Rules
-
-1. **Self-closing tags ARE acceptable** in React
-2. **Forge Extended uses web component syntax** (lowercase) since no React wrappers exist
-3. **Import Forge Extended via side-effects**: `import '@tylertech/forge-extended/user-profile';`
+1. **Always use `@tylertech/forge-react` package** for React applications
+2. **React components use capitalized names** (e.g., `<ForgeButton>` instead of `<forge-button>`)
+3. **React uses camelCase for properties** (e.g., `labelPosition` instead of `label-position`)
+4. **Self-closing tags ARE acceptable** in React
+5. **Forge Extended uses web component syntax** (lowercase) since no React wrappers exist

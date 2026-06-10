@@ -1,35 +1,20 @@
-# Form Patterns
+# Form Rules
 
-Reference for Forge form components.
+## Component Selection
 
----
-
-## Form Component Requirements
-
-| Component | Requirements |
-|-----------|--------------|
-| `<forge-text-field>` | Requires inner `<input>` or `<textarea>` element |
-| `<forge-select>` | Uses `label` attribute (NOT slotted `<label>`), requires inner `<forge-option>` elements |
-| `<forge-checkbox>` | Does NOT require native `<input>` |
-| `<forge-radio>` | Does NOT require native `<input>` |
-| `<forge-switch>` | Does NOT require native `<input>` |
-| `<forge-file-picker>` | Always use instead of `<input type="file">` |
-| `<forge-date-picker>` | Wraps a `<forge-text-field>` |
+- `<forge-text-field>` requires an inner `<input>` or `<textarea>` element
+- `<forge-select>` uses a `label` attribute, NOT a slotted `<label>` element
+- `<forge-select>` requires inner `<forge-option>` elements, not native `<select>`/`<option>`
+- `<forge-checkbox>`, `<forge-radio>`, `<forge-switch>` do NOT require native `<input>` elements
+- Always use `<forge-file-picker>` instead of `<input type="file">`
+- DO NOT use `<forge-field>` directly - it's an internal component
 
 ---
 
 ## Form Rules
 
 1. **Never use placeholder attributes** on form fields unless explicitly requested
-2. **`forge-select` uses `label` attribute** - Not a slotted `<label>` element
-3. **Never use `<input type="file">`** - Use `forge-file-picker`
-4. **DO NOT use `<forge-field>` directly** - Internal component used within form components
-5. **Associate labels with inputs** via `for`/`id` attributes
-
----
-
-## Form Layout Guidelines
-
-- Forms use `flex flex-col gap-medium` for consistent field spacing
-- Multi-section forms use `gap-xlarge` between sections with `<forge-divider>` separators
-- Button groups use `flex gap-small justify-end`
+2. **Associate labels with inputs** via `for`/`id` attributes
+3. **Use `gap-medium`** between form fields
+4. **Use `gap-xlarge`** between form sections with `<forge-divider>` separators
+5. **Button groups** use `flex gap-small justify-end`
