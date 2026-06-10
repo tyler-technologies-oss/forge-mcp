@@ -10,5 +10,4 @@
 ## Rules
 
 1. **Always use `aria-label` on icon buttons** for accessibility
-2. Use `external` attribute for icons not pre-registered in the app
-3. **DO NOT use self-closing tags** UNLESS writing React code
+2. **DO NOT use self-closing tags** UNLESS writing React code

@@ -1,11 +1,16 @@
 # Table Rules
 
-Tables are configured via JavaScript properties (`columnConfigurations`, `data`).
+Tables are configured via JavaScript properties, not HTML attributes.
 
 ---
 
 ## Rules
 
-1. **Use `forge-structured-card` with `body-spacing="none"`** for tables with headers and pagination
-2. **Place table in `slot="body"`** of structured card
-3. **Place paginator in `slot="footer-primary-action"`**
+1. **Use `forge-structured-card`** for tables with headers and pagination
+2. **Place the paginator in the footer region** of structured cards
+
+---
+
+## Notes
+
+Use the MCP tools to get the latest component API details for table and structured-card components, including column configuration options and available slots.
