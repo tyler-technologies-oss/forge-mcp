@@ -7,7 +7,7 @@
 3. **Use `gap-medium`** between form fields
 4. **Use `gap-xlarge`** between form sections with `<forge-divider>` separators
 5. **Button groups** use `flex gap-small justify-end`
-6. **Always use `<forge-file-picker>`** instead of `<input type="file">`
+6. **Always use `<forge-file-picker>`** for file or image uploads - never use `<input type="file">`
 7. **DO NOT use `<forge-field>` directly** - it's an internal component
 
 ---
