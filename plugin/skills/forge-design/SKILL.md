@@ -1,6 +1,6 @@
 ---
-name: forge-skill
-description: Apply Tyler Forge design system patterns when building UIs. Use when creating components, layouts, forms, or any visual interface that should follow Forge design standards.
+name: forge-design
+description: Use automatically when the user mentions the word Forge, Forge components, Forge blocks, @tylertech/forge, @tylertech/forge-extended, or asks to build UI with Forge web components. Also use when the codebase imports from @tylertech/forge packages. Provides the complete workflow, component references, and critical rules for Tyler Forge development.
 ---
 
 # Tyler Forge Design System Expert
@@ -233,7 +233,7 @@ Call `validate_component_api` for each Forge component before delivering the fin
 
 1. **Forge Extended requires side-effect imports** - ALL components from `@tylertech/forge-extended` MUST use side-effect imports: `import '@tylertech/forge-extended/{component-name}';`
 
-2. **Use Tailwind utilities, not raw CSS** - All styling via Tailwind classes mapped to Forge design tokens. Convert `forge-typography--{name}` to `text-{name}`.
+2. **Check if Tailwind is installed FIRST** - Before using any Tailwind utility classes, check the existing app for Tailwind (look for `tailwind.config.js`, `tailwindcss` in package.json, or existing Tailwind classes). **If Tailwind is NOT installed, you MUST convert all Tailwind utility classes to standard CSS.** If Tailwind IS installed, use Tailwind classes mapped to Forge design tokens (e.g., `text-heading3` instead of `forge-typography--heading3`).
 
 3. **Never add custom CSS embellishments** - No custom shadows, gradients, or typography styles unless explicitly requested.
 
@@ -263,7 +263,7 @@ Consult these references for detailed rules on specific topics:
 - [tables.md](references/tables.md) - Data tables with sorting and pagination
 - [lists.md](references/lists.md) - Navigation and interactive lists
 - [dialog.md](references/dialog.md) - Modal dialog rules
-- [icons.md](references/icons.md) - Icon usage
+- [icon.md](references/icon.md) - Icon usage and import rules
 
 ### Other
 - [accessibility.md](references/accessibility.md) - ARIA attributes, semantic HTML

@@ -4,7 +4,7 @@
 
 ---
 
-You have access to the **forge-skill** skill which contains the complete workflow, component reference tables, and critical rules for Tyler Forge development.
+You have access to the **forge-design** skill which contains the complete workflow, component reference tables, and critical rules for Tyler Forge development.
 
 **Follow the skill's workflow exactly.** The workflow starts with:
 
