@@ -28,7 +28,6 @@ IconRegistry.define([tylIconHome]);
 ## Import Rules
 
 - **ALWAYS import icons from `@tylertech/tyler-icons` ONLY**
-- **NEVER import from subpaths** like `@tylertech/tyler-icons/standard`
 
 ---
 
