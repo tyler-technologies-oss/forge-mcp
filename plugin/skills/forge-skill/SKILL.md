@@ -262,7 +262,7 @@ Consult these references for detailed rules on specific topics:
 - [card.md](references/card.md) - Card component usage (forge-structured-card and forge-card)
 - [tables.md](references/tables.md) - Data tables with sorting and pagination
 - [lists.md](references/lists.md) - Navigation and interactive lists
-- [dialogs.md](references/dialogs.md) - Modal dialog rules
+- [dialog.md](references/dialog.md) - Modal dialog rules
 - [icons.md](references/icons.md) - Icon usage
 
 ### Other
@@ -285,6 +285,7 @@ Consult these references for detailed rules on specific topics:
 **CRITICAL: All components require side-effect imports to register with the browser.**
 
 ```typescript
+import '@tylertech/forge-extended/app-layout';
 import '@tylertech/forge-extended/structured-card';
 import '@tylertech/forge-extended/user-profile';
 import '@tylertech/forge-extended/busy-indicator';

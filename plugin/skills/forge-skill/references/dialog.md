@@ -1,45 +1,62 @@
 # Dialog
 
+Dialogs use `<forge-scaffold>` for proper layout with header, body, and footer regions.
+
+---
+
 ## Basic Usage
 
 ```html
-<forge-dialog aria-labelledby="dialog-title">
-  <!-- Example header -->
-  <forge-toolbar>
-    <h2 id="dialog-title" class="forge-typography--heading4" slot="start">Dialog Title</h2>
-    <forge-icon-button slot="end" id="close-button" aria-label="Close dialog">
-      <forge-icon name="close"></forge-icon>
-    </forge-icon-button>
-  </forge-toolbar>
-
-  <!-- Example content -->
-  <p>Dialog content goes here</p>
-
-  <!-- Example footer -->
-  <forge-toolbar inverted slot="footer">
-    <forge-button variant="text" id="cancel-button" slot="end">Cancel</forge-button>
-    <forge-button id="ok-button" slot="end">OK</forge-button>
-  </forge-toolbar>
+<forge-dialog aria-labelledby="dialog-title" style="--forge-dialog-width: 500px;">
+  <forge-scaffold>
+    <forge-toolbar slot="header">
+      <h2 id="dialog-title" slot="start" class="text-heading3">Dialog Title</h2>
+      <forge-icon-button slot="end" aria-label="Close dialog">
+        <forge-icon name="close"></forge-icon>
+      </forge-icon-button>
+    </forge-toolbar>
+    <div slot="body" class="p-medium">
+      Dialog content goes here
+    </div>
+    <forge-toolbar slot="footer" inverted>
+      <forge-button slot="end" variant="text">Cancel</forge-button>
+      <forge-button slot="end">Confirm</forge-button>
+    </forge-toolbar>
+  </forge-scaffold>
 </forge-dialog>
+```
 
-<script>
+### Opening Dialogs
+
+```javascript
 const dialog = document.querySelector('forge-dialog');
 
-// Dialogs are typically opened via some user action
+// Control visibility via the `open` property
 dialog.open = true;
 
-// Dialogs can also be created dynamically via JavaScript and injected into the DOM
+// Dialogs can also be created dynamically
 const dynamicDialog = document.createElement('forge-dialog');
-dynamicDialog.innerHTML = `<p>This is a dynamically created dialog</p>`;
+dynamicDialog.innerHTML = `<p>Dynamic content</p>`;
 document.body.appendChild(dynamicDialog);
 dynamicDialog.open = true;
-</script>
 ```
+
+---
+
+## Rules
+
+1. **CRITICAL: All dialogs MUST use the standard scaffold structure** - Every dialog must have a `<forge-scaffold>` inside with three regions: header, body, and footer. This is non-negotiable unless the user explicitly requests otherwise. **Reference the basic dialog block (`blocks/dialogs/basic`) for the overall structural shell** (scaffold, toolbar placement, slots). The body content itself is flexible—forms, cards, lists, data displays, or any UI appropriate to the task can go inside the body slot.
+2. **Use `aria-labelledby` on dialogs** pointing to the title element
+3. **Close button must have `aria-label="Close dialog"`**
+4. **Dialog titles use `text-heading3`** (same as card headers)
+5. **Body content uses `p-medium` padding**
+6. **Use `<forge-toolbar>` in the header slot** of the inner scaffold for dialog headers with title and actions. Check the "simple toolbar" block (`blocks/toolbar/simple`) for the correct pattern.
+7. **Use `<forge-toolbar inverted>` in the footer slot** for dialog footers with action buttons. The `inverted` attribute provides proper visual distinction for footer regions.
+8. **Dialogs should have a minimum width of 500px** unless the user specifies otherwise. Set via `style="--forge-dialog-width: 500px;"` on the `<forge-dialog>` element.
+
+---
 
 ## Notes
 
-- Use `aria-labelledby` pointing to the title element for accessibility
-- Control visibility via the `open` property
-- Can be created statically in HTML or dynamically via JavaScript
 - For Angular: Use `DialogService` from `@tylertech/forge-angular` for programmatic dialogs
-- See `dialogs.md` reference for complete dialog structure guidelines with `<forge-scaffold>`
+- Use MCP tools to get the latest component API details for dialog and scaffold components
