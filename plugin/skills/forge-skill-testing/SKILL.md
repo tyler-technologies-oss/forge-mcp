@@ -9,30 +9,78 @@ You are an expert developer with comprehensive knowledge of the Tyler Forge web 
 
 ---
 
-## ASK QUESTIONS THROUGHOUT IMPLEMENTATION
+## Workflow
 
-**Before implementing ANY feature, ask clarifying questions to ensure you understand the user's requirements.** Continue asking questions at each major decision point:
+### 1. Ask Questions First
+
+**Before implementing ANY feature, ask clarifying questions.** Continue asking at each major decision point:
 
 - **Before starting**: Confirm requirements, framework choice, and expected behavior
 - **During implementation**: Validate design decisions, component choices, and layout preferences
-- **Before finalizing**: Verify the solution meets expectations and ask if adjustments are needed
+- **Before finalizing**: Verify the solution meets expectations
 
-**Never assume - when in doubt, ask. It's better to confirm than to rebuild.**
+**Never assume - when in doubt, ask.**
 
----
+#### Application Layout Question (Full Apps/Prototypes Only)
 
-## ALWAYS Check Blocks First
+When the user is requesting a **full application UI, prototype, or app shell** (not a single feature or component), ask which application layout style they prefer.
+
+**To get layout options:** Call `get_forge_blocks(category: "application-layout")` to retrieve available layout patterns, then present them as options.
+
+**Skip this question when:**
+- User is adding a single feature to an existing app
+- User is asking for a specific component (e.g., "create a login form")
+- The layout context is already established
+
+Use your judgment to determine if this question is relevant to the request.
+
+### 2. Check Reference Files AND Code Snippets for Components Being Used
+
+**Before using ANY Forge component, you MUST:**
+1. **Read the reference file** (if one exists) for critical rules and constraints
+2. **Get code snippets** via `get_forge_blocks(component: "...")` or `get_component_docs(format: "usage-examples")`
+
+When you determine which components will be used in your implementation, read the corresponding reference file(s) from the list below:
+
+| Component | Reference File |
+|-----------|----------------|
+| `forge-app-bar` | [app-bar.md](references/app-bar.md) |
+| `forge-toolbar` | [toolbar.md](references/toolbar.md) |
+| `forge-structured-card`, `forge-card` | [cards.md](references/cards.md) |
+| `forge-text-field`, `forge-select`, `forge-checkbox`, etc. | [forms.md](references/forms.md) |
+| `forge-button`, `forge-icon-button` | [buttons.md](references/buttons.md) |
+| `forge-table` | [tables.md](references/tables.md) |
+| `forge-list`, `forge-list-item` | [lists.md](references/lists.md) |
+| `forge-dialog` | [dialogs.md](references/dialogs.md) |
+| `forge-icon` | [icons.md](references/icons.md) |
+| `forge-scaffold` | [app-layout.md](references/app-layout.md) |
+
+**This is NON-NEGOTIABLE.** Reference files contain critical rules that prevent common mistakes.
+
+### 3. Check Blocks
 
 **Before writing ANY Forge UI code, call `get_forge_blocks` to find pre-built reference patterns.**
 
-Blocks demonstrate correct Forge patterns, class usage, and Tailwind integration. They are your primary reference for how to build UIs correctly.
+- Use `query` to search by functionality (e.g., "login form", "data table")
+- Use `component` to find all blocks using a specific component (e.g., `component: "forge-structured-card"`)
+- Use `blockId` to fetch full HTML code for a specific block
 
-- **For large features or UI patterns**: Blocks are REQUIRED. Search for relevant blocks and use them as your foundation.
-- **For component implementation**: Check blocks for usage examples, then supplement with component documentation.
-- **IMPORTANT**: Blocks are references, NOT templates to copy verbatim. Adapt and modify them to fit the user's specific needs while maintaining pattern consistency.
-- **BLOCKS ALWAYS TAKE PRECEDENCE** - If you see a pattern in blocks that differs from MCP usage examples, the blocks are correct. Always follow block patterns.
+**Blocks are references, not templates.** All blocks are handcrafted and demonstrate proper Forge design system usage—correct layout, typography, spacing, and component composition. Use them as authoritative references for *how* to build with Forge, but adapt them to fit your specific requirements rather than copying verbatim.
 
-**Available MCP Tools:**
+**BLOCKS ALWAYS TAKE PRECEDENCE** - If a pattern in blocks differs from other sources, follow the blocks.
+
+### 4. Check Component Usage Examples
+
+After reviewing blocks, call `get_component_docs(format: "usage-examples")` for component-specific structure and API details.
+
+### 5. Validate Before Finalizing
+
+Call `validate_component_api` for each Forge component before delivering the final solution.
+
+---
+
+## Available MCP Tools
+
 - `get_forge_blocks` - Search and retrieve pre-built UI patterns (use FIRST)
 - `get_component_docs` - Get component documentation (`format="usage-examples"` for structure)
 - `validate_component_api` - Verify component APIs before finalizing
@@ -42,115 +90,61 @@ Blocks demonstrate correct Forge patterns, class usage, and Tailwind integration
 
 ---
 
-## Core Principles
+## Critical Rules
 
-1. **Use Forge components** - Never recreate functionality that Forge provides
-2. **Use Tailwind utilities** - All styling via Tailwind classes mapped to Forge design tokens
-3. **Follow typography hierarchy** - Consistent use of text-* classes for visual hierarchy
-4. **Maintain spacing consistency** - Use Forge spacing scale via Tailwind utilities
-5. **Semantic HTML first** - Choose elements based on meaning, style with classes
+1. **Forge Extended requires side-effect imports** - ALL components from `@tylertech/forge-extended` MUST use side-effect imports: `import '@tylertech/forge-extended/{component-name}';`
 
----
+2. **Use Tailwind utilities, not raw CSS** - All styling via Tailwind classes mapped to Forge design tokens. Convert `forge-typography--{name}` to `text-{name}`.
 
-## CRITICAL: Convert Forge CSS Classes to Tailwind Utilities
+3. **Never add custom CSS embellishments** - No custom shadows, gradients, or typography styles unless explicitly requested.
 
-**ALWAYS convert raw Forge CSS classes to their Tailwind utility equivalents.**
-
-When you see Forge CSS classes in MCP usage examples (like `forge-typography--heading3`), you MUST convert them to Tailwind utilities (like `text-heading3`).
-
-**Pattern**: `forge-typography--{name}` → `text-{name}`
-
-**NEVER output raw Forge CSS classes** - Always use Tailwind utilities. The blocks show the correct Tailwind approach.
+4. **Never add CSS classes directly to Forge components** - Forge components use Shadow DOM. Wrap in a container div if needed.
 
 ---
 
-## STRICT Typography Rules
+## Reference Documentation
 
-**VIOLATION ALERT**: These rules are non-negotiable.
+Consult these references for detailed rules on specific topics:
 
-| Context | Allowed Classes | FORBIDDEN Classes |
-|---------|-----------------|-------------------|
-| Card headers | `text-heading3`, `text-heading2`, `text-heading1` | `text-heading4`, `text-heading5` |
-| Page titles (NOT cards) | `text-heading4`, `text-heading5` | - |
+### Design Tokens
+- [typography.md](references/typography.md) - Type scale, hierarchy, emphasis classes
+- [spacing.md](references/spacing.md) - Spacing tokens and patterns
+- [colors.md](references/colors.md) - Background, border, and color utilities
 
-- **Card headers MUST use `text-heading3` or smaller** - NEVER use `text-heading4` or `text-heading5` in any card, profile card, or contained component
-- `text-heading4` and `text-heading5` are reserved for PAGE-LEVEL titles only
-- **Before finalizing any card implementation, verify no `text-heading4` or `text-heading5` classes appear within cards.**
+### Layout
+- [layout.md](references/layout.md) - Flexbox, grid, and positioning patterns
+- [app-layout.md](references/app-layout.md) - App shell, navigation, page structure
 
-For complete typography scale, emphasis classes, and patterns, read [typography.md](references/typography.md)
+### Components
+- [app-bar.md](references/app-bar.md) - App bar usage (global actions only, never page-level)
+- [toolbar.md](references/toolbar.md) - Toolbar usage (headers, footers, page titles, table headers)
+- [forms.md](references/forms.md) - Text fields, selects, checkboxes, radios, file pickers
+- [buttons.md](references/buttons.md) - Button variants and icon buttons
+- [cards.md](references/cards.md) - Card component usage (forge-structured-card)
+- [tables.md](references/tables.md) - Data tables with sorting and pagination
+- [lists.md](references/lists.md) - Navigation and interactive lists
+- [dialogs.md](references/dialogs.md) - Modal dialogs
+- [icons.md](references/icons.md) - Icon usage
 
----
-
-## Key Rules Summary
-
-1. **Check blocks first** - Always call `get_forge_blocks` before writing UI code
-2. **Never use raw CSS** - Always use Tailwind utilities mapped to Forge tokens
-3. **Never add CSS classes directly to Forge components** - Forge components are web components with encapsulated Shadow DOM styles. Adding CSS classes directly to `<forge-button>`, `<forge-card>`, etc. will have no effect. Use CSS custom properties (design tokens) or wrap the component in a container div.
-4. **Never use `<input type="file">`** - Use `forge-file-picker`
-5. **Never use placeholder attributes** on form fields unless explicitly requested
-6. **`forge-select` uses `label` attribute** - Not a slotted `<label>` element
-7. **Use `gap-*` for spacing** between flex/grid children, not margins
-8. **Cards use `p-0` class** with inner `<div class="p-medium">` for content
-9. **App layouts use h1 for page title** - Content headings start at h2
-10. **Use `forge-structured-card`** for complex cards with header, body, and footer
-11. **All icon buttons need `aria-label`** for accessibility
-12. **Use `<forge-divider>` for content separation** - Never CSS borders on divs
-13. **Validate component APIs** - Call `validate_component_api` before finalizing
+### Other
+- [accessibility.md](references/accessibility.md) - ARIA attributes, semantic HTML
+- [angular.md](references/angular.md) - Angular-specific patterns
+- [react.md](references/react.md) - React-specific patterns
 
 ---
 
-## Design Tokens
-
-When implementing styling, consult the following references based on the task:
-
-- **Typography**: Scale classes, emphasis, and usage patterns. Read [typography.md](references/typography.md)
-- **Spacing**: Token scale and common spacing patterns. Read [spacing.md](references/spacing.md)
-- **Colors**: Background, border, and custom utility classes. Read [colors.md](references/colors.md)
-
----
-
-## Layout
-
-When implementing page structure and component arrangement:
-
-- **Layout Patterns**: Flexbox, grid, and centered content patterns. Read [layout.md](references/layout.md)
-- **Application Layout**: App shell, navigation, and page structure. Read [app-layout.md](references/app-layout.md)
-
----
-
-## Components
-
-When working with Forge components, consult the following references based on the task:
-
-- **Forms**: Text fields, selects, checkboxes, radios, date pickers, file pickers. Read [forms.md](references/forms.md)
-- **Buttons**: Button variants and icon buttons. Read [buttons.md](references/buttons.md)
-- **Cards**: Basic, structured, media, and tonal cards. Read [cards.md](references/cards.md)
-- **Tables**: Data tables with pagination. Read [tables.md](references/tables.md)
-- **Lists**: Navigation and interactive lists. Read [lists.md](references/lists.md)
-- **Dialogs**: Modal dialogs with scaffold pattern. Read [dialogs.md](references/dialogs.md)
-- **Icons**: Icon usage in components and standalone. Read [icons.md](references/icons.md)
-
----
-
-## Accessibility
-
-When implementing accessible interfaces:
-
-- **Accessibility Guidelines**: ARIA attributes, heading hierarchy, semantic HTML. Read [accessibility.md](references/accessibility.md)
-
----
-
-## Framework Integration
-
-When working with specific frameworks, consult the appropriate reference:
-
-- **Angular**: Module imports and Angular-specific patterns. Read [angular.md](references/angular.md)
-- **React**: React component usage and naming conventions. Read [react.md](references/react.md)
+## Package Import Patterns
 
 ### Forge (@tylertech/forge)
-- Uses definition function imports: `import { defineButtonComponent } from '@tylertech/forge'; defineButtonComponent();`
-- Pre-built CSS from `@tylertech/forge/dist/*` path
+- Definition function imports: `import { defineButtonComponent } from '@tylertech/forge'; defineButtonComponent();`
+- Pre-built CSS: `import '@tylertech/forge/dist/forge.css';`
 
 ### Forge Extended (@tylertech/forge-extended)
-- Uses side-effect imports: `import '@tylertech/forge-extended/user-profile';`
-- Does not have pre-built CSS files
+
+**CRITICAL: All components require side-effect imports to register with the browser.**
+
+```typescript
+import '@tylertech/forge-extended/structured-card';
+import '@tylertech/forge-extended/user-profile';
+import '@tylertech/forge-extended/busy-indicator';
+```

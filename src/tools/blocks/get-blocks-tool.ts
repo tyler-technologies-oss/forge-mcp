@@ -14,6 +14,7 @@ interface BlockInfo {
   description: string;
   tags: string[];
   file: string;
+  componentsUsed?: string[];
 }
 
 interface BlocksManifest {
@@ -26,6 +27,7 @@ export interface GetBlocksInput extends ToolInput {
   query?: string;
   blockId?: string;
   category?: string;
+  component?: string;
   limit?: number;
 }
 
@@ -59,6 +61,11 @@ export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
             description:
               'Filter blocks by category (e.g., "forms", "tables", "application-layout").',
           },
+          component: {
+            type: 'string',
+            description:
+              'Filter blocks by Forge component usage. Returns all blocks that use the specified component (e.g., "forge-card", "forge-table", "forge-button"). Use this to see how a component is used across different contexts and patterns.',
+          },
           limit: {
             type: 'number',
             description:
@@ -73,7 +80,7 @@ export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
   public async execute(
     args: GetBlocksInput,
   ): Promise<import('@modelcontextprotocol/sdk/types.js').CallToolResult> {
-    const { query, blockId, category, limit = 20 } = args;
+    const { query, blockId, category, component, limit = 20 } = args;
 
     try {
       const manifest = await this._loadManifest();
@@ -84,7 +91,7 @@ export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
       }
 
       // Otherwise, list/search blocks
-      return this._listBlocks(manifest, query, category, limit);
+      return this._listBlocks(manifest, query, category, component, limit);
     } catch (error) {
       throw new Error(
         `Failed to fetch blocks: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -123,6 +130,9 @@ export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
     sections.push('');
     sections.push(`**Description:** ${block.description}`);
     sections.push(`**Tags:** ${block.tags.join(', ')}`);
+    if (block.componentsUsed?.length) {
+      sections.push(`**Components Used:** ${block.componentsUsed.join(', ')}`);
+    }
     sections.push(`**ID:** ${block.id}`);
     sections.push('');
     sections.push('## Code');
@@ -142,6 +152,7 @@ export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
     manifest: BlocksManifest,
     query?: string,
     category?: string,
+    component?: string,
     limit: number = 20,
   ): import('@modelcontextprotocol/sdk/types.js').CallToolResult {
     let blocks = manifest.blocks;
@@ -152,6 +163,15 @@ export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
       blocks = blocks.filter(b => {
         const blockCategory = b.id.split('/')[2]; // e.g., "src/blocks/forms/login" -> "forms"
         return blockCategory?.toLowerCase() === categoryLower;
+      });
+    }
+
+    // Filter by component if specified
+    if (component) {
+      const componentLower = component.toLowerCase();
+      blocks = blocks.filter(b => {
+        if (!b.componentsUsed) {return false;}
+        return b.componentsUsed.some(c => c.toLowerCase() === componentLower);
       });
     }
 
@@ -196,6 +216,9 @@ export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
     if (category) {
       sections.push(`**Category:** ${category}`);
     }
+    if (component) {
+      sections.push(`**Component:** ${component}`);
+    }
     sections.push(`**Found:** ${blocks.length} block(s)`);
     sections.push('');
 
@@ -208,14 +231,14 @@ export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
     // Blocks table
     sections.push('## Available Blocks');
     sections.push('');
-    sections.push('| Name | Description | Tags | ID |');
-    sections.push('|------|-------------|------|-----|');
+    sections.push('| Name | Description | Components Used | ID |');
+    sections.push('|------|-------------|-----------------|-----|');
 
     for (const block of limitedBlocks) {
       const escapedDesc = block.description.replace(/\|/g, '\\|');
-      const tags = block.tags.slice(0, 3).join(', ');
+      const components = block.componentsUsed?.slice(0, 4).join(', ') || '-';
       sections.push(
-        `| ${block.name} | ${escapedDesc} | ${tags} | ${block.id} |`,
+        `| ${block.name} | ${escapedDesc} | ${components} | ${block.id} |`,
       );
     }
 
