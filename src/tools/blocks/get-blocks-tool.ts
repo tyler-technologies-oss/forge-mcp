@@ -1,12 +1,8 @@
 import { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { BaseToolHandler, ToolInput } from '../tool-handler.js';
-import { readFile } from 'fs/promises';
-import { resolve } from 'path';
 
-// Local path for testing - blocks source location
-const BLOCKS_BASE_PATH = '/Users/nick.andrews@tylertech.com/Desktop/dev/forge';
-const BLOCKS_DIST_PATH = resolve(BLOCKS_BASE_PATH, 'blocks/dist');
-const BLOCKS_MANIFEST_PATH = resolve(BLOCKS_DIST_PATH, 'manifest.json');
+// Remote URL for blocks manifest and content
+const BLOCKS_BASE_URL = 'https://forge.tylerdev.io/blocks/pr-1145';
 
 interface BlockInfo {
   id: string;
@@ -100,8 +96,13 @@ export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
   }
 
   private async _loadManifest(): Promise<BlocksManifest> {
-    const content = await readFile(BLOCKS_MANIFEST_PATH, 'utf-8');
-    return JSON.parse(content);
+    const response = await fetch(`${BLOCKS_BASE_URL}/manifest.json`);
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch blocks manifest: ${response.status} ${response.statusText}`,
+      );
+    }
+    return response.json();
   }
 
   private async _getBlockContent(
@@ -121,9 +122,15 @@ export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
       );
     }
 
-    // Read the block file content from dist directory
-    const blockFilePath = resolve(BLOCKS_DIST_PATH, block.file);
-    const content = await readFile(blockFilePath, 'utf-8');
+    // Fetch the block file content from remote
+    const blockUrl = `${BLOCKS_BASE_URL}/${block.file}`;
+    const response = await fetch(blockUrl);
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch block content: ${response.status} ${response.statusText}`,
+      );
+    }
+    const content = await response.text();
 
     const sections: string[] = [];
     sections.push(`# ${block.name}`);
@@ -170,7 +177,9 @@ export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
     if (component) {
       const componentLower = component.toLowerCase();
       blocks = blocks.filter(b => {
-        if (!b.componentsUsed) {return false;}
+        if (!b.componentsUsed) {
+          return false;
+        }
         return b.componentsUsed.some(c => c.toLowerCase() === componentLower);
       });
     }

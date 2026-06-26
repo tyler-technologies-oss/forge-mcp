@@ -1,11 +1,7 @@
 import { AsyncResourceHandler } from '../../types/index.js';
-import { promises as fs } from 'fs';
-import { resolve } from 'path';
 
-// Blocks path configuration
-const BLOCKS_BASE_PATH = '/Users/nick.andrews@tylertech.com/Desktop/dev/forge';
-const BLOCKS_DIST_PATH = resolve(BLOCKS_BASE_PATH, 'blocks/dist');
-const BLOCKS_MANIFEST_PATH = resolve(BLOCKS_DIST_PATH, 'manifest.json');
+// Remote URL for blocks manifest and content
+const BLOCKS_BASE_URL = 'https://forge.tylerdev.io/blocks/pr-1145';
 
 // If a block has this many or fewer components, show the full block
 const FULL_BLOCK_COMPONENT_THRESHOLD = 3;
@@ -40,7 +36,7 @@ export class ComponentUsageExamplesResource
     if (!this._blocksManifest) {
       return `# Usage Examples
 
-Unable to load blocks manifest. Ensure the blocks are built at: ${BLOCKS_MANIFEST_PATH}`;
+Unable to load blocks manifest from: ${BLOCKS_BASE_URL}/manifest.json`;
     }
 
     const names = Array.isArray(componentNames)
@@ -111,7 +107,9 @@ Try calling \`get_forge_blocks\` to search for related patterns, or check if the
     // Find blocks that use this component
     const componentLower = componentName.toLowerCase();
     const matchingBlocks = this._blocksManifest.blocks.filter(block => {
-      if (!block.componentsUsed) {return false;}
+      if (!block.componentsUsed) {
+        return false;
+      }
       return block.componentsUsed.some(c => c.toLowerCase() === componentLower);
     });
 
@@ -130,9 +128,13 @@ Try calling \`get_forge_blocks\` to search for related patterns, or check if the
     const blocksToShow = matchingBlocks.slice(0, 3);
 
     for (const block of blocksToShow) {
-      const blockFilePath = resolve(BLOCKS_DIST_PATH, block.file);
+      const blockUrl = `${BLOCKS_BASE_URL}/${block.file}`;
       try {
-        const content = await fs.readFile(blockFilePath, 'utf-8');
+        const response = await fetch(blockUrl);
+        if (!response.ok) {
+          continue; // Skip blocks we can't fetch
+        }
+        const content = await response.text();
         const componentCount = block.componentsUsed?.length ?? 0;
 
         sections.push('');
@@ -278,17 +280,23 @@ Try calling \`get_forge_blocks\` to search for related patterns, or check if the
    */
   private _normalizeIndentation(snippet: string): string {
     const lines = snippet.split('\n');
-    if (lines.length <= 1) {return snippet.trim();}
+    if (lines.length <= 1) {
+      return snippet.trim();
+    }
 
     // Find minimum indentation (excluding empty lines)
     let minIndent = Infinity;
     for (const line of lines) {
-      if (line.trim().length === 0) {continue;}
+      if (line.trim().length === 0) {
+        continue;
+      }
       const indent = line.match(/^(\s*)/)?.[1].length ?? 0;
       minIndent = Math.min(minIndent, indent);
     }
 
-    if (minIndent === Infinity || minIndent === 0) {return snippet.trim();}
+    if (minIndent === Infinity || minIndent === 0) {
+      return snippet.trim();
+    }
 
     // Remove the common indentation
     return lines
@@ -303,8 +311,12 @@ Try calling \`get_forge_blocks\` to search for related patterns, or check if the
   private async _ensureBlocksManifestLoaded(): Promise<void> {
     if (this._blocksManifest === null) {
       try {
-        const content = await fs.readFile(BLOCKS_MANIFEST_PATH, 'utf-8');
-        this._blocksManifest = JSON.parse(content);
+        const response = await fetch(`${BLOCKS_BASE_URL}/manifest.json`);
+        if (!response.ok) {
+          this._blocksManifest = null;
+          return;
+        }
+        this._blocksManifest = await response.json();
       } catch {
         this._blocksManifest = null;
       }

@@ -14,3 +14,9 @@
 ## Notes
 
 Use the MCP tools to get the latest component API details for app-layout, including available slots and attributes.
+
+**CRITICAL: This is an extended component. All extended components require side-effect imports to register with the browser.**
+
+```typescript
+import '@tylertech/forge-extended/app-layout';
+```
