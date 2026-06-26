@@ -1,0 +1,7 @@
+{
+  "name": "forge-design",
+  "source": {
+    "source": "github",
+    "repo": "tyler-technologies-oss/forge-mcp"
+  }
+}
