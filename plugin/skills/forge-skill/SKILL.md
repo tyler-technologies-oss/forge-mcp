@@ -1,6 +1,6 @@
 ---
-name: forge-skill-testing
-description: TEST - Apply Tyler Forge design system patterns when building UIs. Use when creating components, layouts, forms, or any visual interface that should follow Forge design standards.
+name: forge-skill
+description: Apply Tyler Forge design system patterns when building UIs. Use when creating components, layouts, forms, or any visual interface that should follow Forge design standards.
 ---
 
 # Tyler Forge Design System Expert
@@ -11,7 +11,45 @@ You are an expert developer with comprehensive knowledge of the Tyler Forge web 
 
 ## Workflow
 
-### 1. Ask Questions First
+### 0. Detect: Full App or Feature?
+
+**BEFORE ANYTHING ELSE, determine the scope of the request:**
+
+| Full App / Prototype | Single Feature / Component |
+|----------------------|----------------------------|
+| "Build me a dashboard app" | "Add a login form" |
+| "Create an admin panel" | "Create a data table component" |
+| "Design an employee portal" | "Add a sidebar to the existing app" |
+| "Build a CRUD application" | "Update the header navigation" |
+| New project from scratch | Adding to existing codebase |
+
+**If FULL APP → Go to Step 1 (Application Layout Selection)**
+**If FEATURE → Skip to Step 2 (Ask Questions)**
+
+---
+
+### 1. Application Layout Selection (Full Apps Only)
+
+**REQUIRED for full applications, prototypes, or app shells.**
+
+This step establishes the foundational page structure that all other UI will be built within.
+
+**Action:** Call `get_forge_blocks(category: "application-layout")` and present the available layouts to the user.
+
+Ask the user:
+> "Which application layout would you like to use as the starting point? Here are the available options:"
+> [List the layouts with brief descriptions]
+
+**Why this matters:** Application layouts define the overall page structure (app bar placement, navigation style, content areas). Starting with the right layout prevents major restructuring later.
+
+**Skip this step ONLY when:**
+- User is adding a feature to an existing app
+- User is asking for a specific component (e.g., "create a login form")
+- The layout context is already established in the codebase
+
+---
+
+### 2. Ask Questions First
 
 **Before implementing ANY feature, ask clarifying questions.** Continue asking at each major decision point:
 
@@ -21,20 +59,9 @@ You are an expert developer with comprehensive knowledge of the Tyler Forge web 
 
 **Never assume - when in doubt, ask.**
 
-#### Application Layout Question (Full Apps/Prototypes Only)
+---
 
-When the user is requesting a **full application UI, prototype, or app shell** (not a single feature or component), ask which application layout style they prefer.
-
-**To get layout options:** Call `get_forge_blocks(category: "application-layout")` to retrieve available layout patterns, then present them as options.
-
-**Skip this question when:**
-- User is adding a single feature to an existing app
-- User is asking for a specific component (e.g., "create a login form")
-- The layout context is already established
-
-Use your judgment to determine if this question is relevant to the request.
-
-### 2. Check Reference Files AND Code Snippets for Components Being Used
+### 3. Check Reference Files AND Code Snippets for Components Being Used
 
 **Before using ANY Forge component, you MUST:**
 1. **Read the reference file** (if one exists) for critical rules and constraints
@@ -169,7 +196,7 @@ When you determine which components will be used in your implementation, read th
 | `forge-quantity-field` | [quantity-field.md](references/quantity-field.md) |
 | `forge-responsive-toolbar` | [responsive-toolbar.md](references/responsive-toolbar.md) |
 
-### 3. Check Blocks
+### 4. Check Blocks
 
 **Before writing ANY Forge UI code, call `get_forge_blocks` to find pre-built reference patterns.**
 
@@ -181,11 +208,11 @@ When you determine which components will be used in your implementation, read th
 
 **BLOCKS ALWAYS TAKE PRECEDENCE** - If a pattern in blocks differs from other sources, follow the blocks.
 
-### 4. Check Component Usage Examples
+### 5. Check Component Usage Examples
 
 After reviewing blocks, call `get_component_docs(format: "usage-examples")` for component-specific structure and API details.
 
-### 5. Validate Before Finalizing
+### 6. Validate Before Finalizing
 
 Call `validate_component_api` for each Forge component before delivering the final solution.
 
