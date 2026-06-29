@@ -149,7 +149,7 @@ When you determine which components will be used in your implementation, read th
 | Component | Reference File |
 |-----------|----------------|
 | `forge-list` | [list.md](references/list.md) |
-| `forge-list-item` | [list-item.md](references/list-item.md) |
+| `forge-list-item` | [list.md](references/list.md) |
 | `forge-menu` | [menu.md](references/menu.md) |
 | `forge-stepper` | [stepper.md](references/stepper.md) |
 | `forge-step` | [step.md](references/step.md) |
@@ -231,13 +231,23 @@ Call `validate_component_api` for each Forge component before delivering the fin
 
 ## Critical Rules
 
-1. **Forge Extended requires side-effect imports** - ALL components from `@tylertech/forge-extended` MUST use side-effect imports: `import '@tylertech/forge-extended/{component-name}';`
+1. **⚠️ ICON IMPORTS - STRICT RULE ⚠️** - ALWAYS import icons from `@tylertech/tyler-icons` ONLY. **NEVER use `/standard`, `/extended`, or ANY subpath.** The `/standard` path DOES NOT EXIST.
+   ```typescript
+   // ✅ CORRECT - the ONLY valid import path
+   import { tylIconHome, tylIconSettings } from '@tylertech/tyler-icons';
 
-2. **Check if Tailwind is installed FIRST** - Before using any Tailwind utility classes, check the existing app for Tailwind (look for `tailwind.config.js`, `tailwindcss` in package.json, or existing Tailwind classes). **If Tailwind is NOT installed, you MUST convert all Tailwind utility classes to standard CSS.** If Tailwind IS installed, use Tailwind classes mapped to Forge design tokens (e.g., `text-heading3` instead of `forge-typography--heading3`).
+   // ❌ WRONG - these paths DO NOT EXIST
+   import { tylIconHome } from '@tylertech/tyler-icons/standard';  // DOES NOT EXIST
+   import { tylIconHome } from '@tylertech/tyler-icons/extended';  // DOES NOT EXIST
+   ```
 
-3. **Never add custom CSS embellishments** - No custom shadows, gradients, or typography styles unless explicitly requested.
+2. **Forge Extended requires side-effect imports** - ALL components from `@tylertech/forge-extended` MUST use side-effect imports: `import '@tylertech/forge-extended/{component-name}';`
 
-4. **Never add CSS classes directly to Forge components** - Forge components use Shadow DOM. Wrap in a container div if needed.
+3. **Check if Tailwind is installed FIRST** - Before using any Tailwind utility classes, check the existing app for Tailwind (look for `tailwind.config.js`, `tailwindcss` in package.json, or existing Tailwind classes). **If Tailwind is NOT installed, you MUST convert all Tailwind utility classes to standard CSS.** If Tailwind IS installed, use Tailwind classes mapped to Forge design tokens (e.g., `text-heading3` instead of `forge-typography--heading3`).
+
+4. **Never add custom CSS embellishments** - No custom shadows, gradients, or typography styles unless explicitly requested.
+
+5. **Never add CSS classes directly to Forge components** - Forge components use Shadow DOM. Wrap in a container div if needed.
 
 ---
 
@@ -261,7 +271,7 @@ Consult these references for detailed rules on specific topics:
 - [buttons.md](references/buttons.md) - Button variant rules
 - [card.md](references/card.md) - Card component usage (forge-structured-card and forge-card)
 - [tables.md](references/tables.md) - Data tables with sorting and pagination
-- [lists.md](references/lists.md) - Navigation and interactive lists
+- [list.md](references/list.md) - Navigation and interactive lists
 - [dialog.md](references/dialog.md) - Modal dialog rules
 - [icon.md](references/icon.md) - Icon usage and import rules
 

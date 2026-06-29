@@ -130,6 +130,39 @@ To get card structure and usage code:
 
 ---
 
-## When to Use `<forge-card>`
+## Choosing Between Card Components
 
-Only use `<forge-card>` when explicitly requested or for very simple content containers without header/body/footer structure. In this case, check blocks with `get_forge_blocks(component: "forge-card")` for usage patterns.
+Both `<forge-structured-card>` and `<forge-card>` can be used:
+
+| Component | Package | Use When |
+|-----------|---------|----------|
+| `forge-structured-card` | `@tylertech/forge-extended` | **Default choice.** Has built-in guardrails for consistent header/body/footer layout, padding, and spacing. |
+| `forge-card` | `@tylertech/forge` | Simple content containers, or when you need full layout control. |
+
+### Using `<forge-card>` with Proper Structure
+
+**If `<forge-card>` must be used, it is highly recommended to nest a `<forge-scaffold>` inside for proper header/body/footer layout:**
+
+```html
+<forge-card>
+  <forge-scaffold>
+    <forge-toolbar slot="header">
+      <h3 slot="start" class="text-heading3">Card Title</h3>
+      <forge-icon-button slot="end" aria-label="More options">
+        <forge-icon name="more_vert"></forge-icon>
+      </forge-icon-button>
+    </forge-toolbar>
+    <div slot="body" class="p-medium">
+      Card content goes here
+    </div>
+    <forge-toolbar slot="footer" inverted>
+      <forge-button slot="end" variant="text">Cancel</forge-button>
+      <forge-button slot="end">Save</forge-button>
+    </forge-toolbar>
+  </forge-scaffold>
+</forge-card>
+```
+
+This pattern mirrors the structure that `forge-structured-card` provides automatically.
+
+Check blocks with `get_forge_blocks(component: "forge-card")` for additional usage patterns.

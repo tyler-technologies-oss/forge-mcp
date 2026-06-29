@@ -2,8 +2,9 @@
 
 ## Basic Usage
 
+### Static List
+
 ```html
-<!-- Static list -->
 <forge-list>
   <forge-list-item>
     <forge-icon name="inbox" slot="start"></forge-icon>
@@ -15,8 +16,11 @@
     Drafts
   </forge-list-item>
 </forge-list>
+```
 
-<!-- Interactive list -->
+### Interactive List
+
+```html
 <forge-list>
   <forge-list-item>
     <button type="button">List Item 1</button>
@@ -24,52 +28,64 @@
   <forge-list-item>
     <button type="button">List Item 2</button>
   </forge-list-item>
-  <forge-list-item>
-    <button type="button">List Item 3</button>
-  </forge-list-item>
 </forge-list>
+```
 
-<!-- For navigation menu lists -->
-<forge-list>
-  <forge-list-item>
-    <a href="/home">Home</a>
-    <forge-icon name="home" slot="end"></forge-icon>
-  </forge-list-item>
-  <forge-list-item>
-    <a href="/settings">Settings</a>
-    <forge-icon name="settings" slot="end"></forge-icon>
-  </forge-list-item>
-</forge-list>
+### Navigation List (for sidebars/drawers)
 
-<!-- Lists with expandable items -->
-<forge-list>
-  <forge-list-item>
-    <forge-icon slot="start" name="code"></forge-icon>
-    <button type="button" id="exp-li-1">List Item One</button>
-    <forge-open-icon slot="end"></forge-open-icon>
-    <forge-expansion-panel trigger="exp-li-1" slot="additional-content">
-      <forge-list indented>
-        <forge-list-item>
-          <button type="button">List Item One</button>
-        </forge-list-item>
-        <forge-list-item>
-          <button type="button">List Item Two</button>
-        </forge-list-item>
-        <forge-list-item>
-          <button type="button">List Item Three</button>
-        </forge-list-item>
-      </forge-list>
-    </forge-expansion-panel>
-    <forge-divider role="presentation" slot="additional-content"></forge-divider>
+```html
+<forge-list navlist>
+  <forge-list-item href="/dashboard">
+    <forge-icon slot="start" name="dashboard"></forge-icon>
+    <span slot="title">Dashboard</span>
+  </forge-list-item>
+  <forge-list-item href="/settings">
+    <forge-icon slot="start" name="settings"></forge-icon>
+    <span slot="title">Settings</span>
   </forge-list-item>
 </forge-list>
 ```
 
-## Notes
+### Expandable List Items
 
-- Static lists: Content directly in list items (text, icons, badges)
-- Interactive lists: Include `<button>` or `<a>` elements
-- Use `start` and `end` slots for icons, badges, and other decorations
-- Use `navlist` attribute for navigation styling in drawers
-- Use `indented` attribute for nested lists
-- Use `additional-content` slot for expandable content
+```html
+<forge-list>
+  <forge-list-item>
+    <forge-icon slot="start" name="code"></forge-icon>
+    <button type="button" id="exp-li-1">Expandable Item</button>
+    <forge-open-icon slot="end"></forge-open-icon>
+    <forge-expansion-panel trigger="exp-li-1" slot="additional-content">
+      <forge-list indented>
+        <forge-list-item>
+          <button type="button">Nested Item One</button>
+        </forge-list-item>
+        <forge-list-item>
+          <button type="button">Nested Item Two</button>
+        </forge-list-item>
+      </forge-list>
+    </forge-expansion-panel>
+  </forge-list-item>
+</forge-list>
+```
+
+---
+
+## List Item Slots
+
+| Slot | Purpose |
+|------|---------|
+| `start` | Leading content (icons, avatars) |
+| Default | Main content (text, buttons, links) |
+| `end` | Trailing content (icons, badges, actions) |
+| `additional-content` | Expandable content below the item |
+
+---
+
+## Rules
+
+1. **Use `navlist` attribute** for navigation lists in sidebars/drawers
+2. **Use `<forge-divider>`** between list sections
+3. **All action icon buttons need `aria-label`** for accessibility
+4. **For interactive items**, include `<button>` or `<a>` elements inside list items
+5. **Use `indented` attribute** for nested lists
+6. **Use `selected` attribute** on list items to indicate current selection
