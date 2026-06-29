@@ -32,9 +32,25 @@ You are an expert developer with comprehensive knowledge of the Tyler Forge web 
 
 **REQUIRED for full applications, prototypes, or app shells.**
 
-This step establishes the foundational page structure that all other UI will be built within.
+This step establishes the foundational page structure and styling approach that all other UI will be built within.
 
 **For new projects starting from scratch:** Read [installation.md](references/installation.md) FIRST for complete setup instructions (styles, component registration, icons).
+
+#### Two Required Questions for New Apps:
+
+**Question 1: Styling Approach**
+
+Ask the user:
+> "Would you like to use Tailwind CSS with the `@tylertech/forge-tailwind` package, or regular CSS with Forge design tokens?"
+
+| Option | Package | Class Examples |
+|--------|---------|----------------|
+| **Tailwind** | `@tylertech/forge-tailwind` | `text-heading3`, `p-medium`, `gap-4`, `bg-surface` |
+| **Regular CSS** | None (use Forge CSS variables) | `forge-typography--heading3`, `var(--forge-spacing-medium)` |
+
+**Why this matters:** This determines how ALL styling will be written throughout the app. Tailwind provides utility classes mapped to Forge tokens; regular CSS uses Forge CSS custom properties directly.
+
+**Question 2: Application Layout**
 
 **Action:** Call `get_forge_blocks(category: "application-layout")` and present the available layouts to the user.
 
@@ -44,7 +60,7 @@ Ask the user:
 
 **Why this matters:** Application layouts define the overall page structure (app bar placement, navigation style, content areas). Starting with the right layout prevents major restructuring later.
 
-**Skip this step ONLY when:**
+#### Skip this step ONLY when:
 - User is adding a feature to an existing app
 - User is asking for a specific component (e.g., "create a login form")
 - The layout context is already established in the codebase

@@ -21,7 +21,74 @@ npm install @tylertech/tyler-icons
 
 ---
 
-## 2. Import Forge Styles (REQUIRED)
+## 2. Choose Styling Approach
+
+Before proceeding, decide how you want to handle styling:
+
+| Approach | Package | When to Use |
+|----------|---------|-------------|
+| **Tailwind CSS** | `@tylertech/forge-tailwind` | New projects, rapid prototyping, utility-first styling |
+| **Regular CSS** | None (use Forge CSS variables) | Existing non-Tailwind projects, traditional CSS approach |
+
+### Option A: Tailwind CSS with Forge (Recommended for New Projects)
+
+Install the Forge Tailwind package:
+
+```bash
+npm install -D tailwindcss @tylertech/forge-tailwind
+npx tailwindcss init
+```
+
+Configure `tailwind.config.js`:
+
+```javascript
+import forgePreset from '@tylertech/forge-tailwind';
+
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx,html}'],
+  presets: [forgePreset],
+};
+```
+
+Add Tailwind directives to your main CSS file:
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+**Tailwind class examples:**
+```html
+<h1 class="text-heading5">Page Title</h1>
+<div class="p-medium gap-4 flex">Content</div>
+<div class="bg-surface rounded-medium">Card</div>
+```
+
+### Option B: Regular CSS with Forge Design Tokens
+
+No additional packages needed. Use Forge CSS custom properties directly:
+
+**CSS variable examples:**
+```html
+<h1 class="forge-typography--heading5">Page Title</h1>
+<div style="padding: var(--forge-spacing-medium); gap: var(--forge-spacing-4);">Content</div>
+```
+
+### Class Comparison
+
+| Purpose | Tailwind (forge-tailwind) | Regular CSS |
+|---------|---------------------------|-------------|
+| Typography | `text-heading3` | `forge-typography--heading3` |
+| Padding | `p-medium` | `padding: var(--forge-spacing-medium)` |
+| Gap | `gap-4` | `gap: var(--forge-spacing-4)` |
+| Background | `bg-surface` | `background: var(--forge-theme-surface)` |
+| Border radius | `rounded-medium` | `border-radius: var(--forge-shape-medium)` |
+
+---
+
+## 3. Import Forge Styles (REQUIRED)
 
 **The Forge CSS must be imported for components to render correctly.**
 
@@ -43,7 +110,7 @@ Or in CSS/SCSS:
 
 ---
 
-## 3. Body Styles (REQUIRED for Full-Page Apps)
+## 4. Body Styles (REQUIRED for Full-Page Apps)
 
 **The `<body>` element MUST have these styles for full-page layouts:**
 
@@ -60,7 +127,7 @@ body {
 
 ---
 
-## 4. Register Components
+## 5. Register Components
 
 ### Core Forge Components (@tylertech/forge)
 
@@ -112,7 +179,7 @@ import '@tylertech/forge-extended/confirmation-dialog';
 
 ---
 
-## 5. Register Icons
+## 6. Register Icons
 
 **Icons MUST be registered before use.**
 
@@ -133,7 +200,7 @@ import { tylIconHome } from '@tylertech/tyler-icons/standard';  // DOES NOT EXIS
 
 ---
 
-## 6. Typography Setup
+## 7. Typography Setup
 
 Typography classes are included in `forge.css`. Use them directly:
 
@@ -227,8 +294,10 @@ body {
 
 Before your app will render correctly, verify:
 
+- [ ] Styling approach chosen (Tailwind with `@tylertech/forge-tailwind` OR regular CSS)
 - [ ] `@tylertech/forge/dist/forge.css` is imported
 - [ ] Body styles are set (height, width, margin, background-color)
 - [ ] Core components are registered via definition functions
 - [ ] Extended components are imported via side-effect imports
 - [ ] Icons are registered via `IconRegistry.define()`
+- [ ] If using Tailwind: `tailwind.config.js` includes the forge preset
