@@ -34,6 +34,8 @@ You are an expert developer with comprehensive knowledge of the Tyler Forge web 
 
 This step establishes the foundational page structure that all other UI will be built within.
 
+**For new projects starting from scratch:** Read [installation.md](references/installation.md) FIRST for complete setup instructions (styles, component registration, icons).
+
 **Action:** Call `get_forge_blocks(category: "application-layout")` and present the available layouts to the user.
 
 Ask the user:
@@ -278,6 +280,9 @@ After reviewing blocks, call `get_component_docs(format: "usage-examples")` for 
 ## Reference Documentation
 
 Consult these references for detailed rules on specific topics:
+
+### ⚠️ Setup (Critical for New Projects)
+- [installation.md](references/installation.md) - **START HERE for new apps.** Complete setup guide: styles, typography, component registration, icon setup
 
 ### Design Tokens
 - [typography.md](references/typography.md) - Type scale, hierarchy, emphasis classes
