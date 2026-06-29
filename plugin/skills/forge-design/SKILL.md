@@ -297,7 +297,7 @@ Consult these references for detailed rules on specific topics:
 - [app-bar.md](references/app-bar.md) - App bar usage (global actions only, never page-level)
 - [toolbar.md](references/toolbar.md) - Toolbar usage (headers, footers, page titles, table headers)
 - [forms.md](references/forms.md) - Form component rules and patterns
-- [buttons.md](references/buttons.md) - Button variant rules
+- [button.md](references/button.md) - Button variants and icon button rules
 - [card.md](references/card.md) - Card component usage (forge-structured-card and forge-card)
 - [tables.md](references/tables.md) - Data tables with sorting and pagination
 - [list.md](references/list.md) - Navigation and interactive lists
