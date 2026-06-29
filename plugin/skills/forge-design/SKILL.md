@@ -63,11 +63,19 @@ Ask the user:
 
 ### 3. Check Reference Files AND Code Snippets for Components Being Used
 
-**Before using ANY Forge component, you MUST:**
+## ⚠️ THIS IS A CONTINUOUS PROCESS - NOT A ONE-TIME CHECK ⚠️
+
+**Every time you encounter or are about to use a Forge component, you MUST:**
 1. **Read the reference file** (if one exists) for critical rules and constraints
 2. **Get code snippets** via `get_forge_blocks(component: "...")` or `get_component_docs(format: "usage-examples")`
 
-When you determine which components will be used in your implementation, read the corresponding reference file(s) from the list below.
+**This applies THROUGHOUT implementation:**
+- When you first plan which components to use → check references
+- When you're writing code and add a component → check its reference
+- When you see a component in a block you're using → check its reference
+- When reviewing your output before delivering → verify against references
+
+**DO NOT rely on memory or assumptions.** Always verify against the reference files and blocks. This ensures accurate output and consistent UI.
 
 **Reference files contain basic usage examples and critical rules that prevent common mistakes.**
 
@@ -214,7 +222,12 @@ After reviewing blocks, call `get_component_docs(format: "usage-examples")` for 
 
 ### 6. Validate Before Finalizing
 
-Call `validate_component_api` for each Forge component before delivering the final solution.
+**Before delivering the final solution:**
+1. **Re-check references** for every Forge component in your output
+2. **Call `validate_component_api`** for each Forge component to verify API accuracy
+3. **Verify patterns match blocks** - if you used a block as reference, ensure your output follows its patterns
+
+**This final verification catches mistakes that slip through during implementation.**
 
 ---
 
@@ -248,6 +261,17 @@ Call `validate_component_api` for each Forge component before delivering the fin
 4. **Never add custom CSS embellishments** - No custom shadows, gradients, or typography styles unless explicitly requested.
 
 5. **Never add CSS classes directly to Forge components** - Forge components use Shadow DOM. Wrap in a container div if needed.
+
+6. **⚠️ BODY STYLES REQUIRED FOR APP LAYOUTS ⚠️** - When using `forge-app-layout` or `forge-scaffold` for a full application, the `<body>` tag MUST have these styles:
+   ```css
+   body {
+     background-color: var(--forge-theme-surface-dim, #fafafa);
+     height: 100dvh;
+     width: 100dvw;
+     margin: 0;
+   }
+   ```
+   Without these styles, the layout will NOT fill the full browser window.
 
 ---
 

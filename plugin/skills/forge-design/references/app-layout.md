@@ -4,10 +4,28 @@
 
 ---
 
+## ⚠️ CRITICAL: Body Styles Required
+
+**When using `forge-app-layout` or `forge-scaffold` for a full application, the `<body>` tag MUST have these styles:**
+
+```css
+body {
+  background-color: var(--forge-theme-surface-dim, #fafafa);
+  height: 100dvh;
+  width: 100dvw;
+  margin: 0;
+}
+```
+
+**Why this is required:** These styles allow the scaffold or app-layout component to fill the full height of the browser window. Without them, the layout will not render correctly.
+
+---
+
 ## Rules
 
-1. **Content headings start at h2** - the app bar title is h1
-2. **Use navigation lists** for sidebar navigation
+1. **Body styles are mandatory** - See critical section above
+2. **Content headings start at h2** - the app bar title is h1
+3. **Use navigation lists** for sidebar navigation
 
 ---
 
