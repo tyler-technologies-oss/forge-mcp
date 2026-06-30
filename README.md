@@ -1,73 +1,56 @@
 # Tyler Forge™ MCP Server
 
-Get instant access to Tyler Forge™ web component documentation directly in AI clients. Ask questions, generate code examples, and explore design system details.
+Access Tyler Forge™ web component documentation directly in AI clients. Discover components, generate framework-specific code, validate APIs, and use design tokens correctly.
 
-## What You Get
+## Features
 
-**Tyler Forge™** is Tyler Technologies' comprehensive web component library and design system. This tool brings that documentation into your AI tools so you can:
-
-- **Discover components** - Find the right component for your needs
-- **Generate code** - Get framework-specific examples (Angular, React, Vue, Svelte)
-- **Validate APIs** - Verify that component properties, attributes, events, and other APIs are correctly used
-- **Access design tokens** - Use colors, spacing, typography consistently
-- **Learn best practices** - Get implementation guidance and accessibility tips
-
-## How does it work?
-
-This MCP server provides a set of declarative resources and tools for accessing Tyler Forge documentation. It uses a progressive disclosure model to
-minimize complexity while maximizing accuracy.
-
-### Context-Aware
-
-When you start the MCP server in your AI client, it automatically detects the currently installed version of Tyler Forge (if any) in your project. This
-allows it to provide version-specific documentation. If no version is detected, it defaults to the latest stable release that is
-bundled within this MCP server.
-
-### Progressive Disclosure
-
-The MCP server is designed to minimize cognitive load by exposing only the most essential resources and tools upfront. More detailed information can be
-accessed through specific tools or follow-up queries. This keeps control of the token usage while still providing comprehensive access to the documentation
-when needed.
-
-### Documentation Source
-
-All documentation is either pulled from the Custom Elements Manifest (CEM) files included with each Tyler Forge package, as well as information that was
-sourced from the documentation site at [https://forge.tylerdev.io](https://forge.tylerdev.io).
+- **Version-aware**: Detects your installed Tyler Forge version and provides matching documentation
+- **Forge Blocks**: Pre-built UI code patterns demonstrating correct Forge component usage
+- **Usage Examples**: Real-world code snippets showing components in context
+- **Component Validation**: Verify generated code against actual component APIs
+- **Design Tokens**: Access colors, spacing, typography, and other design tokens
+- **Framework Guides**: Setup instructions for Angular, React, Vue, Svelte, and Lit
 
 ## Setup
 
-### Claude Code
+### Claude Code Plugin (Recommended)
+
+The plugin bundles the MCP server with a `/forge-design` skill for expert UI guidance.
+
+**Install:**
+```bash
+/plugin marketplace add tyler-technologies-oss/forge-mcp#blocks-mcp-adjustments
+/plugin install forge@tyler-forge
+```
+
+**Verify installation:**
+```bash
+/skills
+```
+
+> You may need to restart Claude or run `/reload-skills` if the skill doesn't appear.
+
+**Update the plugin:**
+```bash
+claude plugin marketplace update tyler-forge
+```
+
+**For local development:**
+```bash
+claude --plugin-dir /path/to/forge-mcp/plugin
+```
+
+### Claude Code (MCP Only)
 
 ```bash
 claude mcp add -t stdio -s [scope] forge -- npx -y @tylertech/forge-mcp@latest
 ```
 
-> The `[scope]` must be `user`, `project` or `local`. See the [Claude Code MCP documentation](https://docs.claude.com/en/docs/claude-code/mcp) for more information.
-
-#### Plugin Installation (Recommended)
-
-For the best experience with Claude Code, install the Forge plugin which bundles the MCP server with a `/forge-design` skill that provides expert guidance for building UIs with Tyler Forge:
-
-**From GitHub:**
-```bash
-/plugin install forge-design@tylertech/forge-mcp
-```
-
-**From local directory (for development):**
-```bash
-claude --plugin-dir /path/to/forge-mcp/plugin
-```
-
-The plugin provides:
-- **MCP Server** - Automatic access to all Forge documentation and tools
-- **`/forge-design` Skill** - Expert guidance for building UIs following Forge design patterns
-- **Pre-built Blocks** - Access to reference implementations via `get_forge_blocks`
-
-Once installed, invoke the skill with `/forge-design` before any UI task to get expert-level Forge guidance.
+> `[scope]` must be `user`, `project`, or `local`. See [Claude Code MCP docs](https://docs.claude.com/en/docs/claude-code/mcp).
 
 ### Codex CLI
 
-Add the following to your `config.toml` (which defaults to `~/.codex/config.toml`, but refer to the configuration documentation for more advanced setups):
+Add to `~/.codex/config.toml`:
 
 ```toml
 [mcp_servers.forge]
@@ -81,22 +64,9 @@ args = ["-y", "@tylertech/forge-mcp@latest"]
 gemini mcp add -t stdio -s [scope] forge npx -y @tylertech/forge-mcp@latest
 ```
 
-> The `[scope]` must be `user`, `project` or `local`.
-
 ### VS Code
 
-- Open the Command Palette (`Cmd+Shift+P` or `Ctrl+Shift+P`)
-- Choose `MCP: Add Server...`
-- Choose `Command (stdio)`
-- Enter `npx -y @tylertech/forge-mcp@latest`
-- Name the server `forge`
-- Choose if you want to use it as a `Global` or `Workspace` MCP server
-
-> See the [VS Code MCP docs](https://code.visualstudio.com/docs/copilot/customization/mcp-servers) for more info.
-
-#### Manual Configuration
-
-Add the Forge MCP server to the `.vscode/mcp.json` configuration file in your project, or use the Command Palette to add it via "MCP: Add Server...".
+Add to `.vscode/mcp.json`:
 
 ```json
 {
@@ -110,16 +80,11 @@ Add the Forge MCP server to the `.vscode/mcp.json` configuration file in your pr
 }
 ```
 
-> **Note:** You may need to start the server manually after adding it to the config file. Use the `MCP: List Servers` command from the Command Palette.
-
+Or use Command Palette → `MCP: Add Server...` → `Command (stdio)` → enter `npx -y @tylertech/forge-mcp@latest`.
 
 ### Claude Desktop
 
-- Open `Settings`
-- Choose `Developer`
-- Click on `Edit Config`
-
-This will open your file explorer to the directory where the `claude_desktop_config.json` file lives. Edit the file to include the following configuration:
+Edit `claude_desktop_config.json` (Settings → Developer → Edit Config):
 
 ```json
 {
@@ -132,91 +97,105 @@ This will open your file explorer to the directory where the `claude_desktop_con
 }
 ```
 
-### Best Practices
+## Core Concepts
 
-When using any AI-powered tool, it's important to follow best practices to ensure effective usage and accurate results:
+### Forge Blocks
 
-- **Be Specific**: Clearly define your questions or requests to get the most relevant information. Using vague prompts can lead to inaccurate or incorrect responses.
-- **Plan Ahead**: Spend time outlining and planning your prompts, and break things down into smaller tasks. This can significantly improve the quality of the responses.
-- **Validate**: Always cross-check critical information with official documentation or trusted sources. AI output may not always be accurate.
-- **Provide Context**: When writing prompts, provide relevant context to help the AI understand your needs better.
-- **Use Examples**: When possible, provide examples or screenshots of what you're looking for to guide the AI's responses.
-- **Limit Scope**: Break down complex queries into smaller, manageable parts for better clarity and responses. For lengthy conversations, periodically compact or clear context to maintain relevance.
+Blocks are pre-built UI code patterns that demonstrate correct Forge component usage. They serve as authoritative references for how to build with Forge—showing proper layout, typography, spacing, and component composition.
 
-If there's one thing to take away, it's to be specific and spend time up front planning and structuring your prompts. This will lead to more accurate and useful results. In the end, these tools are here to assist you, and they can get things wrong even with the best prompts and context. Always verify and review the output for accuracy.
+**Why use blocks?**
+- Handcrafted examples following Forge design system best practices
+- Show components working together in realistic scenarios
+- Prevent common mistakes and ensure consistent UI patterns
 
-## Important Note
+**How to use blocks:**
 
-**ALWAYS** validate the output from any AI tool for accuracy. While this MCP server is designed to provide accurate information, it may not always be perfect
-and LLMs are known to hallucinate at times. Always cross-check critical information with the official Tyler Forge™ documentation or trusted sources.
+```
+# Search for blocks by functionality
+get_forge_blocks(query: "login form")
+get_forge_blocks(query: "data table with sorting")
+
+# Find blocks using a specific component
+get_forge_blocks(component: "forge-card")
+get_forge_blocks(component: "forge-table")
+
+# Browse by category
+get_forge_blocks(category: "forms")
+get_forge_blocks(category: "application-layout")
+
+# Get full code for a specific block
+get_forge_blocks(blockId: "src/blocks/forms/login")
+```
+
+### Usage Examples
+
+Get real-world code snippets showing how components are used in context. Usage examples are extracted from blocks that use the component.
+
+```
+# Get usage examples for a component
+get_component_docs(componentName: "forge-button", format: "usage-examples")
+get_component_docs(componentName: "forge-text-field", format: "usage-examples")
+```
+
+### Component Documentation
+
+Access complete API documentation including properties, events, slots, CSS parts, and CSS custom properties.
+
+```
+# Full API documentation
+get_component_docs(componentName: "forge-dialog")
+
+# Summary overview
+get_component_docs(componentName: "forge-dialog", format: "summary")
+
+# Usage examples from blocks
+get_component_docs(componentName: "forge-dialog", format: "usage-examples")
+```
 
 ## Capabilities
 
-### Prompts
-
-#### forge_mode
-
-Sets some baseline rules when running Forge-specific tasks/queries.
-
-You can trigger this prompt in your AI client by specifying the prompt name (if supported), typically via a slash command or prompt selection. The
-`forge_mode` prompt accepts a `task` parameter where you can describe your specific task/query. This helps guide the LLM to use the correct MCP
-server tools, as well as includes some rules and best practices when outputting Tyler Forge-related code.
-
 ### Tools
-
-The following tools are available for interacting with Tyler Forge documentation. Each tool uses declarative parameters to provide comprehensive functionality while minimizing the cognitive load for AI clients:
 
 | Tool | Description |
 |------|-------------|
-| **Component Tools** ||
-| `get_component_docs` | Get comprehensive documentation for Tyler Forge components in various formats: full API reference, summary overview, or structural usage examples. Returns component list when no component specified. |
-| `list_components` | Browse all available Tyler Forge components with descriptions. Returns a comprehensive table of all components with their purpose and capabilities. |
-| `find_components` | Search Tyler Forge components by name, description, or functionality with enhanced fuzzy matching. Supports multi-term queries like "app bar drawer". Returns all components when no query provided. |
-| `validate_component_api` | Validate Tyler Forge component API usage after code generation. Checks that properties, attributes, events, methods, slots, CSS properties, parts, and classes are valid. |
-| **Design System Tools** ||
-| `get_design_tokens` | Get Tyler Forge design tokens for consistent styling. Access color palettes, spacing scales, typography, animation, and other design system values. |
-| `setup_typography` | Access Tyler Forge typography setup instructions including font families, type scales, weights, and practical usage guidelines for consistent text styling. |
-| `setup_icons` | Access Tyler Forge icons system including installation, registration, and usage patterns for the forge-icon component. |
-| `find_icons` | Search Tyler Icons using semantic/fuzzy search with natural language queries. Finds the closest matching icons by name and keywords. |
-| **Framework Tools** ||
-| `setup_framework` | Get complete framework-specific setup instructions for Tyler Forge components including installation, configuration, and best practices for Angular, React, Vue, Svelte, or Lit. |
-| **Migration Tools** ||
-| `get_version_migration_guide` | Get comprehensive migration guides for upgrading between Tyler Forge versions, including breaking changes, API mappings, and upgrade instructions. Defaults to upgrading from v2 to v3. |
-| **General Tools** ||
-| `get_usage_guide` | Get comprehensive Tyler Forge guides including installation instructions, framework-specific integration, and general usage patterns |
+| `get_forge_blocks` | Search and retrieve pre-built UI patterns (use FIRST before generating UI code) |
+| `get_component_docs` | Get component documentation (full API, summary, or usage examples) |
+| `list_components` | Browse all available components |
+| `find_components` | Search components by name or functionality |
+| `validate_component_api` | Validate component API usage in generated code |
+| `get_design_tokens` | Get design tokens (colors, spacing, typography, etc.) |
+| `setup_typography` | Typography setup and usage guidelines |
+| `setup_icons` | Icon system installation and usage |
+| `find_icons` | Search icons by name or keywords |
+| `setup_framework` | Framework-specific setup (Angular, React, Vue, Svelte, Lit) |
+| `get_version_migration_guide` | Migration guides between Forge versions |
+| `get_usage_guide` | General usage patterns and best practices |
 
 ### Resources
 
-The following **streamlined resources** are available for reference via a progressive disclosure model:
+| URI | Description |
+|-----|-------------|
+| `forge://components` | All components overview |
+| `forge://component/{tagName}` | Specific component documentation |
+| `forge://installation` | Installation guide |
+| `forge://usage` | Usage guide |
+| `forge://framework/{name}` | Framework guides (angular, react, vue, svelte, lit) |
+| `forge://design-tokens` | All design tokens |
+| `forge://design-tokens/{category}` | Token categories (color, spacing, typography, animation, border, elevation, shape, layering) |
+| `forge://icons` | Icons guide |
 
-| Resource URI | Description |
-|--------------|-------------|
-| **Component Resources** ||
-| `forge://components` | Overview of all Tyler Forge components with names and summaries |
-| `forge://component/{tagName}` | Complete documentation for specific Tyler Forge component |
-| **General Resources** ||
-| `forge://installation` | Complete installation guide for Tyler Forge web components |
-| `forge://usage` | Comprehensive usage guide for Tyler Forge web components |
-| **Framework Resources** ||
-| `forge://framework/angular` | Tyler Forge Angular integration guide |
-| `forge://framework/react` | Tyler Forge React integration guide |
-| `forge://framework/vue` | Tyler Forge Vue integration guide |
-| `forge://framework/svelte` | Tyler Forge Svelte integration guide |
-| `forge://framework/lit` | Tyler Forge Lit integration guide |
-| **Design Token Resources** ||
-| `forge://design-tokens` | Complete Tyler Forge design tokens including colors, spacing, typography, animation, borders, elevation, layering, and shapes |
-| `forge://design-tokens/typography` | Tyler Forge typography system including font families, type scales, weights, and usage guidelines |
-| `forge://design-tokens/color` | Tyler Forge color system including palettes, semantic colors, and usage guidelines |
-| `forge://design-tokens/animation` | Tyler Forge animation design tokens including durations and easing curves |
-| `forge://design-tokens/spacing` | Tyler Forge spacing scale design tokens for consistent layout and spacing |
-| `forge://design-tokens/border` | Tyler Forge border design tokens including widths, radii, and styles |
-| `forge://design-tokens/elevation` | Tyler Forge elevation design tokens including shadow styles and layering guidelines |
-| `forge://design-tokens/shape` | Tyler Forge shape design tokens including corner styles and usage guidelines |
-| `forge://design-tokens/layering` | Tyler Forge layering design tokens including z-index values and stacking context guidelines |
-| **Icons Resources** ||
-| `forge://icons` | Complete guide to installing and using Tyler Forge icons |
+### Prompts
 
-> **Note**: Granular component resources (`/properties`, `/methods`, `/events`, etc.) have been removed to reduce complexity. Use the **tools** for granular access to specific component information.
+| Prompt | Description |
+|--------|-------------|
+| `forge_mode` | Sets baseline rules for Forge-specific tasks |
+
+## Recommended Workflow
+
+1. **Search blocks first** — Before writing any Forge UI code, call `get_forge_blocks` to find pre-built patterns
+2. **Get usage examples** — Use `get_component_docs(format: "usage-examples")` for component-specific patterns
+3. **Check component API** — Use `get_component_docs` for full API details when needed
+4. **Validate before finalizing** — Call `validate_component_api` to verify your code uses correct APIs
 
 ## Development
 
@@ -229,14 +208,14 @@ pnpm run build  # Build for production
 
 ## Contributing
 
-Contributions are welcome! Please see the [CONTRIBUTING](CONTRIBUTING.md) guide for details.
-
-If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. Issues and PRs welcome.
 
 ## License
 
 Apache-2.0 License - see [LICENSE](LICENSE) file for details.
 
 ---
+
+> **Note**: Always validate AI output against [official documentation](https://forge.tylerdev.io).
 
 **Part of the [Tyler Technologies](https://tylerforge.design) Open Source initiative**
