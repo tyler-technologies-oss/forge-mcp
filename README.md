@@ -5,8 +5,8 @@ Access Tyler Forge™ web component documentation directly in AI clients. Discov
 ## Features
 
 - **Version-aware**: Detects your installed Tyler Forge version and provides matching documentation
-- **Forge Blocks**: Pre-built UI code patterns demonstrating correct Forge component usage
-- **Usage Examples**: Real-world code snippets showing components in context
+- **Forge Blocks**: Pre-built UI patterns showing components working together in context (forms, tables, layouts, dashboards)
+- **Usage Examples**: Isolated code snippets for individual component structure and API
 - **Component Validation**: Verify generated code against actual component APIs
 - **Design Tokens**: Access colors, spacing, typography, and other design tokens
 - **Framework Guides**: Setup instructions for Angular, React, Vue, Svelte, and Lit
