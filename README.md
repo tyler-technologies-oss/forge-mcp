@@ -101,11 +101,11 @@ Edit `claude_desktop_config.json` (Settings → Developer → Edit Config):
 
 ### Forge Blocks
 
-Blocks are pre-built UI code patterns that demonstrate correct Forge component usage. They serve as authoritative references for how to build with Forge—showing proper layout, typography, spacing, and component composition.
+Blocks are pre-built UI patterns that show Forge components working together in context. They demonstrate real-world scenarios like login forms, data tables, application layouts, and dashboards—complete with proper layout, typography, spacing, and component composition.
 
 **Why use blocks?**
+- See how multiple components work together in realistic scenarios
 - Handcrafted examples following Forge design system best practices
-- Show components working together in realistic scenarios
 - Prevent common mistakes and ensure consistent UI patterns
 
 **How to use blocks:**
@@ -129,7 +129,7 @@ get_forge_blocks(blockId: "src/blocks/forms/login")
 
 ### Usage Examples
 
-Get real-world code snippets showing how components are used in context. Usage examples are extracted from blocks that use the component.
+Isolated code snippets showing individual component usage. These focus on a single component's structure and API without the surrounding context of a full UI pattern.
 
 ```
 # Get usage examples for a component
