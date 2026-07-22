@@ -10,12 +10,13 @@ interface BlockInfo {
   description: string;
   tags: string[];
   file: string;
+  category?: string;
   componentsUsed?: string[];
 }
 
 interface BlocksManifest {
   blocks: BlockInfo[];
-  categories: string[];
+  categories: Array<{ name: string }>;
   generatedAt: string;
 }
 
@@ -166,11 +167,12 @@ export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
 
     // Filter by category if specified
     if (category) {
-      const categoryLower = category.toLowerCase();
-      blocks = blocks.filter(b => {
-        const blockCategory = b.id.split('/')[2]; // e.g., "src/blocks/forms/login" -> "forms"
-        return blockCategory?.toLowerCase() === categoryLower;
-      });
+      const normalize = (s: string): string =>
+        s.toLowerCase().replace(/[\s_-]+/g, '-');
+      const wanted = normalize(category);
+      blocks = blocks.filter(
+        b => b.category && normalize(b.category) === wanted,
+      );
     }
 
     // Filter by component if specified
@@ -234,7 +236,7 @@ export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
     // Available categories
     sections.push('## Categories');
     sections.push('');
-    sections.push(manifest.categories.map(c => `- ${c}`).join('\n'));
+    sections.push(manifest.categories.map(c => `- ${c.name}`).join('\n'));
     sections.push('');
 
     // Blocks table

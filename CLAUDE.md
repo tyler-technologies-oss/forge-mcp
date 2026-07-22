@@ -13,6 +13,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `pnpm run format` - Format code with Prettier
 - `pnpm run format:check` - Check if code is properly formatted
 
+### Versioning & Release
+
+When releasing a new version, update the version number in all three files:
+- `package.json`
+- `plugin/.claude-plugin/plugin.json`
+- `.claude-plugin/marketplace.json`
+
 ### Data Flow
 
 1. Server initialization loads CEM data from filesystem
