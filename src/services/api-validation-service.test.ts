@@ -6,6 +6,7 @@ const mockComponent: CEMComponentDeclaration = {
   tagName: 'forge-test',
   name: 'TestComponent',
   kind: 'class',
+  customElement: true,
   members: [
     {
       kind: 'field',
@@ -53,8 +54,16 @@ const mockComponent: CEMComponentDeclaration = {
   ],
   attributes: [{ name: 'value' }, { name: 'disabled' }, { name: 'readonly' }],
   events: [
-    { name: 'change', description: 'Fired on change' },
-    { name: 'input', description: 'Fired on input' },
+    {
+      name: 'change',
+      description: 'Fired on change',
+      type: { text: 'CustomEvent' },
+    },
+    {
+      name: 'input',
+      description: 'Fired on input',
+      type: { text: 'CustomEvent' },
+    },
   ],
   slots: [
     { name: '', description: 'Default slot' },

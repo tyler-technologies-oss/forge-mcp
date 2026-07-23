@@ -76,39 +76,20 @@ export class ComponentDocumentationTool extends BaseToolHandler<ComponentDocumen
 
     await this._resourceManager.initialize();
 
-    // Handle usage-examples format
-    if (format === 'usage-examples') {
-      if (!component) {
+    // Handle component name list (when no component specified)
+    if (!component) {
+      if (format === 'usage-examples') {
         throw new Error(
           'Component name is required for usage-examples format. Use list_components to see available components.',
         );
       }
-      const examples = await this._usageExamplesResource.get(component);
-      return this._createTextResponse(examples);
-    }
-
-    // Handle component name list (when no component specified)
-    if (!component) {
       const namesContent = await this._resourceManager.readResource(
         'forge://components/names',
       );
       return this._createTextResponse(namesContent);
     }
 
-    // Handle summary format using ComponentSummaryResource directly
-    if (format === 'summary') {
-      const cemComponent = this._cemLoader.getComponent(component);
-      if (!cemComponent) {
-        throw new Error(
-          `Component not found: ${component}. Use list_components to see available components.`,
-        );
-      }
-      const summaryContent =
-        await this._componentSummaryResource.get(cemComponent);
-      return this._createTextResponse(summaryContent);
-    }
-
-    // Handle full format
+    // Get component data (required for all formats when component is specified)
     const componentData = this._cemLoader.getComponent(component);
     if (!componentData) {
       throw new Error(
@@ -116,19 +97,46 @@ export class ComponentDocumentationTool extends BaseToolHandler<ComponentDocumen
       );
     }
 
-    // If sections are specified, use CEM data to generate only requested sections
-    if (format === 'full' && sections && sections.length > 0) {
+    // Generate API quick reference to prepend to all component docs
+    const quickRef = await this._generateApiQuickReference(componentData);
+
+    // Handle usage-examples format
+    if (format === 'usage-examples') {
+      const examples = await this._usageExamplesResource.get(component);
+      return this._createTextResponse(quickRef + examples);
+    }
+
+    // Handle summary format
+    if (format === 'summary') {
+      const summaryContent =
+        await this._componentSummaryResource.get(componentData);
+      return this._createTextResponse(quickRef + summaryContent);
+    }
+
+    // Handle full format with specific sections
+    if (sections && sections.length > 0) {
       const sectionContent = await this._generateSectionContent(
         componentData,
         sections,
       );
-      return this._createTextResponse(sectionContent);
+      return this._createTextResponse(quickRef + sectionContent);
     }
 
-    // Otherwise, return the full resource content verbatim
+    // Full format - return complete resource content
     const uri = `forge://component/${component}`;
     const fullContent = await this._resourceManager.readResource(uri);
-    return this._createTextResponse(fullContent);
+    return this._createTextResponse(quickRef + fullContent);
+  }
+
+  /**
+   * Generate the API Quick Reference header using template
+   */
+  private async _generateApiQuickReference(component: any): Promise<string> {
+    const context = this._createTemplateContext(component);
+    return await this._templateEngine.render(
+      'components/api-quick-reference.md',
+      context,
+    );
   }
 
   /**

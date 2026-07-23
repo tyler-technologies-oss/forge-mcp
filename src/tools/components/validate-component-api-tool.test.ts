@@ -73,7 +73,9 @@ vi.mock('../../services/cem-loader.js', () => ({
     isLoaded: vi.fn(() => true),
     loadCEM: vi.fn().mockResolvedValue(undefined),
     getComponent: vi.fn((tagName: string) => {
-      if (tagName === 'forge-button') {return mockButtonComponent;}
+      if (tagName === 'forge-button') {
+        return mockButtonComponent;
+      }
       return null;
     }),
     getComponentTagNames: vi.fn(() => [

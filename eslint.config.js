@@ -18,5 +18,5 @@ export default defineConfig([
     files: ['**/*.js', '**/*.mjs'],
     extends: [tylerPlugin.configs.recommended],
   },
-  { ignores: ['dist/**/*'] },
+  { ignores: ['dist/**/*', 'vitest.config.ts'] },
 ]);
