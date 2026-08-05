@@ -195,6 +195,7 @@ Ask the user:
 | `forge-paginator` | [paginator.md](references/paginator.md) |
 | `forge-skeleton` | [skeleton.md](references/skeleton.md) |
 | `forge-table` | [table.md](references/table.md) |
+| `forge-timeline` | [timeline.md](references/timeline.md) |
 | `forge-toast` | [toast.md](references/toast.md) |
 | `forge-tooltip` | [tooltip.md](references/tooltip.md) |
 
