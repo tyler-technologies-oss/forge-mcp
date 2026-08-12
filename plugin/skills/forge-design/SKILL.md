@@ -281,7 +281,11 @@ After reviewing blocks, call `get_component_docs(format: "usage-examples")` for 
 
 5. **Never add CSS classes directly to Forge components** - Forge components use Shadow DOM. Wrap in a container div if needed.
 
-6. **⚠️ BODY STYLES REQUIRED FOR APP LAYOUTS ⚠️** - When using `forge-app-layout` or `forge-scaffold` for a full application, the `<body>` tag MUST have these styles:
+6. **⚠️ ALWAYS START FROM A BLOCK ⚠️** - Before writing ANY Forge UI, call `get_forge_blocks` and use an existing block as your starting point. Extract the specific pattern you need — slots, structure, composition — and adapt content only. **Do not invent markup structure or layout when a block already demonstrates it.** Heading level (`h1`–`h6`) is the one thing you *do* pick per-app based on the surrounding document hierarchy — the block bakes in the styling, you choose the level. Common anti-patterns (e.g. `body2` as a subheading, ad-hoc grids where a scaffold fits, inline styles overriding tokens) are cataloged in [anti-patterns.md](references/anti-patterns.md).
+
+7. **⚠️ PREFER SCAFFOLD BLOCKS OVER CUSTOM CSS ⚠️** - `forge-scaffold` (and scaffold-based blocks) belong anywhere you need structured layout — not just at the app shell level. Use scaffolds *inside* cards, drawers, dialogs, and other containers instead of writing custom flex/grid CSS. If you're about to write layout CSS, stop and check for a scaffold-based block first.
+
+8. **⚠️ BODY STYLES REQUIRED FOR APP LAYOUTS ⚠️** - When using `forge-app-layout` or `forge-scaffold` for a full application, the `<body>` tag MUST have these styles:
    ```css
    body {
      background-color: var(--forge-theme-surface-dim, #fafafa);
@@ -325,6 +329,7 @@ Consult these references for detailed rules on specific topics:
 - [accessibility.md](references/accessibility.md) - ARIA attributes, semantic HTML
 - [angular.md](references/angular.md) - Angular-specific patterns
 - [react.md](references/react.md) - React-specific patterns
+- [anti-patterns.md](references/anti-patterns.md) - UI anti-patterns to avoid (body2 subheadings, raw hN inside Forge components, ad-hoc grids, inline styles overriding tokens)
 
 **Note:** Individual component usage examples are available in the Component Reference tables above in the "Check Reference Files" section.
 
