@@ -4,29 +4,7 @@ Dialogs use `<forge-scaffold>` for proper layout with header, body, and footer r
 
 ---
 
-## Basic Usage
-
-```html
-<forge-dialog aria-labelledby="dialog-title" style="--forge-dialog-width: 500px;">
-  <forge-scaffold>
-    <forge-toolbar slot="header">
-      <h2 id="dialog-title" slot="start" class="text-heading3">Dialog Title</h2>
-      <forge-icon-button slot="end" aria-label="Close dialog">
-        <forge-icon name="close"></forge-icon>
-      </forge-icon-button>
-    </forge-toolbar>
-    <div slot="body" class="p-medium">
-      Dialog content goes here
-    </div>
-    <forge-toolbar slot="footer" inverted>
-      <forge-button slot="end" variant="text">Cancel</forge-button>
-      <forge-button slot="end">Confirm</forge-button>
-    </forge-toolbar>
-  </forge-scaffold>
-</forge-dialog>
-```
-
-### Opening Dialogs
+## Opening Dialogs
 
 ```javascript
 const dialog = document.querySelector('forge-dialog');

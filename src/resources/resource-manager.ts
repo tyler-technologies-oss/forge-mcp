@@ -18,7 +18,6 @@ import { FrameworkReactResource } from './framework/framework-react-resource.js'
 import { FrameworkVueResource } from './framework/framework-vue-resource.js';
 import { FrameworkSvelteResource } from './framework/framework-svelte-resource.js';
 import { FrameworkLitResource } from './framework/framework-lit-resource.js';
-import { ComponentUsageExamplesResource } from './components/component-usage-examples-resource.js';
 import { ComponentsListResource } from './components/components-brief-resource.js';
 
 const RESOURCE_SCHEME = 'forge://';
@@ -51,7 +50,6 @@ export class ResourceManager {
   private _frameworkSvelte = new FrameworkSvelteResource();
   private _frameworkLit = new FrameworkLitResource();
   private _componentsList = new ComponentsListResource();
-  private _componentUsageExamples = new ComponentUsageExamplesResource();
 
   /**
    * Initialize the resource manager by loading CEM data
@@ -101,14 +99,6 @@ export class ResourceManager {
       uri: 'forge://usage',
       name: 'Tyler Forge Usage Guide',
       description: 'Comprehensive usage guide for Tyler Forge web components',
-      mimeType: 'text/markdown',
-    });
-
-    resources.push({
-      uri: 'forge://components/usage-examples',
-      name: 'Component Usage Examples',
-      description:
-        'Structural usage examples for all Tyler Forge components with basic HTML structure',
       mimeType: 'text/markdown',
     });
 
@@ -273,9 +263,6 @@ export class ResourceManager {
 
       case 'forge://usage':
         return await this._usage.get();
-
-      case 'forge://components/usage-examples':
-        return await this._componentUsageExamples.getAll();
 
       case 'forge://framework/angular':
         return await this._frameworkAngular.get();

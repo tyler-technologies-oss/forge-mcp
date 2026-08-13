@@ -6,18 +6,6 @@ The app bar is for **global application-level functionality only**. It persists 
 
 ---
 
-## Minimal Example
-
-```html
-<forge-app-bar title-text="My Application" theme-mode="scoped">
-  <forge-app-bar-menu-button slot="start"></forge-app-bar-menu-button>
-  <forge-app-bar-notification-button slot="end"></forge-app-bar-notification-button>
-  <forge-user-profile slot="end" full-name="John Doe" email="john@example.com"></forge-user-profile>
-</forge-app-bar>
-```
-
----
-
 ## Critical Rules
 
 1. **NEVER put page-level actions in the app bar** - Buttons for page-specific functionality (Save, Edit, Delete, Submit, etc.) belong in the page content, NOT the app bar
@@ -72,5 +60,5 @@ Page:    [Page Title] [Save] [Cancel]
 
 ## Notes
 
-Call `get_forge_blocks(component: "forge-app-bar")` to see verified app bar implementations.
-Call `get_component_docs(component: "forge-app-bar", format: "usage-examples")` for component API examples.
+- `get_forge_blocks(component: "forge-app-bar")` — verified app-bar implementations.
+- `get_component_docs(component: "forge-app-bar", format: "summary")` — slots, attributes, events.

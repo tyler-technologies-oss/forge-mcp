@@ -24,7 +24,7 @@ You build Forge UI with the Forge MCP server. Every generation must be grounded 
 
 Short catalog — full detail in [anti-patterns.md](references/anti-patterns.md):
 
-- Ad-hoc `display:flex` / `display:grid` inside cards, drawers, dialogs → use a scaffold-based block from `get_forge_blocks(component: "forge-scaffold")`. Scaffold-block examples for each container live in that component's own reference — [card.md](references/card.md), [dialog.md](references/dialog.md), [drawer.md](references/drawer.md) — and in [scaffold.md](references/scaffold.md).
+- Ad-hoc `display:flex` / `display:grid` inside cards, drawers, dialogs → use a scaffold-based block from `get_forge_blocks(component: "forge-scaffold")`. Scaffold-based composition examples for cards and dialogs live in [card.md](references/card.md), [dialog.md](references/dialog.md), and [scaffold.md](references/scaffold.md); for `forge-drawer`, fetch `get_forge_blocks(component: "forge-drawer")`.
 - **NEVER use the `style` attribute.** No inline styles on any element — Forge or otherwise. Every visual property must come from a stylesheet class or a Forge design token (`var(--forge-spacing-*)`, `var(--forge-theme-*)`). Inline styles bypass theming, density, and token migrations, and drift silently from the rest of the app. The only exception is the required `<body>` styles for app shells documented in [installation.md](references/installation.md).
 - `<div class="card">` / `<div role="dialog">` / hand-rolled drawer → use `<forge-card>`, `<forge-dialog>`, `<forge-drawer>`.
 - Reinvented Forge markup structure written from memory → fetch the block first.
@@ -58,9 +58,10 @@ The plan pins the scaffold block, region components, typography roles, and icon 
 Command: `get_forge_blocks(query: "...")` or `get_forge_blocks(component: "forge-...")`.
 Blocks are the authoritative structural reference. **Blocks always take precedence** over rules paraphrased in prose.
 
-### Step 5. Load references for each component/topic
-For every Forge component you plan to use, read `references/{tag-name}.md`.
+### Step 5. Load references and API contracts
 For domain decisions (typography, spacing, forms, tables, composition), read the topic file below (§ Domain routers).
+For component rules that exist as reference files, load them (see § Component references at the bottom of this file).
+For every other Forge component, call `get_component_docs(component: "forge-X", format: "summary")` for the API contract — do not guess slot names, attributes, or events.
 
 ### Step 6. Write the markup
 Use the block as structural template. Adapt content only. Do not invent slots, wrappers, or hierarchy.
@@ -73,6 +74,7 @@ Fix any reported issues before delivering.
 
 ### Setup
 - [installation.md](references/installation.md) — new-project setup: styles, typography, component registration, icons, body styles.
+- [tailwind.md](references/tailwind.md) — Tailwind CSS wiring: required imports, layer order, `dark:` variant rebinding to Forge's theme toggle. **Load when the user chose Tailwind in Step 1.**
 
 ### Design tokens (load when picking a value)
 - [typography.md](references/typography.md) — type scale, hierarchy rules, `text-heading{N}`/`text-body{N}` roles. **Load when choosing any heading level, body-text size, or emphasis class.**
@@ -105,30 +107,29 @@ Fix any reported issues before delivering.
 ### Anti-patterns
 - [anti-patterns.md](references/anti-patterns.md) — full catalog with correct alternatives.
 
-## Component reference index
+## Component references
 
-One reference file per component at `references/{tag-name}.md`. Load only the components you're actually using in this turn. Grouped for lookup:
+Reference files exist for components with rules/composition guidance that isn't derivable from the API alone. For every other component, get what you need from tools:
 
-**Core inputs & buttons:** button, icon-button, fab, split-button, button-toggle, button-toggle-group, button-area, checkbox, radio, switch, slider, text-field, field, label, label-value, autocomplete, select, select-dropdown, option, option-group, date-picker, date-range-picker, time-picker, color-picker, file-picker, chip, chip-field, chip-set, quantity-field.
+1. **Structural usage** → `get_forge_blocks(component: "forge-X")`. Every Forge component has at least one block; most have multiple variants (`demo`, `variants`, `with-icon`, `label-inline`, etc.).
+2. **API contract** — slots, attributes, properties, events, CSS parts, CSS vars — → `get_component_docs(component: "forge-X", format: "summary")`. Use `format: "full"` for descriptions. **`get_component_docs` never returns HTML** — for markup, always use `get_forge_blocks`.
+3. **Component discovery** → `find_components` / `list_components`. Never guess a tag name.
 
-**Containers & layout:** card, structured-card (see [card.md](references/card.md)), scaffold, stack, split-view, divider, expansion-panel, accordion, drawer, mini-drawer, modal-drawer, overlay, popover, backdrop, bottom-sheet, toolbar.
+Reference files that DO exist (load only when relevant to the current turn):
 
-**Navigation:** app-bar, app-bar-help-button, app-bar-menu-button, app-bar-notification-button, app-bar-profile-button, app-bar-search, app-launcher, user-profile, list, list-item, menu, tab, tab-bar, stepper, step, view-switcher, skip-link.
-
-**Feedback & data:** table, paginator, dialog, banner, inline-message, toast, tooltip, page-state, skeleton, linear-progress, circular-progress, badge, avatar, calendar, timeline, meter, meter-group.
-
-**Utility:** icon, focus-indicator, state-layer, key, key-item, keyboard-shortcut, open-icon.
-
-**Extended (`@tylertech/forge-extended`):** busy-indicator, confirmation-dialog, count-card, multi-select-header, quantity-field, responsive-toolbar.
-
-If you need a component not obviously in this list, call `find_components` — do not guess a tag name.
+- **Component-specific rules:** [button.md](references/button.md), [icon-button.md](references/icon-button.md), [icon.md](references/icon.md), [text-field.md](references/text-field.md), [timeline.md](references/timeline.md).
+- **Container composition:** [card.md](references/card.md), [dialog.md](references/dialog.md), [scaffold.md](references/scaffold.md), [list.md](references/list.md).
+- **Domain composition:** [forms.md](references/forms.md), [tables.md](references/tables.md), [toolbar.md](references/toolbar.md), [app-bar.md](references/app-bar.md), [app-layout.md](references/app-layout.md).
+- **Design tokens & layout:** [typography.md](references/typography.md), [spacing.md](references/spacing.md), [colors.md](references/colors.md), [layout.md](references/layout.md), [tailwind.md](references/tailwind.md).
+- **Cross-cutting:** [accessibility.md](references/accessibility.md), [anti-patterns.md](references/anti-patterns.md), [installation.md](references/installation.md), [ui-plan.md](references/ui-plan.md).
+- **Framework:** [angular.md](references/angular.md), [react.md](references/react.md).
 
 ## MCP tools
 
 - `generate_ui_plan` — emit a machine-checkable plan (scaffold, regions, typography, icons). **Call before any non-trivial markup.**
 - `validate_ui_plan` — verify the plan against the CEM, block catalogue, token roles, icon set. **Must pass before markup.**
-- `get_forge_blocks` — pre-built patterns. **Call before writing any `<forge-*>` markup.**
-- `get_component_docs` — component docs; use `format="usage-examples"` for structure.
+- `get_forge_blocks` — pre-built patterns. **The sole source of Forge markup.** Call before writing any `<forge-*>` code (single component or larger pattern).
+- `get_component_docs` — component API contract only (slots, attributes, properties, events, CSS parts, CSS vars). Never returns HTML.
 - `validate_component_api` — post-generation API check. **Call for every Forge component before finalizing.**
 - `find_components` / `list_components` — component discovery.
 - `find_icons` — Tyler Icons search.

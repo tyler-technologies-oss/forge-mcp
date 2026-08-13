@@ -19,30 +19,6 @@ import { tylIconHome } from '@tylertech/tyler-icons/custom';     // DOES NOT EXI
 
 ---
 
-## Basic Usage
-
-Standalone icon:
-
-```html
-<forge-icon name="home"></forge-icon>
-```
-
-Icon inside a button:
-
-```html
-<forge-icon-button aria-label="Go home">
-  <forge-icon name="home"></forge-icon>
-</forge-icon-button>
-```
-
-Use `external` attribute to load icons dynamically (when not pre-registered):
-
-```html
-<forge-icon name="settings" external></forge-icon>
-```
-
----
-
 ## Rules
 
 1. **ALWAYS import from `@tylertech/tyler-icons` ONLY** - See critical section above. NO SUBPATHS EXIST.

@@ -20,5 +20,4 @@ export * from './framework/framework-svelte-resource.js';
 export * from './framework/framework-lit-resource.js';
 export * from './components/components-names-resource.js';
 export * from './components/components-brief-resource.js';
-export * from './components/component-usage-examples-resource.js';
 export * from './components/component-summary-resource.js';

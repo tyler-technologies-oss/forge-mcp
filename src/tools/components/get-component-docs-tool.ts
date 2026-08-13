@@ -1,7 +1,6 @@
 import { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { BaseToolHandler, ToolInput } from '../tool-handler.js';
 import { getResourceManager } from '../../resources/index.js';
-import { ComponentUsageExamplesResource } from '../../resources/components/component-usage-examples-resource.js';
 import { ComponentSummaryResource } from '../../resources/components/component-summary-resource.js';
 import { getCEMLoader } from '../../services/cem-loader.js';
 import { getTemplateEngine } from '../../services/handlebars-template-engine.js';
@@ -10,12 +9,11 @@ import { TemplateContext } from '../../types/index.js';
 export interface ComponentDocumentationInput extends ToolInput {
   component?: string;
   sections?: string[];
-  format?: 'full' | 'summary' | 'usage-examples';
+  format?: 'full' | 'summary';
 }
 
 export class ComponentDocumentationTool extends BaseToolHandler<ComponentDocumentationInput> {
   private _resourceManager = getResourceManager();
-  private _usageExamplesResource = new ComponentUsageExamplesResource();
   private _componentSummaryResource = new ComponentSummaryResource();
   private _cemLoader = getCEMLoader();
   private _templateEngine = getTemplateEngine();
@@ -23,7 +21,7 @@ export class ComponentDocumentationTool extends BaseToolHandler<ComponentDocumen
   constructor() {
     super(
       'get_component_docs',
-      'Get comprehensive documentation for Tyler Forge components in various formats: full API reference, summary overview, or structural usage examples. Returns component list when no component specified.',
+      'Get the API contract (properties, attributes, events, slots, CSS parts, CSS vars) for a Tyler Forge component. Returns the component list when no component is specified. For HTML usage code, call `get_forge_blocks` instead — blocks are the sole source of Forge markup.',
     );
   }
 
@@ -37,7 +35,7 @@ export class ComponentDocumentationTool extends BaseToolHandler<ComponentDocumen
           component: {
             type: 'string',
             description:
-              'Component tag name (e.g., "forge-button", "forge-card"). If not provided with format=usage-examples, returns component names list.',
+              'Component tag name (e.g., "forge-button", "forge-card"). If omitted, returns the component names list.',
           },
           sections: {
             type: 'array',
@@ -59,9 +57,9 @@ export class ComponentDocumentationTool extends BaseToolHandler<ComponentDocumen
           },
           format: {
             type: 'string',
-            enum: ['full', 'summary', 'usage-examples'],
+            enum: ['full', 'summary'],
             description:
-              'Documentation format: full (default), summary (brief overview), or usage-examples (structural HTML examples)',
+              'Documentation format: full (default) or summary (brief overview). For HTML usage code, call `get_forge_blocks` — this tool returns API contract only.',
           },
         },
         required: [],
@@ -78,11 +76,6 @@ export class ComponentDocumentationTool extends BaseToolHandler<ComponentDocumen
 
     // Handle component name list (when no component specified)
     if (!component) {
-      if (format === 'usage-examples') {
-        throw new Error(
-          'Component name is required for usage-examples format. Use list_components to see available components.',
-        );
-      }
       const namesContent = await this._resourceManager.readResource(
         'forge://components/names',
       );
@@ -99,12 +92,6 @@ export class ComponentDocumentationTool extends BaseToolHandler<ComponentDocumen
 
     // Generate API quick reference to prepend to all component docs
     const quickRef = await this._generateApiQuickReference(componentData);
-
-    // Handle usage-examples format
-    if (format === 'usage-examples') {
-      const examples = await this._usageExamplesResource.get(component);
-      return this._createTextResponse(quickRef + examples);
-    }
 
     // Handle summary format
     if (format === 'summary') {

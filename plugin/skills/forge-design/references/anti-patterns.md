@@ -6,6 +6,9 @@
 - [Ad-hoc grid / flex CSS where a scaffold fits](#ad-hoc-grid--flex-css-where-a-scaffold-fits)
 - [Inline styles overriding design tokens](#inline-styles-overriding-design-tokens)
 - [Reinventing markup instead of adapting a block](#reinventing-markup-instead-of-adapting-a-block)
+- [Copying a block's document scaffolding](#copying-a-blocks-document-scaffolding)
+- [Using `<forge-stack>` for general layout](#using-forge-stack-for-general-layout)
+- [Passing table rows as HTML children](#passing-table-rows-as-html-children)
 
 These are patterns to avoid when building Forge UI. Each entry pairs the anti-pattern with the correct Forge-native approach. **Before writing UI, fetch a block with `get_forge_blocks` and follow the pattern shown there — most anti-patterns below come from reinventing structure a block already provides.**
 
@@ -127,3 +130,33 @@ Or Tailwind (when `@tylertech/forge-tailwind` is installed): `class="p-large bg-
 4. If you need layout inside a container, also fetch a scaffold-based block.
 
 The `PreToolUse` hook will block Forge markup writes that lack a `get_forge_blocks` call earlier in the turn.
+
+---
+
+## Copying a block's document scaffolding
+
+**Anti-pattern:** Pasting a block's `<!doctype>`, `<html>`, `<head>`, `<base href="/blocks/...">`, theme stylesheet links, or `forge-register.js` / `theme-listener.js` script tags into the target app.
+
+**Why it's wrong:** Blocks are served as complete, standalone HTML documents so they can render in the block preview harness. Everything outside `<body>…</body>` is preview scaffolding — the `<base>` tag rewrites URLs, the theme scripts wire the preview's light/dark toggle, and the stylesheet paths point at the blocks CDN. Dropping any of that into an app double-registers components, breaks routing, or pulls in styles that fight the app's own theme setup.
+
+**Do instead:** Take only the content **between `<body>` and `</body>`** from the block. The app's own entry file handles component registration, theming, and styles — see [installation.md](installation.md).
+
+---
+
+## Using `<forge-stack>` for general layout
+
+**Anti-pattern:** Reaching for `<forge-stack>` to lay out arbitrary rows or columns of content.
+
+**Why it's wrong:** `<forge-stack>` is a niche primitive. General layout should use CSS flex/grid utility classes (or a scaffold — see the ad-hoc grid entry above).
+
+**Do instead:** Use `flex`/`grid` utilities with Forge spacing tokens, or a scaffold-based block for structured regions. Only reach for `<forge-stack>` when the specific rendering it provides is what you want.
+
+---
+
+## Passing table rows as HTML children
+
+**Anti-pattern:** Writing `<tr>`/`<td>` (or slotted children) inside `<forge-table>`.
+
+**Why it's wrong:** `<forge-table>` renders rows from JavaScript, not markup. It has no default slot for row content.
+
+**Do instead:** Set the element's `data` and `columnConfigurations` properties from JavaScript — see [tables.md](tables.md) for the pattern.

@@ -1,47 +1,5 @@
 # Form Rules
 
-## Minimal Examples
-
-Text field:
-
-```html
-<forge-text-field>
-  <label for="name-input">Name</label>
-  <input type="text" id="name-input" />
-</forge-text-field>
-```
-
-Select:
-
-```html
-<forge-select>
-  <label for="status-select">Status</label>
-  <select id="status-select">
-    <option value="active">Active</option>
-    <option value="inactive">Inactive</option>
-  </select>
-</forge-select>
-```
-
-Checkbox:
-
-```html
-<forge-checkbox>
-  <input type="checkbox" id="agree-checkbox" />
-  <label for="agree-checkbox">I agree to the terms</label>
-</forge-checkbox>
-```
-
-File picker:
-
-```html
-<forge-file-picker>
-  <label>Upload document</label>
-</forge-file-picker>
-```
-
----
-
 ## Rules
 
 1. **Never use placeholder attributes** on form fields unless explicitly requested

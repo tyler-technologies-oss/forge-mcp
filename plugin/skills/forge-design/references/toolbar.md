@@ -2,7 +2,6 @@
 
 **In this file:**
 - [Purpose](#purpose)
-- [Minimal Examples](#minimal-examples)
 - [API Reference](#api-reference)
 - [Use Cases](#use-cases) (Page, Table, Dialog, Card, Drawer, App Footer)
 - [Critical Rules](#critical-rules)
@@ -14,33 +13,10 @@
 
 ---
 
-## Minimal Examples
-
-Header toolbar:
-
-```html
-<forge-toolbar>
-  <h1 slot="start" class="text-heading4">Page Title</h1>
-  <forge-button slot="end">Action</forge-button>
-</forge-toolbar>
-```
-
-Footer toolbar (note `inverted` attribute):
-
-```html
-<forge-toolbar inverted>
-  <forge-button slot="end" variant="text">Cancel</forge-button>
-  <forge-button slot="end">Save</forge-button>
-</forge-toolbar>
-```
-
----
-
 ## API Reference
 
-For up-to-date slot usage, attributes, and properties, call:
-- `get_component_docs(component: "forge-toolbar")` for full API
-- `get_component_docs(component: "forge-toolbar", format: "usage-examples")` for code examples
+- `get_component_docs(component: "forge-toolbar", format: "summary")` — slots, attributes, properties, events.
+- `get_forge_blocks(component: "forge-toolbar")` — HTML usage patterns.
 
 ---
 

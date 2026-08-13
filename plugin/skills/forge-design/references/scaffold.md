@@ -19,26 +19,6 @@ body {
 
 ---
 
-## Basic Usage
-
-```html
-<!-- Typical page layout -->
-<forge-scaffold>
-  <forge-app-bar slot="header" title-text="App Title"></forge-app-bar>
-  <forge-drawer slot="start">Drawer Content Here</forge-drawer>
-  <main slot="body">Main Content Here</main>
-  <footer slot="footer">Footer Content Here</footer>
-</forge-scaffold>
-
-<!-- Can be used within sub-pages, dialogs, or within other scaffold slots -->
-<forge-scaffold>
-  <forge-toolbar slot="header">
-    <h2 class="forge-typography--heading4" slot="start">Subpage Title</h2>
-  </forge-toolbar>
-  <div slot="body">Subpage Content Here</div>
-</forge-scaffold>
-```
-
 ## Notes
 
 - Primary layout component for structuring pages and views

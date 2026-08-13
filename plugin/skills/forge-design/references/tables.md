@@ -4,20 +4,9 @@ Tables are configured via JavaScript properties, not HTML attributes.
 
 ---
 
-## Minimal Example
+## Configuration
 
-```html
-<forge-structured-card heading-level="2">
-  <span slot="title">Users</span>
-  <forge-icon-button slot="after-header-actions" aria-label="Add user">
-    <forge-icon name="add"></forge-icon>
-  </forge-icon-button>
-  <forge-table slot="body"></forge-table>
-  <forge-paginator slot="footer"></forge-paginator>
-</forge-structured-card>
-```
-
-Table configuration (JavaScript):
+Configure a table via JavaScript properties on the element (`columnConfigurations` and `data`):
 
 ```javascript
 const table = document.querySelector('forge-table');

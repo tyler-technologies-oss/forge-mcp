@@ -3,8 +3,7 @@
 **In this file:**
 - [Default Component](#default-component)
 - [Import Rule](#import-rule)
-- [Minimal Examples](#minimal-examples)
-- [More Examples](#more-examples)
+- [Examples](#examples)
 - [Structure Rules](#structure-rules)
 - [Typography Rules](#typography-rules)
 - [Choosing Between Card Components](#choosing-between-card-components)
@@ -27,94 +26,12 @@ import '@tylertech/forge-extended/structured-card';
 
 ---
 
-## Minimal Examples
+## Examples
 
-```html
-<forge-structured-card heading-level="2">
-  <span slot="title">Card Title</span>
-  <div slot="body">Card content goes here</div>
-</forge-structured-card>
-```
+Use the `after-header-actions` slot for icon buttons that need to run up against the card edge (overflow menus, close buttons). All other header content — badges, text buttons, tabs — belongs in `header-actions`.
 
-With a form:
-
-```html
-<forge-structured-card heading-level="2">
-  <div slot="title">Project Details</div>
-  <forge-badge theme="warning" slot="header-actions">
-    <span>In progress</span>
-    <forge-icon name="construction" slot="end"></forge-icon>
-  </forge-badge>
-  <form slot="body">
-    <div class="space-y-medium">
-      <forge-text-field label-position="block-start">
-        <label>Project name</label>
-        <input type="text">
-      </forge-text-field>
-      <forge-text-field label-position="block-start">
-        <label>Description</label>
-        <textarea></textarea>
-      </forge-text-field>
-      <forge-select label="Category" label-position="block-start" aria-label="Category">
-        <forge-option value="development">Development</forge-option>
-        <forge-option value="design">Design</forge-option>
-        <forge-option value="marketing">Marketing</forge-option>
-        <forge-option value="research">Research</forge-option>
-      </forge-select>
-      <forge-text-field label-position="block-start">
-        <label>Owner</label>
-        <input type="text">
-      </forge-text-field>
-      <forge-file-picker accept=".jpg,.png,.pdf">
-        <forge-button variant="outlined">Attach files</forge-button>
-      </forge-file-picker>
-    </div>
-  </form>
-  <forge-button variant="text" slot="footer-secondary-action">
-    <forge-icon slot="start" name="delete"></forge-icon>
-    Cancel
-  </forge-button>
-  <forge-button variant="tonal" slot="footer-primary-action">
-    <forge-icon slot="start" name="save"></forge-icon>
-    Save
-  </forge-button>
-</forge-structured-card>
-```
-
-With header icon button
-Use the after-header-actions slot for icon buttons that need to run up against the card edge, such as overflow menus or close buttons.
-
-```html
-  <forge-structured-card heading-level="2">
-    <div slot="title">Project Details</div>
-    <forge-menu slot="after-header-actions">
-      <forge-icon-button aria-label="More actions">
-        <forge-icon name="more_vert"></forge-icon>
-      </forge-icon-button>
-    </forge-menu>
-
-    <div slot="body" class="card-content">
-      Card content goes here
-    </div>
-
-    <forge-button variant="text" slot="footer-secondary-action">
-      <forge-icon slot="start" name="delete"></forge-icon>
-      Cancel
-    </forge-button>
-    <forge-button variant="filled" slot="footer-primary-action">
-      <forge-icon slot="start" name="save"></forge-icon>
-      Save
-    </forge-button>
-  </forge-structured-card>
-```
-
----
-
-## More Examples
-
-To get card structure and usage code:
-- Call `get_forge_blocks(component: "forge-structured-card")` to see real-world implementations
-- Call `get_component_docs(component: "forge-structured-card", format: "usage-examples")` for component API examples
+- `get_forge_blocks(component: "forge-structured-card")` — HTML usage patterns.
+- `get_component_docs(component: "forge-structured-card", format: "summary")` — slots, attributes, events.
 
 ---
 
@@ -150,28 +67,4 @@ Both `<forge-structured-card>` and `<forge-card>` can be used:
 
 ### Using `<forge-card>` with Proper Structure
 
-**If `<forge-card>` must be used, it is highly recommended to nest a `<forge-scaffold>` inside for proper header/body/footer layout:**
-
-```html
-<forge-card>
-  <forge-scaffold>
-    <forge-toolbar slot="header">
-      <h3 slot="start" class="text-heading3">Card Title</h3>
-      <forge-icon-button slot="end" aria-label="More options">
-        <forge-icon name="more_vert"></forge-icon>
-      </forge-icon-button>
-    </forge-toolbar>
-    <div slot="body" class="p-medium">
-      Card content goes here
-    </div>
-    <forge-toolbar slot="footer" inverted>
-      <forge-button slot="end" variant="text">Cancel</forge-button>
-      <forge-button slot="end">Save</forge-button>
-    </forge-toolbar>
-  </forge-scaffold>
-</forge-card>
-```
-
-This pattern mirrors the structure that `forge-structured-card` provides automatically.
-
-Check blocks with `get_forge_blocks(component: "forge-card")` for additional usage patterns.
+If `<forge-card>` must be used, nest a `<forge-scaffold>` inside for header/body/footer layout — this mirrors the structure that `forge-structured-card` provides automatically. Fetch `get_forge_blocks(component: "forge-card")` for the concrete pattern.
