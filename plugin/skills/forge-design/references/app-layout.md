@@ -1,5 +1,15 @@
 # Application Layout Rules
 
+**In this file:**
+- [Body Styles Required (Critical)](#-critical-body-styles-required)
+- [Basic Usage](#basic-usage)
+- [App Bar Integration](#app-bar-integration)
+- [Auto-Close Drawer on Navigation](#auto-close-drawer-on-navigation)
+- [Mini Drawer Mode](#mini-drawer-mode)
+- [Available Slots](#available-slots)
+- [Rules](#rules)
+- [Import](#import)
+
 **All Forge apps start with `forge-app-layout`** - it scaffolds the entire app structure.
 
 ---

@@ -1,5 +1,15 @@
 # Timeline
 
+**In this file:**
+- [Basic Usage](#basic-usage)
+- [Markers](#markers)
+- [Details](#details)
+- [Timeline break](#timeline-break)
+- [Theming](#theming)
+- [Timestamps](#timestamps)
+- [Sidebar Control](#sidebar-control)
+- [Notes](#notes)
+
 Timelines display a list of events in chronological order. Use `<forge-timeline>` as the container and `<forge-timeline-item>` for each event.
 
 ## Basic Usage

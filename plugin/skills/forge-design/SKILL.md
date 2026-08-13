@@ -1,353 +1,162 @@
 ---
 name: forge-design
-description: Use automatically when the user mentions the word Forge, Forge components, Forge blocks, @tylertech/forge, @tylertech/forge-extended, or asks to build UI with Forge web components. Also use when the codebase imports from @tylertech/forge packages. Provides the complete workflow, component references, and critical rules for Tyler Forge development.
+description: Tyler Forge design system expert. Trigger when the user mentions Forge, Forge components, Forge blocks, @tylertech/forge, @tylertech/forge-extended, forge-tailwind, tyler-icons, forge-scaffold, forge-card, forge-app-bar, forge-table, forge-dialog, forge-drawer, forge-list, forge-field, forge-structured-card, or asks to build UI with Forge web components. Also use when the codebase imports from @tylertech/forge packages. Provides the workflow, decision ladders, and consistency rules for Tyler Forge UI generation.
 ---
 
 # Tyler Forge Design System Expert
 
-You are an expert developer with comprehensive knowledge of the Tyler Forge web component library and design system. You have access to the Forge MCP server that provides complete documentation, pre-built UI blocks, and component APIs.
+You build Forge UI with the Forge MCP server. Every generation must be grounded in tools (blocks, plans, validators) and reference files — never memory. This document routes you to the right file for each decision; do not rely on rules paraphrased here.
 
----
+## Top-level rules (always apply)
 
-## Workflow
+1. **URL-only chaining.** You may only use component tag names, block IDs, and icon names returned by a prior tool call this turn. Do not invent names. If unsure, call `find_components`, `list_components`, `find_icons`, or `get_forge_blocks` first.
+2. **Start from a block.** Before writing any `<forge-*>` markup, call `get_forge_blocks`. Extract the pattern; adapt content only. See [anti-patterns.md](references/anti-patterns.md).
+3. **Plan before writing.** For any UI larger than a single component, call `generate_ui_plan`, then `validate_ui_plan`. Only write markup after the plan validates. See [ui-plan.md](references/ui-plan.md).
+4. **Prefer `forge-scaffold` over custom CSS** for layout inside cards, drawers, dialogs, and page regions. See [layout.md](references/layout.md).
+5. **Icons only from `@tylertech/tyler-icons` root.** No `/standard`, no `/extended`, no subpaths — they do not exist. See [icon.md](references/icon.md).
+6. **`@tylertech/forge-extended` uses side-effect imports.** `import '@tylertech/forge-extended/{component}';` — see the package section at the bottom of this file.
+7. **No CSS classes on `<forge-*>` elements.** They use Shadow DOM. Wrap in a container div if you need styling.
+8. **No custom typography, shadows, or gradients** unless explicitly requested. Use design tokens.
+9. **Body styles required for app shells** when using `forge-app-layout` / `forge-scaffold` at the app root: `height:100dvh; width:100dvw; margin:0; background-color: var(--forge-theme-surface-dim, #fafafa);`.
+10. **Validate before finalizing.** Call `validate_component_api` for every Forge component you emit. Do not skip.
 
-### 0. Detect: Full App or Feature?
+## Named anti-patterns (do NOT ship these)
 
-**BEFORE ANYTHING ELSE, determine the scope of the request:**
+Short catalog — full detail in [anti-patterns.md](references/anti-patterns.md):
 
-| Full App / Prototype | Single Feature / Component |
-|----------------------|----------------------------|
-| "Build me a dashboard app" | "Add a login form" |
-| "Create an admin panel" | "Create a data table component" |
-| "Design an employee portal" | "Add a sidebar to the existing app" |
-| "Build a CRUD application" | "Update the header navigation" |
-| New project from scratch | Adding to existing codebase |
+- Ad-hoc `display:flex` / `display:grid` inside cards, drawers, dialogs → use a scaffold-based block from `get_forge_blocks(component: "forge-scaffold")`. Scaffold-block examples for each container live in that component's own reference — [card.md](references/card.md), [dialog.md](references/dialog.md), [drawer.md](references/drawer.md) — and in [scaffold.md](references/scaffold.md).
+- **NEVER use the `style` attribute.** No inline styles on any element — Forge or otherwise. Every visual property must come from a stylesheet class or a Forge design token (`var(--forge-spacing-*)`, `var(--forge-theme-*)`). Inline styles bypass theming, density, and token migrations, and drift silently from the rest of the app. The only exception is the required `<body>` styles for app shells documented in [installation.md](references/installation.md).
+- `<div class="card">` / `<div role="dialog">` / hand-rolled drawer → use `<forge-card>`, `<forge-dialog>`, `<forge-drawer>`.
+- Reinvented Forge markup structure written from memory → fetch the block first.
+- Non-token spacing (`padding: 24px`, `margin: 12px`) on Forge component wrappers → use spacing tokens.
 
-**If FULL APP → Go to Step 1 (Application Layout Selection)**
-**If FEATURE → Skip to Step 2 (Ask Questions)**
+## Workflow — numbered execution ladder
 
----
+### Step 0. Detect scope
+- **Full app / prototype** ("build a dashboard", "create an admin panel", new project) → Step 1.
+- **Single feature** ("add a login form", "update the header") → Step 2.
 
-### 1. Application Layout Selection (Full Apps Only)
+### Step 1. Application layout (full apps only)
+Two required questions before markup:
+1. **Styling approach:** "Tailwind with `@tylertech/forge-tailwind`, or plain CSS with Forge tokens?"
+2. **Layout choice:** `get_forge_blocks(category: "application-layout")` → present the list → let the user pick.
 
-**REQUIRED for full applications, prototypes, or app shells.**
+Then read [installation.md](references/installation.md) for setup (styles, component registration, icons, body styles).
 
-This step establishes the foundational page structure and styling approach that all other UI will be built within.
+### Step 2. Ask clarifying questions
+Before implementing any feature, confirm requirements, framework, and expected behavior. Continue asking at each major decision point. Never assume.
 
-**For new projects starting from scratch:** Read [installation.md](references/installation.md) FIRST for complete setup instructions (styles, component registration, icons).
+### Step 3. Generate the UI plan
+Command: `generate_ui_plan` with a description of the target UI.
+Command: `validate_ui_plan` with the plan output.
 
-#### Two Required Questions for New Apps:
+**IF** validation fails → fix the plan, re-validate. Do not proceed to markup.
 
-**Question 1: Styling Approach**
+The plan pins the scaffold block, region components, typography roles, and icon names — it is the contract your markup must match. See [ui-plan.md](references/ui-plan.md).
 
-Ask the user:
-> "Would you like to use Tailwind CSS with the `@tylertech/forge-tailwind` package, or regular CSS with Forge design tokens?"
+### Step 4. Fetch the block
+Command: `get_forge_blocks(query: "...")` or `get_forge_blocks(component: "forge-...")`.
+Blocks are the authoritative structural reference. **Blocks always take precedence** over rules paraphrased in prose.
 
-| Option | Package | Class Examples |
-|--------|---------|----------------|
-| **Tailwind** | `@tylertech/forge-tailwind` | `text-heading3`, `p-medium`, `gap-4`, `bg-surface` |
-| **Regular CSS** | None (use Forge CSS variables) | `forge-typography--heading3`, `var(--forge-spacing-medium)` |
+### Step 5. Load references for each component/topic
+For every Forge component you plan to use, read `references/{tag-name}.md`.
+For domain decisions (typography, spacing, forms, tables, composition), read the topic file below (§ Domain routers).
 
-**Why this matters:** This determines how ALL styling will be written throughout the app. Tailwind provides utility classes mapped to Forge tokens; regular CSS uses Forge CSS custom properties directly.
+### Step 6. Write the markup
+Use the block as structural template. Adapt content only. Do not invent slots, wrappers, or hierarchy.
 
-**Question 2: Application Layout**
+### Step 7. Validate
+Command: `validate_component_api` for each Forge component you emitted.
+Fix any reported issues before delivering.
 
-**Action:** Call `get_forge_blocks(category: "application-layout")` and present the available layouts to the user.
+## Domain routers
 
-Ask the user:
-> "Which application layout would you like to use as the starting point? Here are the available options:"
-> [List the layouts with brief descriptions]
+### Setup
+- [installation.md](references/installation.md) — new-project setup: styles, typography, component registration, icons, body styles.
 
-**Why this matters:** Application layouts define the overall page structure (app bar placement, navigation style, content areas). Starting with the right layout prevents major restructuring later.
-
-#### Skip this step ONLY when:
-- User is adding a feature to an existing app
-- User is asking for a specific component (e.g., "create a login form")
-- The layout context is already established in the codebase
-
----
-
-### 2. Ask Questions First
-
-**Before implementing ANY feature, ask clarifying questions.** Continue asking at each major decision point:
-
-- **Before starting**: Confirm requirements, framework choice, and expected behavior
-- **During implementation**: Validate design decisions, component choices, and layout preferences
-- **Before finalizing**: Verify the solution meets expectations
-
-**Never assume - when in doubt, ask.**
-
----
-
-### 3. Check Reference Files AND Code Snippets for Components Being Used
-
-## ⚠️ THIS IS A CONTINUOUS PROCESS - NOT A ONE-TIME CHECK ⚠️
-
-**Every time you encounter or are about to use a Forge component, you MUST:**
-1. **Read the reference file** (if one exists) for critical rules and constraints
-2. **Get code snippets** via `get_forge_blocks(component: "...")` or `get_component_docs(format: "usage-examples")`
-
-**This applies THROUGHOUT implementation:**
-- When you first plan which components to use → check references
-- When you're writing code and add a component → check its reference
-- When you see a component in a block you're using → check its reference
-- When reviewing your output before delivering → verify against references
-
-**DO NOT rely on memory or assumptions.** Always verify against the reference files and blocks. This ensures accurate output and consistent UI.
-
-**Reference files contain basic usage examples and critical rules that prevent common mistakes.**
-
-#### Core Components
-| Component | Reference File |
-|-----------|----------------|
-| `forge-accordion` | [accordion.md](references/accordion.md) |
-| `forge-autocomplete` | [autocomplete.md](references/autocomplete.md) |
-| `forge-avatar` | [avatar.md](references/avatar.md) |
-| `forge-backdrop` | [backdrop.md](references/backdrop.md) |
-| `forge-badge` | [badge.md](references/badge.md) |
-| `forge-banner` | [banner.md](references/banner.md) |
-| `forge-bottom-sheet` | [bottom-sheet.md](references/bottom-sheet.md) |
-
-#### App Bar Components
-| Component | Reference File |
-|-----------|----------------|
-| `forge-app-bar` | [app-bar.md](references/app-bar.md) |
-| `forge-app-bar-help-button` | [app-bar-help-button.md](references/app-bar-help-button.md) |
-| `forge-app-bar-menu-button` | [app-bar-menu-button.md](references/app-bar-menu-button.md) |
-| `forge-app-bar-notification-button` | [app-bar-notification-button.md](references/app-bar-notification-button.md) |
-| `forge-app-bar-profile-button` | [app-bar-profile-button.md](references/app-bar-profile-button.md) |
-| `forge-app-bar-search` | [app-bar-search.md](references/app-bar-search.md) |
-| `forge-user-profile` | [user-profile.md](references/user-profile.md) |
-| `forge-app-launcher` | [app-launcher.md](references/app-launcher.md) |
-
-#### Button Components
-| Component | Reference File |
-|-----------|----------------|
-| `forge-button` | [button.md](references/button.md) |
-| `forge-button-area` | [button-area.md](references/button-area.md) |
-| `forge-button-toggle` | [button-toggle.md](references/button-toggle.md) |
-| `forge-button-toggle-group` | [button-toggle-group.md](references/button-toggle-group.md) |
-| `forge-icon-button` | [icon-button.md](references/icon-button.md) |
-| `forge-fab` | [fab.md](references/fab.md) |
-| `forge-split-button` | [split-button.md](references/split-button.md) |
-
-#### Form Components
-| Component | Reference File |
-|-----------|----------------|
-| `forge-checkbox` | [checkbox.md](references/checkbox.md) |
-| `forge-chip` | [chip.md](references/chip.md) |
-| `forge-chip-field` | [chip-field.md](references/chip-field.md) |
-| `forge-chip-set` | [chip-set.md](references/chip-set.md) |
-| `forge-color-picker` | [color-picker.md](references/color-picker.md) |
-| `forge-date-picker` | [date-picker.md](references/date-picker.md) |
-| `forge-date-range-picker` | [date-range-picker.md](references/date-range-picker.md) |
-| `forge-field` | [field.md](references/field.md) |
-| `forge-file-picker` | [file-picker.md](references/file-picker.md) |
-| `forge-label` | [label.md](references/label.md) |
-| `forge-label-value` | [label-value.md](references/label-value.md) |
-| `forge-option` | [option.md](references/option.md) |
-| `forge-option-group` | [option-group.md](references/option-group.md) |
-| `forge-radio` | [radio.md](references/radio.md) |
-| `forge-select` | [select.md](references/select.md) |
-| `forge-select-dropdown` | [select-dropdown.md](references/select-dropdown.md) |
-| `forge-slider` | [slider.md](references/slider.md) |
-| `forge-switch` | [switch.md](references/switch.md) |
-| `forge-text-field` | [text-field.md](references/text-field.md) |
-| `forge-time-picker` | [time-picker.md](references/time-picker.md) |
-
-#### Layout Components
-| Component | Reference File |
-|-----------|----------------|
-| `forge-card` | [card.md](references/card.md) |
-| `forge-divider` | [divider.md](references/divider.md) |
-| `forge-drawer` | [drawer.md](references/drawer.md) |
-| `forge-expansion-panel` | [expansion-panel.md](references/expansion-panel.md) |
-| `forge-mini-drawer` | [mini-drawer.md](references/mini-drawer.md) |
-| `forge-modal-drawer` | [modal-drawer.md](references/modal-drawer.md) |
-| `forge-overlay` | [overlay.md](references/overlay.md) |
-| `forge-popover` | [popover.md](references/popover.md) |
-| `forge-scaffold` | [scaffold.md](references/scaffold.md) |
-| `forge-split-view` | [split-view.md](references/split-view.md) |
-| `forge-stack` | [stack.md](references/stack.md) |
-| `forge-toolbar` | [toolbar.md](references/toolbar.md) |
-
-#### Navigation Components
-| Component | Reference File |
-|-----------|----------------|
-| `forge-list` | [list.md](references/list.md) |
-| `forge-list-item` | [list.md](references/list.md) |
-| `forge-menu` | [menu.md](references/menu.md) |
-| `forge-stepper` | [stepper.md](references/stepper.md) |
-| `forge-step` | [step.md](references/step.md) |
-| `forge-tab` | [tab.md](references/tab.md) |
-| `forge-tab-bar` | [tab-bar.md](references/tab-bar.md) |
-| `forge-view-switcher` | [view-switcher.md](references/view-switcher.md) |
-
-#### Feedback Components
-| Component | Reference File |
-|-----------|----------------|
-| `forge-calendar` | [calendar.md](references/calendar.md) |
-| `forge-circular-progress` | [circular-progress.md](references/circular-progress.md) |
-| `forge-dialog` | [dialog.md](references/dialog.md) |
-| `forge-inline-message` | [inline-message.md](references/inline-message.md) |
-| `forge-linear-progress` | [linear-progress.md](references/linear-progress.md) |
-| `forge-page-state` | [page-state.md](references/page-state.md) |
-| `forge-paginator` | [paginator.md](references/paginator.md) |
-| `forge-skeleton` | [skeleton.md](references/skeleton.md) |
-| `forge-table` | [table.md](references/table.md) |
-| `forge-timeline` | [timeline.md](references/timeline.md) |
-| `forge-toast` | [toast.md](references/toast.md) |
-| `forge-tooltip` | [tooltip.md](references/tooltip.md) |
-
-#### Utility Components
-| Component | Reference File |
-|-----------|----------------|
-| `forge-focus-indicator` | [focus-indicator.md](references/focus-indicator.md) |
-| `forge-icon` | [icon.md](references/icon.md) |
-| `forge-key` | [key.md](references/key.md) |
-| `forge-key-item` | [key-item.md](references/key-item.md) |
-| `forge-keyboard-shortcut` | [keyboard-shortcut.md](references/keyboard-shortcut.md) |
-| `forge-meter` | [meter.md](references/meter.md) |
-| `forge-meter-group` | [meter-group.md](references/meter-group.md) |
-| `forge-open-icon` | [open-icon.md](references/open-icon.md) |
-| `forge-skip-link` | [skip-link.md](references/skip-link.md) |
-| `forge-state-layer` | [state-layer.md](references/state-layer.md) |
-
-#### Extended Components (@tylertech/forge-extended)
-| Component | Reference File |
-|-----------|----------------|
-| `forge-busy-indicator` | [busy-indicator.md](references/busy-indicator.md) |
-| `forge-confirmation-dialog` | [confirmation-dialog.md](references/confirmation-dialog.md) |
-| `forge-count-card` | [count-card.md](references/count-card.md) |
-| `forge-multi-select-header` | [multi-select-header.md](references/multi-select-header.md) |
-| `forge-quantity-field` | [quantity-field.md](references/quantity-field.md) |
-| `forge-responsive-toolbar` | [responsive-toolbar.md](references/responsive-toolbar.md) |
-
-### 4. Check Blocks
-
-**Before writing ANY Forge UI code, call `get_forge_blocks` to find pre-built reference patterns.**
-
-- Use `query` to search by functionality (e.g., "login form", "data table")
-- Use `component` to find all blocks using a specific component (e.g., `component: "forge-structured-card"`)
-- Use `blockId` to fetch full HTML code for a specific block
-
-**Blocks are references, not templates.** All blocks are handcrafted and demonstrate proper Forge design system usage—correct layout, typography, spacing, and component composition. Use them as authoritative references for *how* to build with Forge, but adapt them to fit your specific requirements rather than copying verbatim.
-
-**BLOCKS ALWAYS TAKE PRECEDENCE** - If a pattern in blocks differs from other sources, follow the blocks.
-
-### 5. Check Component Usage Examples
-
-After reviewing blocks, call `get_component_docs(format: "usage-examples")` for component-specific structure and API details.
-
-### 6. Validate Before Finalizing
-
-**Before delivering the final solution:**
-1. **Re-check references** for every Forge component in your output
-2. **Call `validate_component_api`** for each Forge component to verify API accuracy
-3. **Verify patterns match blocks** - if you used a block as reference, ensure your output follows its patterns
-
-**This final verification catches mistakes that slip through during implementation.**
-
----
-
-## Available MCP Tools
-
-- `get_forge_blocks` - Search and retrieve pre-built UI patterns (use FIRST)
-- `get_component_docs` - Get component documentation (`format="usage-examples"` for structure)
-- `validate_component_api` - Verify component APIs before finalizing
-- `find_components` - Search for components by functionality
-- `get_design_tokens` - Access color, spacing, typography tokens
-- `find_icons` - Search Tyler Icons
-
----
-
-## Critical Rules
-
-1. **⚠️ ICON IMPORTS - STRICT RULE ⚠️** - ALWAYS import icons from `@tylertech/tyler-icons` ONLY. **NEVER use `/standard`, `/extended`, or ANY subpath.** The `/standard` path DOES NOT EXIST.
-   ```typescript
-   // ✅ CORRECT - the ONLY valid import path
-   import { tylIconHome, tylIconSettings } from '@tylertech/tyler-icons';
-
-   // ❌ WRONG - these paths DO NOT EXIST
-   import { tylIconHome } from '@tylertech/tyler-icons/standard';  // DOES NOT EXIST
-   import { tylIconHome } from '@tylertech/tyler-icons/extended';  // DOES NOT EXIST
-   ```
-
-2. **Forge Extended requires side-effect imports** - ALL components from `@tylertech/forge-extended` MUST use side-effect imports: `import '@tylertech/forge-extended/{component-name}';`
-
-3. **Check if Tailwind is installed FIRST** - Before using any Tailwind utility classes, check the existing app for Tailwind (look for `tailwind.config.js`, `tailwindcss` in package.json, or existing Tailwind classes). **If Tailwind is NOT installed, you MUST convert all Tailwind utility classes to standard CSS.** If Tailwind IS installed, use Tailwind classes mapped to Forge design tokens (e.g., `text-heading3` instead of `forge-typography--heading3`).
-
-4. **Never add custom CSS embellishments** - No custom shadows, gradients, or typography styles unless explicitly requested.
-
-5. **Never add CSS classes directly to Forge components** - Forge components use Shadow DOM. Wrap in a container div if needed.
-
-6. **⚠️ ALWAYS START FROM A BLOCK ⚠️** - Before writing ANY Forge UI, call `get_forge_blocks` and use an existing block as your starting point. Extract the specific pattern you need — slots, structure, composition — and adapt content only. **Do not invent markup structure or layout when a block already demonstrates it.** Heading level (`h1`–`h6`) is the one thing you *do* pick per-app based on the surrounding document hierarchy — the block bakes in the styling, you choose the level. Common anti-patterns (e.g. `body2` as a subheading, ad-hoc grids where a scaffold fits, inline styles overriding tokens) are cataloged in [anti-patterns.md](references/anti-patterns.md).
-
-7. **⚠️ PREFER SCAFFOLD BLOCKS OVER CUSTOM CSS ⚠️** - `forge-scaffold` (and scaffold-based blocks) belong anywhere you need structured layout — not just at the app shell level. Use scaffolds *inside* cards, drawers, dialogs, and other containers instead of writing custom flex/grid CSS. If you're about to write layout CSS, stop and check for a scaffold-based block first.
-
-8. **⚠️ BODY STYLES REQUIRED FOR APP LAYOUTS ⚠️** - When using `forge-app-layout` or `forge-scaffold` for a full application, the `<body>` tag MUST have these styles:
-   ```css
-   body {
-     background-color: var(--forge-theme-surface-dim, #fafafa);
-     height: 100dvh;
-     width: 100dvw;
-     margin: 0;
-   }
-   ```
-   Without these styles, the layout will NOT fill the full browser window.
-
----
-
-## Reference Documentation
-
-Consult these references for detailed rules on specific topics:
-
-### ⚠️ Setup (Critical for New Projects)
-- [installation.md](references/installation.md) - **START HERE for new apps.** Complete setup guide: styles, typography, component registration, icon setup
-
-### Design Tokens
-- [typography.md](references/typography.md) - Type scale, hierarchy, emphasis classes
-- [spacing.md](references/spacing.md) - Spacing tokens and patterns
-- [colors.md](references/colors.md) - Background, border, and color utilities
-
-### Layout
-- [layout.md](references/layout.md) - Flexbox, grid, and positioning patterns
-- [app-layout.md](references/app-layout.md) - App shell, navigation, page structure
-
-### Component Rules (grouped)
-- [app-bar.md](references/app-bar.md) - App bar usage (global actions only, never page-level)
-- [toolbar.md](references/toolbar.md) - Toolbar usage (headers, footers, page titles, table headers)
-- [forms.md](references/forms.md) - Form component rules and patterns
-- [button.md](references/button.md) - Button variants and icon button rules
-- [card.md](references/card.md) - Card component usage (forge-structured-card and forge-card)
-- [tables.md](references/tables.md) - Data tables with sorting and pagination
-- [list.md](references/list.md) - Navigation and interactive lists
-- [dialog.md](references/dialog.md) - Modal dialog rules
-- [icon.md](references/icon.md) - Icon usage and import rules
-
-### Other
-- [accessibility.md](references/accessibility.md) - ARIA attributes, semantic HTML
-- [angular.md](references/angular.md) - Angular-specific patterns
-- [react.md](references/react.md) - React-specific patterns
-- [anti-patterns.md](references/anti-patterns.md) - UI anti-patterns to avoid (body2 subheadings, raw hN inside Forge components, ad-hoc grids, inline styles overriding tokens)
-
-**Note:** Individual component usage examples are available in the Component Reference tables above in the "Check Reference Files" section.
-
----
-
-## Package Import Patterns
-
-### Forge (@tylertech/forge)
-- Definition function imports: `import { defineButtonComponent } from '@tylertech/forge'; defineButtonComponent();`
-- Pre-built CSS: `import '@tylertech/forge/dist/forge.css';`
-
-### Forge Extended (@tylertech/forge-extended)
-
-**CRITICAL: All components require side-effect imports to register with the browser.**
+### Design tokens (load when picking a value)
+- [typography.md](references/typography.md) — type scale, hierarchy rules, `text-heading{N}`/`text-body{N}` roles. **Load when choosing any heading level, body-text size, or emphasis class.**
+- [spacing.md](references/spacing.md) — spacing tokens. **Load when applying padding/margin/gap.**
+- [colors.md](references/colors.md) — background, border, foreground utilities. **Load when applying color.**
 
+### Layout (load when composing containers)
+- [layout.md](references/layout.md) — flex/grid patterns and when scaffold is required. **Load when writing any layout CSS.**
+- [app-layout.md](references/app-layout.md) — app shell, navigation, page structure. **Load when building an app shell.**
+
+### Composition (load when composing multiple components)
+- [forms.md](references/forms.md) — form composition (`forge-field`, validation, layout). **Load for any form.**
+- [tables.md](references/tables.md) — data tables (`forge-table`, sorting, pagination). **Load for any data table.**
+- [card.md](references/card.md) — `forge-card` and `forge-structured-card` composition.
+- [dialog.md](references/dialog.md) — modal dialog rules.
+- [app-bar.md](references/app-bar.md) — app-bar usage (global actions only, never page-level).
+- [toolbar.md](references/toolbar.md) — toolbar usage (headers, footers, page titles, table headers).
+- [list.md](references/list.md) — navigation and interactive lists.
+
+### Icons
+- [icon.md](references/icon.md) — usage rules and import paths.
+
+### Accessibility
+- [accessibility.md](references/accessibility.md) — ARIA, semantic HTML, keyboard support.
+
+### Framework specifics
+- [angular.md](references/angular.md) — Angular-specific patterns.
+- [react.md](references/react.md) — React-specific patterns.
+
+### Anti-patterns
+- [anti-patterns.md](references/anti-patterns.md) — full catalog with correct alternatives.
+
+## Component reference index
+
+One reference file per component at `references/{tag-name}.md`. Load only the components you're actually using in this turn. Grouped for lookup:
+
+**Core inputs & buttons:** button, icon-button, fab, split-button, button-toggle, button-toggle-group, button-area, checkbox, radio, switch, slider, text-field, field, label, label-value, autocomplete, select, select-dropdown, option, option-group, date-picker, date-range-picker, time-picker, color-picker, file-picker, chip, chip-field, chip-set, quantity-field.
+
+**Containers & layout:** card, structured-card (see [card.md](references/card.md)), scaffold, stack, split-view, divider, expansion-panel, accordion, drawer, mini-drawer, modal-drawer, overlay, popover, backdrop, bottom-sheet, toolbar.
+
+**Navigation:** app-bar, app-bar-help-button, app-bar-menu-button, app-bar-notification-button, app-bar-profile-button, app-bar-search, app-launcher, user-profile, list, list-item, menu, tab, tab-bar, stepper, step, view-switcher, skip-link.
+
+**Feedback & data:** table, paginator, dialog, banner, inline-message, toast, tooltip, page-state, skeleton, linear-progress, circular-progress, badge, avatar, calendar, timeline, meter, meter-group.
+
+**Utility:** icon, focus-indicator, state-layer, key, key-item, keyboard-shortcut, open-icon.
+
+**Extended (`@tylertech/forge-extended`):** busy-indicator, confirmation-dialog, count-card, multi-select-header, quantity-field, responsive-toolbar.
+
+If you need a component not obviously in this list, call `find_components` — do not guess a tag name.
+
+## MCP tools
+
+- `generate_ui_plan` — emit a machine-checkable plan (scaffold, regions, typography, icons). **Call before any non-trivial markup.**
+- `validate_ui_plan` — verify the plan against the CEM, block catalogue, token roles, icon set. **Must pass before markup.**
+- `get_forge_blocks` — pre-built patterns. **Call before writing any `<forge-*>` markup.**
+- `get_component_docs` — component docs; use `format="usage-examples"` for structure.
+- `validate_component_api` — post-generation API check. **Call for every Forge component before finalizing.**
+- `find_components` / `list_components` — component discovery.
+- `find_icons` — Tyler Icons search.
+- `get_design_tokens` — color, spacing, typography, elevation, shape tokens.
+- `setup_framework` / `setup_typography` / `setup_icons` — project setup.
+- `get_usage_guide` — installation and usage patterns.
+
+## Package import patterns
+
+### `@tylertech/forge` (core)
+```typescript
+import { defineButtonComponent } from '@tylertech/forge';
+defineButtonComponent();
+import '@tylertech/forge/dist/forge.css';
+```
+
+### `@tylertech/forge-extended` (extended — side-effect imports)
 ```typescript
 import '@tylertech/forge-extended/app-layout';
 import '@tylertech/forge-extended/structured-card';
-import '@tylertech/forge-extended/user-profile';
 import '@tylertech/forge-extended/busy-indicator';
+```
+Every extended component **must** use a side-effect import. Missing this = the component silently doesn't register.
+
+### `@tylertech/tyler-icons`
+```typescript
+import { tylIconHome, tylIconSettings } from '@tylertech/tyler-icons';
+// ❌ WRONG — these paths do not exist:
+// import { tylIconHome } from '@tylertech/tyler-icons/standard';
+// import { tylIconHome } from '@tylertech/tyler-icons/extended';
 ```

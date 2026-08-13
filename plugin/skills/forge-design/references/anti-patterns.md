@@ -1,5 +1,12 @@
 # Forge UI Anti-Patterns
 
+**In this file:**
+- [Typography classes used to fake hierarchy](#typography-classes-used-to-fake-hierarchy)
+- [Choosing heading levels (`<h1>`–`<h6>`)](#choosing-heading-levels-h1h6)
+- [Ad-hoc grid / flex CSS where a scaffold fits](#ad-hoc-grid--flex-css-where-a-scaffold-fits)
+- [Inline styles overriding design tokens](#inline-styles-overriding-design-tokens)
+- [Reinventing markup instead of adapting a block](#reinventing-markup-instead-of-adapting-a-block)
+
 These are patterns to avoid when building Forge UI. Each entry pairs the anti-pattern with the correct Forge-native approach. **Before writing UI, fetch a block with `get_forge_blocks` and follow the pattern shown there — most anti-patterns below come from reinventing structure a block already provides.**
 
 ---

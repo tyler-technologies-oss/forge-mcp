@@ -1,5 +1,11 @@
 # Count Card (Extended Component)
 
+**In this file:**
+- [Basic Usage](#basic-usage)
+- [Examples](#examples) (Badge, Full-Width, Body Content, Menu Action)
+- [Theming](#theming)
+- [Notes](#notes)
+
 ## Basic Usage
 
 ```html

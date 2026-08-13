@@ -1,5 +1,13 @@
 # Toolbar Rules
 
+**In this file:**
+- [Purpose](#purpose)
+- [Minimal Examples](#minimal-examples)
+- [API Reference](#api-reference)
+- [Use Cases](#use-cases) (Page, Table, Dialog, Card, Drawer, App Footer)
+- [Critical Rules](#critical-rules)
+- [Notes](#notes)
+
 ## Purpose
 
 `<forge-toolbar>` is a horizontal container for titles and actions. It's used throughout applications as headers and footers for various containers.

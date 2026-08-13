@@ -1,5 +1,17 @@
 # Forge Installation & Setup
 
+**In this file:**
+- [1. Install Packages](#1-install-packages)
+- [2. Choose Styling Approach](#2-choose-styling-approach) (Tailwind or Regular CSS)
+- [3. Import Forge Styles](#3-import-forge-styles-required)
+- [4. Body Styles](#4-body-styles-required-for-full-page-apps)
+- [5. Register Components](#5-register-components) (Core + Extended)
+- [6. Register Icons](#6-register-icons)
+- [7. Typography Setup](#7-typography-setup)
+- [Complete Setup Example](#complete-setup-example)
+- [Framework-Specific Notes](#framework-specific-notes)
+- [Checklist](#checklist)
+
 ## ⚠️ CRITICAL: Read This When Starting From Scratch ⚠️
 
 This reference covers the complete setup required for a new Forge application. **All steps are mandatory** for proper rendering.

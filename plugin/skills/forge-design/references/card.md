@@ -1,5 +1,14 @@
 # Card Rules
 
+**In this file:**
+- [Default Component](#default-component)
+- [Import Rule](#import-rule)
+- [Minimal Examples](#minimal-examples)
+- [More Examples](#more-examples)
+- [Structure Rules](#structure-rules)
+- [Typography Rules](#typography-rules)
+- [Choosing Between Card Components](#choosing-between-card-components)
+
 ## Default Component
 
 **Use `<forge-structured-card>` from `@tylertech/forge-extended` for all cards** unless explicitly told otherwise.
