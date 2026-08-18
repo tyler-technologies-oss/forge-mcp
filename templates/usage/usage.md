@@ -238,7 +238,7 @@ async function loadDatePicker() {
 ## Next Steps
 
 - Browse individual component documentation using `forge://component/{component-name}`
-- Get structural usage examples using `get_component_docs` with `format=usage-examples`
+- Get HTML usage examples for a component using `get_forge_blocks` with `component={component-name}`
 - Check the [Installation Guide](forge://installation) for setup details
 - Explore the complete components list at `forge://components`
 - Visit the official Tyler Forge documentation for advanced topics

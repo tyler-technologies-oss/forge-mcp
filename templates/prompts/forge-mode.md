@@ -13,7 +13,7 @@ You have access to the **forge-design** skill which contains the complete workfl
 2. **Ask clarifying questions** before implementing
 3. **Read reference files** for the specific components you'll use
 4. **Check blocks** via `get_forge_blocks` for pre-built patterns
-5. **Get usage examples** via `get_component_docs(format: "usage-examples")`
+5. **Get usage examples** via `get_forge_blocks(component: {component-name})`
 6. **Validate** with `validate_component_api` before finalizing
 
 **CRITICAL:** If the task is building a full application, prototype, or app shell, you MUST complete Step 1 before proceeding. Present the available application layouts and let the user choose.

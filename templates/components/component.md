@@ -148,7 +148,7 @@ Apply these classes to native HTML elements for styling purposes IF not using th
 
 ### Next Steps
 - **Framework setup:** Use `setup_framework` for Angular, React, Vue, Svelte, or Lit integration
-- **Usage examples:** Use `get_component_docs` with `format=usage-examples` for structural HTML examples
+- **Usage examples:** Use `get_forge_blocks` with `component={{tagName}}` for structural HTML examples
 - **Design system:** Use `get_design_tokens` for consistent styling values
 - **Related components:** Use `find_components` to discover complementary components
 

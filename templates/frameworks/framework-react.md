@@ -87,7 +87,7 @@ import '@tylertech/forge/dist/forge.css';
 
 **INTEGRATION:** Framework and development resources:
 - **Other frameworks:** Use `setup_framework` for Angular, Vue, or Svelte integration
-- **Usage examples:** Use `get_component_docs` with `format=usage-examples` for basic HTML structural examples
+- **Usage examples:** Use `get_forge_blocks` with `component={component-name}` for basic HTML structural examples
 - **Icons setup:** Use `setup_icons` for Tyler Forge icon system integration with React
 - **Installation:** Use `get_usage_guide` with `type=installation` for basic Tyler Forge setup instructions
 - **Components:** Use `list_components` or `find_components` to explore available Tyler Forge components

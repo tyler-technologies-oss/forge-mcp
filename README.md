@@ -127,16 +127,6 @@ get_forge_blocks(category: "application-layout")
 get_forge_blocks(blockId: "src/blocks/forms/login")
 ```
 
-### Usage Examples
-
-Isolated code snippets showing individual component usage. These focus on a single component's structure and API without the surrounding context of a full UI pattern.
-
-```
-# Get usage examples for a component
-get_component_docs(componentName: "forge-button", format: "usage-examples")
-get_component_docs(componentName: "forge-text-field", format: "usage-examples")
-```
-
 ### Component Documentation
 
 Access complete API documentation including properties, events, slots, CSS parts, and CSS custom properties.
@@ -147,10 +137,9 @@ get_component_docs(componentName: "forge-dialog")
 
 # Summary overview
 get_component_docs(componentName: "forge-dialog", format: "summary")
-
-# Usage examples from blocks
-get_component_docs(componentName: "forge-dialog", format: "usage-examples")
 ```
+
+For HTML usage examples, use `get_forge_blocks(component: "forge-dialog")` instead—every component has a dedicated block demonstrating its usage.
 
 ## Capabilities
 
@@ -159,7 +148,7 @@ get_component_docs(componentName: "forge-dialog", format: "usage-examples")
 | Tool | Description |
 |------|-------------|
 | `get_forge_blocks` | Search and retrieve pre-built UI patterns (use FIRST before generating UI code) |
-| `get_component_docs` | Get component documentation (full API, summary, or usage examples) |
+| `get_component_docs` | Get component API documentation (full or summary) |
 | `list_components` | Browse all available components |
 | `find_components` | Search components by name or functionality |
 | `validate_component_api` | Validate component API usage in generated code |
@@ -192,10 +181,9 @@ get_component_docs(componentName: "forge-dialog", format: "usage-examples")
 
 ## Recommended Workflow
 
-1. **Search blocks first** — Before writing any Forge UI code, call `get_forge_blocks` to find pre-built patterns
-2. **Get usage examples** — Use `get_component_docs(format: "usage-examples")` for component-specific patterns
-3. **Check component API** — Use `get_component_docs` for full API details when needed
-4. **Validate before finalizing** — Call `validate_component_api` to verify your code uses correct APIs
+1. **Search blocks first** — Before writing any Forge UI code, call `get_forge_blocks` to find pre-built patterns and component-specific usage examples
+2. **Check component API** — Use `get_component_docs` for full API details when needed
+3. **Validate before finalizing** — Call `validate_component_api` to verify your code uses correct APIs
 
 ## Development
 

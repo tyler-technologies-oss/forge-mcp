@@ -44,7 +44,7 @@ After installation, check out the [Usage Guide](forge://usage) to learn how to u
 
 > 💡 **Related Resources:**
 > - Framework-specific guidance? Use `setup_framework` for detailed setup instructions
-> - Need basic usage examples? Use `get_component_docs` with `format=usage-examples` for HTML structural examples
+> - Need basic usage examples? Use `get_forge_blocks` with `component={component-name}` for HTML structural examples
 > - Need icons? Use `setup_icons` for Tyler Forge icons installation and setup
 > - Want to see all components? Try `list_components` to explore what's available
 > - Looking for design consistency? Check `get_design_tokens` for styling guidelines
