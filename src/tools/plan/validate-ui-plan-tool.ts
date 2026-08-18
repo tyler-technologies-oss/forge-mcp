@@ -17,7 +17,7 @@ import {
 // Shared with GetBlocksTool. Kept as a local const rather than a shared
 // module because the tools have no other overlap and hoisting a mini-service
 // for a single URL would be premature.
-const BLOCKS_BASE_URL = 'https://forge.tylerdev.io/blocks/pr-1145';
+const BLOCKS_BASE_URL = 'https://forge.tylerdev.io/blocks/v1';
 
 interface BlocksManifestEntry {
   id: string;

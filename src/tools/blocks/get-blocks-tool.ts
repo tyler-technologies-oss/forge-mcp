@@ -2,7 +2,7 @@ import { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { BaseToolHandler, ToolInput } from '../tool-handler.js';
 
 // Remote URL for blocks manifest and content
-const BLOCKS_BASE_URL = 'https://forge.tylerdev.io/blocks/pr-1145';
+const BLOCKS_BASE_URL = 'https://forge.tylerdev.io/blocks/v1';
 
 interface BlockInfo {
   id: string;
