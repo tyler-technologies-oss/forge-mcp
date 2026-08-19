@@ -19,6 +19,7 @@ export interface GenerateUIPlanInput extends ToolInput {
 // returns the schema + guidance the model should use to produce a plan, and
 // echoes back an empty template the model fills in. Keeping the composition
 // on the model side means the plan reflects the actual generation context.
+// See ADR-0001 (docs/adr/0001-generate-ui-plan-model-composes-plan.md).
 export class GenerateUIPlanTool extends BaseToolHandler<GenerateUIPlanInput> {
   constructor() {
     super(

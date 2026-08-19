@@ -1,24 +1,12 @@
 import { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { BaseToolHandler, ToolInput } from '../tool-handler.js';
-
-// Remote URL for blocks manifest and content
-const BLOCKS_BASE_URL = 'https://forge.tylerdev.io/blocks/v1';
-
-interface BlockInfo {
-  id: string;
-  name: string;
-  description: string;
-  tags: string[];
-  file: string;
-  category?: string;
-  componentsUsed?: string[];
-}
-
-interface BlocksManifest {
-  blocks: BlockInfo[];
-  categories: Array<{ name: string }>;
-  generatedAt: string;
-}
+import {
+  BlockInfo,
+  BlocksManifest,
+  getBlocksManifest,
+  getBlockContent,
+} from '../../services/blocks-manifest-service.js';
+import { getTemplateEngine } from '../../services/handlebars-template-engine.js';
 
 export interface GetBlocksInput extends ToolInput {
   query?: string;
@@ -29,6 +17,8 @@ export interface GetBlocksInput extends ToolInput {
 }
 
 export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
+  private _templateEngine = getTemplateEngine();
+
   constructor() {
     super(
       'get_forge_blocks',
@@ -80,7 +70,7 @@ export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
     const { query, blockId, category, component, limit = 20 } = args;
 
     try {
-      const manifest = await this._loadManifest();
+      const manifest = await getBlocksManifest();
 
       // If a specific block ID is requested, return its content
       if (blockId) {
@@ -88,22 +78,18 @@ export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
       }
 
       // Otherwise, list/search blocks
-      return this._listBlocks(manifest, query, category, component, limit);
+      return await this._listBlocks(
+        manifest,
+        query,
+        category,
+        component,
+        limit,
+      );
     } catch (error) {
       throw new Error(
         `Failed to fetch blocks: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
-  }
-
-  private async _loadManifest(): Promise<BlocksManifest> {
-    const response = await fetch(`${BLOCKS_BASE_URL}/manifest.json`);
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch blocks manifest: ${response.status} ${response.statusText}`,
-      );
-    }
-    return response.json();
   }
 
   private async _getBlockContent(
@@ -123,46 +109,23 @@ export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
       );
     }
 
-    // Fetch the block file content from remote
-    const blockUrl = `${BLOCKS_BASE_URL}/${block.file}`;
-    const response = await fetch(blockUrl);
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch block content: ${response.status} ${response.statusText}`,
-      );
-    }
-    const content = await response.text();
+    const content = await getBlockContent(block.file);
 
-    const sections: string[] = [];
-    sections.push(`# ${block.name}`);
-    sections.push('');
-    sections.push(`**Description:** ${block.description}`);
-    sections.push(`**Tags:** ${block.tags.join(', ')}`);
-    if (block.componentsUsed?.length) {
-      sections.push(`**Components Used:** ${block.componentsUsed.join(', ')}`);
-    }
-    sections.push(`**ID:** ${block.id}`);
-    sections.push('');
-    sections.push('## Code');
-    sections.push('');
-    sections.push('```html');
-    sections.push(content.trim());
-    sections.push('```');
-    sections.push('');
-    sections.push(
-      '> Use this code as a reference for implementing similar Forge UI patterns.',
+    const rendered = await this._templateEngine.render(
+      'blocks/block-content.md',
+      { block, content: content.trim() },
     );
 
-    return this._createTextResponse(sections.join('\n'));
+    return this._createTextResponse(rendered);
   }
 
-  private _listBlocks(
+  private async _listBlocks(
     manifest: BlocksManifest,
     query?: string,
     category?: string,
     component?: string,
     limit: number = 20,
-  ): import('@modelcontextprotocol/sdk/types.js').CallToolResult {
+  ): Promise<import('@modelcontextprotocol/sdk/types.js').CallToolResult> {
     let blocks = manifest.blocks;
 
     // Filter by category if specified
@@ -210,67 +173,28 @@ export class GetBlocksTool extends BaseToolHandler<GetBlocksInput> {
     const limitedBlocks = blocks.slice(0, limit);
     const hasMore = blocks.length > limit;
 
-    const sections: string[] = [];
-    sections.push('# Forge UI Blocks');
-    sections.push('');
-    sections.push(
-      'Pre-built code patterns demonstrating correct Forge component usage.',
+    const rendered = await this._templateEngine.render(
+      'blocks/blocks-list.md',
+      {
+        query,
+        category,
+        component,
+        foundCount: blocks.length,
+        categories: manifest.categories,
+        blocks: limitedBlocks.map(block => ({
+          name: block.name,
+          description: block.description.replace(/\|/g, '\\|'),
+          componentsPreview:
+            block.componentsUsed?.slice(0, 4).join(', ') || '-',
+          id: block.id,
+        })),
+        hasMore,
+        shownCount: limitedBlocks.length,
+        totalCount: blocks.length,
+      },
     );
-    sections.push(
-      '**Results are ranked by functionality match.** Top results may fit your needs directly; others can serve as starting points for similar UI patterns.',
-    );
-    sections.push('');
 
-    if (query) {
-      sections.push(`**Search:** "${query}"`);
-    }
-    if (category) {
-      sections.push(`**Category:** ${category}`);
-    }
-    if (component) {
-      sections.push(`**Component:** ${component}`);
-    }
-    sections.push(`**Found:** ${blocks.length} block(s)`);
-    sections.push('');
-
-    // Available categories
-    sections.push('## Categories');
-    sections.push('');
-    sections.push(manifest.categories.map(c => `- ${c.name}`).join('\n'));
-    sections.push('');
-
-    // Blocks table
-    sections.push('## Available Blocks');
-    sections.push('');
-    sections.push('| Name | Description | Components Used | ID |');
-    sections.push('|------|-------------|-----------------|-----|');
-
-    for (const block of limitedBlocks) {
-      const escapedDesc = block.description.replace(/\|/g, '\\|');
-      const components = block.componentsUsed?.slice(0, 4).join(', ') || '-';
-      sections.push(
-        `| ${block.name} | ${escapedDesc} | ${components} | ${block.id} |`,
-      );
-    }
-
-    if (hasMore) {
-      sections.push('');
-      sections.push(
-        `*Showing ${limitedBlocks.length} of ${blocks.length} blocks. Use \`limit\` parameter to see more.*`,
-      );
-    }
-
-    sections.push('');
-    sections.push('## Usage');
-    sections.push('');
-    sections.push(
-      'To get the full code for a specific block, call this tool with the `blockId` parameter:',
-    );
-    sections.push('```');
-    sections.push('get_forge_blocks(blockId: "src/blocks/forms/login")');
-    sections.push('```');
-
-    return this._createTextResponse(sections.join('\n'));
+    return this._createTextResponse(rendered);
   }
 
   /**

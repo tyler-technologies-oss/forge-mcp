@@ -1,24 +1,8 @@
 import { ForgeResource } from '../types/index.js';
 import { getCEMLoader } from '../services/cem-loader.js';
 import { ComponentDocsResource } from './components/component-docs-resource.js';
-import { InstallationResource } from './installation/installation-resource.js';
-import { UsageResource } from './usage/usage-resource.js';
-import { TypographyResource } from './design-tokens/typography-resource.js';
-import { IconsResource } from './icons/icons-resource.js';
-import { DesignTokensResource } from './design-tokens/design-tokens-resource.js';
-import { AnimationDesignTokensResource } from './design-tokens/design-tokens-animation-resource.js';
-import { BorderDesignTokensResource } from './design-tokens/design-tokens-border-resource.js';
-import { ColorDesignTokensResource } from './design-tokens/design-tokens-color-resource.js';
-import { ElevationDesignTokensResource } from './design-tokens/design-tokens-elevation-resource.js';
-import { LayeringDesignTokensResource } from './design-tokens/design-tokens-layering-resource.js';
-import { ShapeDesignTokensResource } from './design-tokens/design-tokens-shape-resource.js';
-import { SpacingDesignTokensResource } from './design-tokens/design-tokens-spacing-resource.js';
-import { FrameworkAngularResource } from './framework/framework-angular-resource.js';
-import { FrameworkReactResource } from './framework/framework-react-resource.js';
-import { FrameworkVueResource } from './framework/framework-vue-resource.js';
-import { FrameworkSvelteResource } from './framework/framework-svelte-resource.js';
-import { FrameworkLitResource } from './framework/framework-lit-resource.js';
-import { ComponentsListResource } from './components/components-brief-resource.js';
+import { ComponentsBriefResource } from './components/components-brief-resource.js';
+import { STATIC_RESOURCES, readStaticResource } from './static-resources.js';
 
 const RESOURCE_SCHEME = 'forge://';
 
@@ -32,24 +16,7 @@ const RESOURCE_SCHEME = 'forge://';
 export class ResourceManager {
   private _cemLoader = getCEMLoader();
   private _elementDocumentation = new ComponentDocsResource();
-  private _installation = new InstallationResource();
-  private _usage = new UsageResource();
-  private _typography = new TypographyResource();
-  private _icons = new IconsResource();
-  private _designTokens = new DesignTokensResource();
-  private _designTokensAnimation = new AnimationDesignTokensResource();
-  private _designTokensBorder = new BorderDesignTokensResource();
-  private _designTokensColor = new ColorDesignTokensResource();
-  private _designTokensElevation = new ElevationDesignTokensResource();
-  private _designTokensLayering = new LayeringDesignTokensResource();
-  private _designTokensShape = new ShapeDesignTokensResource();
-  private _designTokensSpacing = new SpacingDesignTokensResource();
-  private _frameworkAngular = new FrameworkAngularResource();
-  private _frameworkReact = new FrameworkReactResource();
-  private _frameworkVue = new FrameworkVueResource();
-  private _frameworkSvelte = new FrameworkSvelteResource();
-  private _frameworkLit = new FrameworkLitResource();
-  private _componentsList = new ComponentsListResource();
+  private _componentsBrief = new ComponentsBriefResource();
 
   /**
    * Initialize the resource manager by loading CEM data
@@ -87,141 +54,16 @@ export class ResourceManager {
       mimeType: 'text/markdown',
     });
 
-    // Add installation and usage resources
-    resources.push({
-      uri: 'forge://installation',
-      name: 'Tyler Forge Installation',
-      description: 'Complete installation guide for Tyler Forge web components',
-      mimeType: 'text/markdown',
-    });
-
-    resources.push({
-      uri: 'forge://usage',
-      name: 'Tyler Forge Usage Guide',
-      description: 'Comprehensive usage guide for Tyler Forge web components',
-      mimeType: 'text/markdown',
-    });
-
-    resources.push({
-      uri: 'forge://framework/angular',
-      name: 'Tyler Forge Angular Integration',
-      description:
-        'Comprehensive framework-specific installation and usage instructions for Angular applications',
-      mimeType: 'text/markdown',
-    });
-
-    resources.push({
-      uri: 'forge://framework/react',
-      name: 'Tyler Forge React Integration',
-      description:
-        'Comprehensive framework-specific installation and usage instructions for React applications',
-      mimeType: 'text/markdown',
-    });
-
-    resources.push({
-      uri: 'forge://framework/vue',
-      name: 'Tyler Forge Vue Integration',
-      description:
-        'Comprehensive framework-specific installation and usage instructions for Vue applications',
-      mimeType: 'text/markdown',
-    });
-
-    resources.push({
-      uri: 'forge://framework/svelte',
-      name: 'Tyler Forge Svelte Integration',
-      description:
-        'Comprehensive framework-specific installation and usage instructions for Svelte applications',
-      mimeType: 'text/markdown',
-    });
-
-    resources.push({
-      uri: 'forge://framework/lit',
-      name: 'Tyler Forge Lit Integration',
-      description:
-        'Comprehensive framework-specific installation and usage instructions for Lit applications',
-      mimeType: 'text/markdown',
-    });
-
-    resources.push({
-      uri: 'forge://icons',
-      name: 'Tyler Forge Icons',
-      description:
-        'Complete guide to installing and using Tyler Forge icons in your application',
-      mimeType: 'text/markdown',
-    });
-
-    // Add consolidated design tokens resource
-    resources.push({
-      uri: 'forge://design-tokens',
-      name: 'Tyler Forge Design Tokens',
-      description:
-        'Comprehensive Tyler Forge design tokens including colors, spacing, typography, animation, borders, elevation, layering, and shapes',
-      mimeType: 'text/markdown',
-    });
-
-    resources.push({
-      uri: 'forge://design-tokens/color',
-      name: 'Tyler Forge Color Design Tokens',
-      description:
-        'Tyler Forge Design system color tokens, usage guidelines, and accessibility considerations',
-      mimeType: 'text/markdown',
-    });
-
-    resources.push({
-      uri: 'forge://design-tokens/spacing',
-      name: 'Tyler Forge Spacing Design Tokens',
-      description:
-        'Tyler Forge Design system spacing tokens, usage guidelines, and best practices',
-      mimeType: 'text/markdown',
-    });
-
-    resources.push({
-      uri: 'forge://design-tokens/animation',
-      name: 'Tyler Forge Animation Design Tokens',
-      description:
-        'Tyler Forge Design system animation tokens, usage guidelines, and best practices',
-      mimeType: 'text/markdown',
-    });
-
-    resources.push({
-      uri: 'forge://design-tokens/border',
-      name: 'Tyler Forge Border Design Tokens',
-      description:
-        'Tyler Forge Design system border tokens, usage guidelines, and best practices',
-      mimeType: 'text/markdown',
-    });
-
-    resources.push({
-      uri: 'forge://design-tokens/elevation',
-      name: 'Tyler Forge Elevation Design Tokens',
-      description:
-        'Tyler Forge Design system elevation tokens, usage guidelines, and best practices',
-      mimeType: 'text/markdown',
-    });
-
-    resources.push({
-      uri: 'forge://design-tokens/layering',
-      name: 'Tyler Forge Layering Design Tokens',
-      description:
-        'Tyler Forge Design system layering tokens, usage guidelines, and best practices',
-      mimeType: 'text/markdown',
-    });
-
-    resources.push({
-      uri: 'forge://design-tokens/shape',
-      name: 'Tyler Forge Shape Design Tokens',
-      description:
-        'Tyler Forge Design system shape tokens, usage guidelines, and best practices',
-      mimeType: 'text/markdown',
-    });
-
-    resources.push({
-      uri: 'forge://design-tokens/typography',
-      name: 'Tyler Forge Typography',
-      description:
-        'Tyler Forge Design system typography guidelines and usage information',
-      mimeType: 'text/markdown',
-    });
+    // Add the static, template-backed resources (installation, usage,
+    // frameworks, icons, design tokens)
+    resources.push(
+      ...STATIC_RESOURCES.map(definition => ({
+        uri: definition.uri,
+        name: definition.name,
+        description: definition.description,
+        mimeType: 'text/markdown',
+      })),
+    );
 
     // Add individual component resources
     resources.push(
@@ -252,83 +94,35 @@ export class ResourceManager {
   public async readResource(uri: string): Promise<string> {
     await this._ensureInitialized();
 
-    switch (uri) {
-      case 'forge://components': {
-        const components = this._cemLoader.getAllComponents();
-        return this._componentsList.get(components);
-      }
-
-      case 'forge://installation':
-        return await this._installation.get();
-
-      case 'forge://usage':
-        return await this._usage.get();
-
-      case 'forge://framework/angular':
-        return await this._frameworkAngular.get();
-
-      case 'forge://framework/react':
-        return await this._frameworkReact.get();
-
-      case 'forge://framework/vue':
-        return await this._frameworkVue.get();
-
-      case 'forge://framework/svelte':
-        return await this._frameworkSvelte.get();
-
-      case 'forge://framework/lit':
-        return await this._frameworkLit.get();
-
-      case 'forge://icons':
-        return await this._icons.get();
-
-      case 'forge://design-tokens':
-        return await this._designTokens.get();
-
-      case 'forge://design-tokens/typography':
-        return await this._typography.get();
-
-      case 'forge://design-tokens/color':
-        return await this._designTokensColor.get();
-
-      case 'forge://design-tokens/spacing':
-        return await this._designTokensSpacing.get();
-
-      case 'forge://design-tokens/animation':
-        return await this._designTokensAnimation.get();
-
-      case 'forge://design-tokens/border':
-        return await this._designTokensBorder.get();
-
-      case 'forge://design-tokens/elevation':
-        return await this._designTokensElevation.get();
-
-      case 'forge://design-tokens/layering':
-        return await this._designTokensLayering.get();
-
-      case 'forge://design-tokens/shape':
-        return await this._designTokensShape.get();
-
-      default: {
-        // Handle component resources ex. 'forge://component/forge-button'
-        const componentMatch = uri.match(
-          /^forge:\/\/component\/([^/]+)(?:\/(.+))?$/,
-        );
-
-        if (!componentMatch) {
-          throw new Error(`Invalid resource URI: ${uri}`);
-        }
-
-        const [, tagName] = componentMatch;
-        const component = this._cemLoader.getComponent(tagName);
-
-        if (!component) {
-          throw new Error(`Component not found: ${tagName}`);
-        }
-
-        return await this._elementDocumentation.get(component);
-      }
+    if (uri === 'forge://components') {
+      const components = this._cemLoader.getAllComponents();
+      return this._componentsBrief.get(components);
     }
+
+    const staticResource = STATIC_RESOURCES.find(
+      definition => definition.uri === uri,
+    );
+    if (staticResource) {
+      return await readStaticResource(uri);
+    }
+
+    // Handle component resources ex. 'forge://component/forge-button'
+    const componentMatch = uri.match(
+      /^forge:\/\/component\/([^/]+)(?:\/(.+))?$/,
+    );
+
+    if (!componentMatch) {
+      throw new Error(`Invalid resource URI: ${uri}`);
+    }
+
+    const [, tagName] = componentMatch;
+    const component = this._cemLoader.getComponent(tagName);
+
+    if (!component) {
+      throw new Error(`Component not found: ${tagName}`);
+    }
+
+    return await this._elementDocumentation.get(component);
   }
 
   /**
@@ -367,40 +161,35 @@ export class ResourceManager {
    * Get Angular framework guide content
    */
   public async getFrameworkAngular(): Promise<string> {
-    await this._ensureInitialized();
-    return await this._frameworkAngular.get();
+    return this.readResource('forge://framework/angular');
   }
 
   /**
    * Get React framework guide content
    */
   public async getFrameworkReact(): Promise<string> {
-    await this._ensureInitialized();
-    return await this._frameworkReact.get();
+    return this.readResource('forge://framework/react');
   }
 
   /**
    * Get Vue framework guide content
    */
   public async getFrameworkVue(): Promise<string> {
-    await this._ensureInitialized();
-    return await this._frameworkVue.get();
+    return this.readResource('forge://framework/vue');
   }
 
   /**
    * Get Svelte framework guide content
    */
   public async getFrameworkSvelte(): Promise<string> {
-    await this._ensureInitialized();
-    return await this._frameworkSvelte.get();
+    return this.readResource('forge://framework/svelte');
   }
 
   /**
    * Get Lit framework guide content
    */
   public async getFrameworkLit(): Promise<string> {
-    await this._ensureInitialized();
-    return await this._frameworkLit.get();
+    return this.readResource('forge://framework/lit');
   }
 }
 

@@ -13,9 +13,13 @@ vi.mock('../../resources/index.js', () => ({
 | forge-card | A card container |
 | forge-dialog | A dialog modal |
 `),
-    _cemLoader: {
-      getAllComponents: vi.fn(() => mockComponents),
-    },
+  })),
+}));
+
+// Mock the CEM loader
+vi.mock('../../services/cem-loader.js', () => ({
+  getCEMLoader: vi.fn(() => ({
+    getAllComponents: vi.fn(() => mockComponents),
   })),
 }));
 

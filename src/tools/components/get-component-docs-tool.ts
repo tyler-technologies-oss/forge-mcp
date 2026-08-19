@@ -4,10 +4,11 @@ import { getResourceManager } from '../../resources/index.js';
 import { ComponentSummaryResource } from '../../resources/components/component-summary-resource.js';
 import { getCEMLoader } from '../../services/cem-loader.js';
 import { getTemplateEngine } from '../../services/handlebars-template-engine.js';
-import { TemplateContext } from '../../types/index.js';
+import { buildComponentTemplateContext } from '../../services/component-template-context.js';
+import { CEMComponentDeclaration } from '../../types/index.js';
 
 export interface ComponentDocumentationInput extends ToolInput {
-  component?: string;
+  component: string;
   sections?: string[];
   format?: 'full' | 'summary';
 }
@@ -21,7 +22,7 @@ export class ComponentDocumentationTool extends BaseToolHandler<ComponentDocumen
   constructor() {
     super(
       'get_component_docs',
-      'Get the API contract (properties, attributes, events, slots, CSS parts, CSS vars) for a Tyler Forge component. Returns the component list when no component is specified. For HTML usage code, call `get_forge_blocks` instead — blocks are the sole source of Forge markup.',
+      'Get the API contract (properties, attributes, events, slots, CSS parts, CSS vars) for a Tyler Forge component. Call list_components first if you need to discover available components. For HTML usage code, call `get_forge_blocks` instead — blocks are the sole source of Forge markup.',
     );
   }
 
@@ -35,7 +36,7 @@ export class ComponentDocumentationTool extends BaseToolHandler<ComponentDocumen
           component: {
             type: 'string',
             description:
-              'Component tag name (e.g., "forge-button", "forge-card"). If omitted, returns the component names list.',
+              'Component tag name (e.g., "forge-button", "forge-card"). Required — call list_components first if you don\'t know the tag name.',
           },
           sections: {
             type: 'array',
@@ -62,7 +63,7 @@ export class ComponentDocumentationTool extends BaseToolHandler<ComponentDocumen
               'Documentation format: full (default) or summary (brief overview). For HTML usage code, call `get_forge_blocks` — this tool returns API contract only.',
           },
         },
-        required: [],
+        required: ['component'],
       },
     };
   }
@@ -70,19 +71,12 @@ export class ComponentDocumentationTool extends BaseToolHandler<ComponentDocumen
   public async execute(
     args: ComponentDocumentationInput,
   ): Promise<import('@modelcontextprotocol/sdk/types.js').CallToolResult> {
+    this._validateRequired(args, ['component']);
     const { component, sections, format = 'full' } = args;
 
     await this._resourceManager.initialize();
 
-    // Handle component name list (when no component specified)
-    if (!component) {
-      const namesContent = await this._resourceManager.readResource(
-        'forge://components/names',
-      );
-      return this._createTextResponse(namesContent);
-    }
-
-    // Get component data (required for all formats when component is specified)
+    // Get component data (required for all formats)
     const componentData = this._cemLoader.getComponent(component);
     if (!componentData) {
       throw new Error(
@@ -118,8 +112,10 @@ export class ComponentDocumentationTool extends BaseToolHandler<ComponentDocumen
   /**
    * Generate the API Quick Reference header using template
    */
-  private async _generateApiQuickReference(component: any): Promise<string> {
-    const context = this._createTemplateContext(component);
+  private async _generateApiQuickReference(
+    component: CEMComponentDeclaration,
+  ): Promise<string> {
+    const context = buildComponentTemplateContext(component);
     return await this._templateEngine.render(
       'components/api-quick-reference.md',
       context,
@@ -130,10 +126,10 @@ export class ComponentDocumentationTool extends BaseToolHandler<ComponentDocumen
    * Generate content for specific sections using CEM data and templates
    */
   private async _generateSectionContent(
-    component: any,
+    component: CEMComponentDeclaration,
     sections: string[],
   ): Promise<string> {
-    const context = this._createTemplateContext(component);
+    const context = buildComponentTemplateContext(component);
     const contentSections: string[] = [];
 
     // Always include the component title
@@ -196,49 +192,5 @@ export class ComponentDocumentationTool extends BaseToolHandler<ComponentDocumen
     };
 
     return templateMap[section] || null;
-  }
-
-  /**
-   * Create template context from component data (similar to ElementDocumentationResource)
-   */
-  private _createTemplateContext(component: any): TemplateContext {
-    const publicMembers =
-      component.members?.filter((m: any) => m.privacy === 'public') || [];
-    const properties = publicMembers.filter((m: any) => m.kind === 'field');
-    const methods = publicMembers.filter((m: any) => m.kind === 'method');
-
-    return {
-      // Basic info
-      name: component.name,
-      tagName: component.tagName,
-      description: component.description,
-      summary: component.summary,
-
-      // API surfaces
-      attributes: component.attributes || [],
-      events: component.events || [],
-      properties,
-      methods,
-      cssProperties: component.cssProperties || [],
-      cssParts: component.cssParts || [],
-      slots: component.slots || [],
-      states: component.states || [],
-      cssClasses: component.cssClasses || [],
-
-      // Dependencies and inheritance
-      dependencies: component.dependencies || [],
-
-      // Computed helpers
-      hasAttributes: (component.attributes?.length || 0) > 0,
-      hasEvents: (component.events?.length || 0) > 0,
-      hasProperties: properties.length > 0,
-      hasMethods: methods.length > 0,
-      hasCssProperties: (component.cssProperties?.length || 0) > 0,
-      hasCssParts: (component.cssParts?.length || 0) > 0,
-      hasSlots: (component.slots?.length || 0) > 0,
-      hasStates: (component.states?.length || 0) > 0,
-      hasCssClasses: (component.cssClasses?.length || 0) > 0,
-      hasDependencies: (component.dependencies?.length || 0) > 0,
-    };
   }
 }

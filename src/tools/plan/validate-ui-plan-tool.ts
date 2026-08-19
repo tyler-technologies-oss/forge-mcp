@@ -2,6 +2,8 @@ import { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { BaseToolHandler, ToolInput } from '../tool-handler.js';
 import { getCEMLoader } from '../../services/cem-loader.js';
 import { getIconSearchService } from '../../services/icon-search-service.js';
+import { getBlocksManifest } from '../../services/blocks-manifest-service.js';
+import { getTemplateEngine } from '../../services/handlebars-template-engine.js';
 import {
   UIPlan,
   RegionSpec,
@@ -14,38 +16,6 @@ import {
   REGION_NAMES,
 } from './plan-types.js';
 
-// Shared with GetBlocksTool. Kept as a local const rather than a shared
-// module because the tools have no other overlap and hoisting a mini-service
-// for a single URL would be premature.
-const BLOCKS_BASE_URL = 'https://forge.tylerdev.io/blocks/v1';
-
-interface BlocksManifestEntry {
-  id: string;
-  file: string;
-  category?: string;
-}
-interface BlocksManifest {
-  blocks: BlocksManifestEntry[];
-}
-
-let _cachedBlocksManifest: BlocksManifest | null = null;
-
-async function loadBlocksManifest(): Promise<BlocksManifest | null> {
-  if (_cachedBlocksManifest) {
-    return _cachedBlocksManifest;
-  }
-  try {
-    const response = await fetch(`${BLOCKS_BASE_URL}/manifest.json`);
-    if (!response.ok) {
-      return null;
-    }
-    _cachedBlocksManifest = (await response.json()) as BlocksManifest;
-    return _cachedBlocksManifest;
-  } catch {
-    return null;
-  }
-}
-
 export interface ValidateUIPlanInput extends ToolInput {
   plan: UIPlan | string;
 }
@@ -53,6 +23,7 @@ export interface ValidateUIPlanInput extends ToolInput {
 export class ValidateUIPlanTool extends BaseToolHandler<ValidateUIPlanInput> {
   private _cemLoader = getCEMLoader();
   private _iconSearchService = getIconSearchService();
+  private _templateEngine = getTemplateEngine();
 
   constructor() {
     super(
@@ -87,7 +58,7 @@ export class ValidateUIPlanTool extends BaseToolHandler<ValidateUIPlanInput> {
     const parsed = this._parsePlan(args.plan);
     if ('error' in parsed) {
       return this._createTextResponse(
-        this._renderResult({
+        await this._renderResult({
           valid: false,
           errors: [
             {
@@ -122,7 +93,7 @@ export class ValidateUIPlanTool extends BaseToolHandler<ValidateUIPlanInput> {
           : `Plan has ${errors.length} issue${errors.length === 1 ? '' : 's'}. Fix and re-validate before writing markup.`,
     };
 
-    return this._createTextResponse(this._renderResult(result));
+    return this._createTextResponse(await this._renderResult(result));
   }
 
   private _parsePlan(input: unknown): { plan: UIPlan } | { error: string } {
@@ -325,8 +296,10 @@ export class ValidateUIPlanTool extends BaseToolHandler<ValidateUIPlanInput> {
       return;
     }
 
-    const manifest = await loadBlocksManifest();
-    if (!manifest) {
+    let manifest;
+    try {
+      manifest = await getBlocksManifest();
+    } catch {
       // Fail-open on network issues; note it in the result so the model
       // knows this axis was not verified.
       errors.push({
@@ -461,36 +434,14 @@ export class ValidateUIPlanTool extends BaseToolHandler<ValidateUIPlanInput> {
     return out;
   }
 
-  private _renderResult(result: PlanValidationResult): string {
-    const sections: string[] = [];
-    sections.push('# UI Plan Validation');
-    sections.push('');
-    sections.push(`**Valid:** ${result.valid ? '✅ true' : '❌ false'}`);
-    sections.push(`**Summary:** ${result.summary}`);
-    sections.push('');
-    if (result.errors.length === 0) {
-      sections.push(
-        'Proceed: call `get_forge_blocks` for the block IDs in the plan, then write the markup. Call `validate_component_api` for each Forge tag before finalizing.',
-      );
-      return sections.join('\n');
-    }
-    sections.push('## Errors');
-    sections.push('');
-    for (const err of result.errors) {
-      sections.push(`- **\`${err.path}\`** — ${err.message}`);
-      if (err.hint) {
-        sections.push(`  - *Hint:* ${err.hint}`);
-      }
-    }
-    sections.push('');
-    sections.push(
-      'Fix the errors above and call `validate_ui_plan` again. Do NOT write markup until the plan validates.',
-    );
-    // Emit a machine-readable copy so the hook can key off the phrase.
-    sections.push('');
-    sections.push('```json');
-    sections.push(JSON.stringify(result, null, 2));
-    sections.push('```');
-    return sections.join('\n');
+  private async _renderResult(result: PlanValidationResult): Promise<string> {
+    return await this._templateEngine.render('plan/validation-result.md', {
+      validLabel: result.valid ? '✅ true' : '❌ false',
+      summary: result.summary,
+      isValid: result.valid,
+      errors: result.errors,
+      // Emit a machine-readable copy so the hook can key off the phrase.
+      resultJson: JSON.stringify(result, null, 2),
+    });
   }
 }

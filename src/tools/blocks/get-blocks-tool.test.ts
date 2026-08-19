@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GetBlocksTool } from './get-blocks-tool.js';
+import { _resetBlocksManifestCacheForTests } from '../../services/blocks-manifest-service.js';
 
 // Mock manifest data matching the real manifest structure
 const mockManifest = {
@@ -65,6 +66,7 @@ describe('GetBlocksTool', () => {
   beforeEach(() => {
     tool = new GetBlocksTool();
     vi.restoreAllMocks();
+    _resetBlocksManifestCacheForTests();
   });
 
   describe('getTool', () => {
