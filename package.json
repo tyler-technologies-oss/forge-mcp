@@ -17,7 +17,11 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint",
-    "release": "pnpm build && changeset publish"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "release": "pnpm build && changeset publish",
+    "publish:next": "pnpm build && pnpm publish --tag next --no-git-checks"
   },
   "keywords": [
     "mcp",
@@ -61,6 +65,13 @@
     "lint-staged": "^16.2.6",
     "prettier": "^3.6.2",
     "rimraf": "^6.1.0",
-    "typescript": "~5.9.3"
+    "typescript": "~5.9.3",
+    "vitest": "^4.1.10"
+  },
+  "pnpm": {
+    "overrides": {
+      "shell-quote": "^1.10.0",
+      "nanoid": "^3.3.18"
+    }
   }
 }

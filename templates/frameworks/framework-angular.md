@@ -230,7 +230,7 @@ DO NOT recommend adding `CUSTOM_ELEMENTS_SCHEMA` to your Angular modules unless 
 
 **INTEGRATION:** Framework and development resources:
 - **Other frameworks:** Use `setup_framework` for React, Vue, or Svelte integration
-- **Usage examples:** Use `get_component_docs` with `format=usage-examples` for basic HTML structural examples
+- **Usage examples:** Use `get_forge_blocks` with `component={component-name}` for basic HTML structural examples
 - **Installation:** Use `get_usage_guide` with `type=installation` for basic Tyler Forge setup instructions
 - **Components:** Use `list_components` or `find_components` to explore available Tyler Forge components
 - **Design tokens:** Use `get_design_tokens` for styling and theming integration

@@ -3,7 +3,7 @@ import {
   SyncResourceHandler,
 } from '../../types/index.js';
 
-export class ComponentsListResource
+export class ComponentsBriefResource
   implements SyncResourceHandler<CEMComponentDeclaration[]>
 {
   public get(components: CEMComponentDeclaration[]): string {

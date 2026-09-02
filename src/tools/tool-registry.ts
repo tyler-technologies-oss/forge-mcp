@@ -1,5 +1,9 @@
 import { Tool, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { ToolHandler, ToolInput } from './tool-handler.js';
+import {
+  getToolCallCache,
+  ToolCallCache,
+} from '../services/tool-call-cache.js';
 
 /**
  * Central registry for managing MCP tool handlers, providing registration,
@@ -10,6 +14,7 @@ import { ToolHandler, ToolInput } from './tool-handler.js';
  */
 export class ToolRegistry {
   private readonly _handlers = new Map<string, ToolHandler>();
+  private readonly _cache: ToolCallCache = getToolCallCache();
 
   /**
    * Register a tool handler in the registry.
@@ -37,6 +42,7 @@ export class ToolRegistry {
 
   /**
    * Execute a registered tool by name with the provided arguments.
+   * Results are cached to avoid redundant computations within a session.
    *
    * @param name - The name of the tool to execute
    * @param args - The arguments to pass to the tool (optional)
@@ -52,6 +58,30 @@ export class ToolRegistry {
       throw new Error(`Unknown tool: ${name}`);
     }
 
-    return await handler.execute(args || {});
+    const normalizedArgs = args || {};
+    const cacheKey = this._cache.generateKey(name, normalizedArgs);
+
+    if (this._cache.has(cacheKey)) {
+      return this._cache.get(cacheKey)!;
+    }
+
+    const result = await handler.execute(normalizedArgs);
+    this._cache.set(cacheKey, result);
+
+    return result;
+  }
+
+  /**
+   * Clear the tool call cache.
+   */
+  public clearCache(): void {
+    this._cache.clear();
+  }
+
+  /**
+   * Get cache statistics for diagnostics.
+   */
+  public getCacheStats(): { size: number; hits: number; misses: number } {
+    return this._cache.getStats();
   }
 }

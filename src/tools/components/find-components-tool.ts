@@ -1,6 +1,9 @@
 import { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { BaseToolHandler, ToolInput } from '../tool-handler.js';
 import { getResourceManager } from '../../resources/index.js';
+import { getCEMLoader } from '../../services/cem-loader.js';
+import { getTemplateEngine } from '../../services/handlebars-template-engine.js';
+import { CEMComponentDeclaration } from '../../types/index.js';
 
 export interface SearchComponentsInput extends ToolInput {
   query?: string;
@@ -11,14 +14,34 @@ export interface SearchComponentsInput extends ToolInput {
 }
 
 interface ComponentMatch {
-  component: import('../../types/index.js').CEMComponentDeclaration;
+  component: CEMComponentDeclaration;
   score: number;
   matchReasons: string[];
   matchedTerms: string[];
 }
 
+interface SearchableFields {
+  tagName: string;
+  name: string;
+  summary: string;
+  description: string;
+  properties: string;
+  methods: string;
+  events: string;
+  slots: string;
+  cssParts: string;
+  states: string;
+}
+
+interface ComponentWithMetadata {
+  component: CEMComponentDeclaration;
+  searchableFields: SearchableFields;
+}
+
 export class SearchComponentsTool extends BaseToolHandler<SearchComponentsInput> {
   private _resourceManager = getResourceManager();
+  private _cemLoader = getCEMLoader();
+  private _templateEngine = getTemplateEngine();
 
   constructor() {
     super(
@@ -141,7 +164,7 @@ export class SearchComponentsTool extends BaseToolHandler<SearchComponentsInput>
 
     // Enhanced search with multi-term support and scoring
     const searchTerms = this._extractSearchTerms(query);
-    const components = await this._getComponentsWithMetadata();
+    const components = this._getComponentsWithMetadata();
     const matches = this._searchComponents(
       components,
       searchTerms,
@@ -167,7 +190,7 @@ export class SearchComponentsTool extends BaseToolHandler<SearchComponentsInput>
     }
 
     // Format enhanced results
-    const resultContent = this._formatEnhancedResults(
+    const resultContent = await this._formatEnhancedResults(
       query,
       searchTerms,
       limitedMatches,
@@ -184,35 +207,34 @@ export class SearchComponentsTool extends BaseToolHandler<SearchComponentsInput>
       .map(term => term.trim());
   }
 
-  private async _getComponentsWithMetadata(): Promise<any[]> {
-    const cemLoader = (this._resourceManager as any)._cemLoader;
-    const components = cemLoader.getAllComponents();
+  private _getComponentsWithMetadata(): ComponentWithMetadata[] {
+    const components = this._cemLoader.getAllComponents();
 
-    return components.map((component: any) => {
-      const searchableFields = {
+    return components.map(component => {
+      const searchableFields: SearchableFields = {
         tagName: component.tagName || '',
         name: component.name || '',
         summary: component.summary || '',
         description: component.description || '',
         properties: (component.members || [])
-          .filter((m: any) => m.kind === 'field')
-          .map((m: any) => `${m.name} ${m.description || ''}`)
+          .filter(m => m.kind === 'field')
+          .map(m => `${m.name} ${m.description || ''}`)
           .join(' '),
         methods: (component.members || [])
-          .filter((m: any) => m.kind === 'method')
-          .map((m: any) => `${m.name} ${m.description || ''}`)
+          .filter(m => m.kind === 'method')
+          .map(m => `${m.name} ${m.description || ''}`)
           .join(' '),
         events: (component.events || [])
-          .map((e: any) => `${e.name} ${e.description || ''}`)
+          .map(e => `${e.name} ${e.description || ''}`)
           .join(' '),
         slots: (component.slots || [])
-          .map((s: any) => `${s.name} ${s.description || ''}`)
+          .map(s => `${s.name} ${s.description || ''}`)
           .join(' '),
         cssParts: (component.cssParts || [])
-          .map((p: any) => `${p.name} ${p.description || ''}`)
+          .map(p => `${p.name} ${p.description || ''}`)
           .join(' '),
-        states: (component.cssStates || [])
-          .map((s: any) => `${s.name} ${s.description || ''}`)
+        states: (component.states || [])
+          .map(s => `${s.name} ${s.description || ''}`)
           .join(' '),
       };
 
@@ -224,7 +246,7 @@ export class SearchComponentsTool extends BaseToolHandler<SearchComponentsInput>
   }
 
   private _searchComponents(
-    componentsWithMetadata: any[],
+    componentsWithMetadata: ComponentWithMetadata[],
     searchTerms: string[],
     searchIn?: string[],
     matchAll: boolean = false,
@@ -270,7 +292,7 @@ export class SearchComponentsTool extends BaseToolHandler<SearchComponentsInput>
   }
 
   private _scoreComponent(
-    searchableFields: any,
+    searchableFields: SearchableFields,
     searchTerms: string[],
     fieldsToSearch: string[],
     matchAll: boolean,
@@ -281,7 +303,9 @@ export class SearchComponentsTool extends BaseToolHandler<SearchComponentsInput>
     const termMatches = new Set<string>();
 
     for (const field of fieldsToSearch) {
-      const fieldContent = (searchableFields[field] || '').toLowerCase();
+      const fieldContent = (
+        searchableFields[field as keyof SearchableFields] || ''
+      ).toLowerCase();
       let fieldScore = 0;
       const fieldMatches: string[] = [];
 
@@ -354,7 +378,7 @@ export class SearchComponentsTool extends BaseToolHandler<SearchComponentsInput>
 
   private _addRelatedComponents(
     matches: ComponentMatch[],
-    allComponents: any[],
+    allComponents: ComponentWithMetadata[],
   ): ComponentMatch[] {
     const relatedMap = this._buildRelatedComponentsMap();
     const existingTagNames = new Set(matches.map(m => m.component.tagName));
@@ -433,63 +457,32 @@ export class SearchComponentsTool extends BaseToolHandler<SearchComponentsInput>
     return new Map(Object.entries(relationships));
   }
 
-  private _formatEnhancedResults(
+  private async _formatEnhancedResults(
     originalQuery: string,
     searchTerms: string[],
     matches: ComponentMatch[],
     hasMore: boolean,
-  ): string {
-    const sections: string[] = [];
-
-    sections.push(`# Search Results for "${originalQuery}"`);
-    sections.push('');
-
-    if (searchTerms.length > 1) {
-      sections.push(`**Search terms:** ${searchTerms.join(', ')}`);
-      sections.push('');
-    }
-
-    sections.push(
-      `Found ${matches.length} matching component${matches.length === 1 ? '' : 's'}${hasMore ? ' (showing top results)' : ''}:`,
-    );
-    sections.push('');
-
-    // Enhanced table with match info
-    sections.push('| Component | Summary | Matches | Score |');
-    sections.push('|-----------|---------|---------|-------|');
-
-    for (const match of matches) {
-      const tagName = match.component.tagName;
+  ): Promise<string> {
+    const rows = matches.map(match => {
       const summary =
         match.component.summary ||
         match.component.description ||
         'No description available';
-      const escapedSummary = summary.replace(/\|/g, '\\|');
-      const matchInfo = match.matchReasons.join(', ');
-      const score = Math.round(match.score * 10) / 10;
+      return {
+        tagName: match.component.tagName,
+        summary: summary.replace(/\|/g, '\\|'),
+        matchInfo: match.matchReasons.join(', '),
+        score: Math.round(match.score * 10) / 10,
+      };
+    });
 
-      sections.push(
-        `| ${tagName} | ${escapedSummary} | ${matchInfo} | ${score} |`,
-      );
-    }
-
-    sections.push('');
-    sections.push('## Individual Documentation');
-    sections.push('');
-    sections.push('For detailed documentation of each component:');
-
-    for (const match of matches) {
-      const tagName = match.component.tagName;
-      sections.push(`- [${tagName}](forge://component/${tagName})`);
-    }
-
-    if (hasMore) {
-      sections.push('');
-      sections.push(
-        '*Tip: Use the `limit` parameter to see more results, or refine your search terms for more specific matches.*',
-      );
-    }
-
-    return sections.join('\n');
+    return await this._templateEngine.render('components/search-results.md', {
+      query: originalQuery,
+      multipleTerms: searchTerms.length > 1,
+      searchTerms,
+      count: matches.length,
+      hasMore,
+      rows,
+    });
   }
 }
