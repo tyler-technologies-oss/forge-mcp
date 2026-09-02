@@ -278,7 +278,9 @@ function checkContent(text, filePath) {
     if (elTag === 'body') {
       const bodyAllowed =
         /^(?:\s*(?:background(?:-color)?|height|width|margin)\s*:[^;]+;?\s*)+$/i;
-      if (bodyAllowed.test(styleValue)) continue;
+      if (bodyAllowed.test(styleValue)) {
+        continue;
+      }
     }
     violations.push({
       rule: 'no-inline-styles',
