@@ -70,7 +70,8 @@
   },
   "pnpm": {
     "overrides": {
-      "shell-quote": "^1.10.0"
+      "shell-quote": "^1.10.0",
+      "nanoid": "^3.3.18"
     }
   }
 }
