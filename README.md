@@ -5,11 +5,13 @@ Access Tyler Forge™ web component documentation directly in AI clients. Discov
 ## Features
 
 - **Version-aware**: Detects your installed Tyler Forge version and provides matching documentation
-- **Forge Blocks**: Pre-built UI patterns showing components working together in context (forms, tables, layouts, dashboards)
-- **Usage Examples**: Isolated code snippets for individual component structure and API
+- **Forge Blocks**: Pre-built UI patterns showing components working together in context (forms, tables, layouts, dashboards)—the canonical source of Forge markup for both single components and larger patterns
+- **API Quick Reference**: Component docs lead with exact events, properties, attributes, slots, and CSS custom properties
+- **UI Plans**: Generate and validate a machine-checkable plan (scaffold, regions, typography roles, icons) before writing composition-scale markup
 - **Component Validation**: Verify generated code against actual component APIs
 - **Design Tokens**: Access colors, spacing, typography, and other design tokens
 - **Framework Guides**: Setup instructions for Angular, React, Vue, Svelte, and Lit
+- **Guardrails (plugin only)**: `PreToolUse`/`Stop` hooks block common anti-patterns (inline styles, hand-rolled layout, skipped validation) as code is written
 
 ## Setup
 
@@ -19,7 +21,7 @@ The plugin bundles the MCP server with a `/forge-design` skill for expert UI gui
 
 **Install:**
 ```bash
-/plugin marketplace add tyler-technologies-oss/forge-mcp#blocks-mcp-adjustments
+/plugin marketplace add tyler-technologies-oss/forge-mcp
 /plugin install forge@tyler-forge
 ```
 
@@ -129,7 +131,7 @@ get_forge_blocks(blockId: "src/blocks/forms/login")
 
 ### Component Documentation
 
-Access complete API documentation including properties, events, slots, CSS parts, and CSS custom properties.
+Access complete API documentation—led by an API Quick Reference showing exact events, properties, attributes, slots, and CSS custom properties—so generated code uses the real API instead of a remembered one.
 
 ```
 # Full API documentation
@@ -141,6 +143,20 @@ get_component_docs(componentName: "forge-dialog", format: "summary")
 
 For HTML usage examples, use `get_forge_blocks(component: "forge-dialog")` instead—every component has a dedicated block demonstrating its usage.
 
+### UI Plans
+
+For anything larger than a single component, generate a machine-checkable plan—scaffold block, regions, typography roles, icons—and validate it before any `<forge-*>` markup is written.
+
+```
+# Get the plan template and schema/enums to fill in
+generate_ui_plan(description: "customer dashboard with a data table and a summary sidebar")
+
+# Validate the composed plan (page_type, regions, block IDs, typography roles, icons, spacing)
+validate_ui_plan(plan: { ... })
+```
+
+`validate_ui_plan` catches structural mistakes early—illegal typography roles, non-token spacing, block IDs that don't exist, composition rules like "no page_title inside a card"—before you've written any code.
+
 ## Capabilities
 
 ### Tools
@@ -151,6 +167,8 @@ For HTML usage examples, use `get_forge_blocks(component: "forge-dialog")` inste
 | `get_component_docs` | Get component API documentation (full or summary) |
 | `list_components` | Browse all available components |
 | `find_components` | Search components by name or functionality |
+| `generate_ui_plan` | Get the plan template/schema for composition-scale UI (regions, typography roles, icons) |
+| `validate_ui_plan` | Validate a composed UI plan before any markup is written |
 | `validate_component_api` | Validate component API usage in generated code |
 | `get_design_tokens` | Get design tokens (colors, spacing, typography, etc.) |
 | `setup_typography` | Typography setup and usage guidelines |
@@ -183,7 +201,8 @@ For HTML usage examples, use `get_forge_blocks(component: "forge-dialog")` inste
 
 1. **Search blocks first** — Before writing any Forge UI code, call `get_forge_blocks` to find pre-built patterns and component-specific usage examples
 2. **Check component API** — Use `get_component_docs` for full API details when needed
-3. **Validate before finalizing** — Call `validate_component_api` to verify your code uses correct APIs
+3. **Plan larger UIs** — For anything bigger than a single component, call `generate_ui_plan` then `validate_ui_plan`; only write markup once the plan validates
+4. **Validate before finalizing** — Call `validate_component_api` to verify your code uses correct APIs
 
 ## Development
 
