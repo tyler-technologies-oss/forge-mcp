@@ -99,6 +99,39 @@ Edit `claude_desktop_config.json` (Settings → Developer → Edit Config):
 }
 ```
 
+### Remote (Streamable HTTP)
+
+For a centrally-hosted deployment that any MCP-compatible client (Claude.ai, third-party tools, etc.) can reach over a URL instead of spawning the server locally via `npx`, run the Streamable HTTP entrypoint:
+
+```bash
+pnpm run build
+pnpm run start:http   # listens on PORT (default 3000), serving POST /mcp
+```
+
+A `Dockerfile` is included for containerized hosting on any platform that runs a Docker image (Cloud Run, Fly.io, Render, ECS, etc.):
+
+```bash
+docker build -t forge-mcp-http .
+docker run -p 3000:3000 forge-mcp-http
+```
+
+The server is stateless (no `Mcp-Session-Id` is issued; a fresh server/transport pair handles each request), so it scales horizontally with no session affinity required. `GET /healthz` returns `200 ok` for platform health checks.
+
+Once deployed, point any Streamable HTTP-capable client at `https://<your-deployed-url>/mcp`, e.g.:
+
+```json
+{
+  "mcpServers": {
+    "forge": {
+      "type": "http",
+      "url": "https://<your-deployed-url>/mcp"
+    }
+  }
+}
+```
+
+> **Note**: Version-aware detection of your locally installed `@tylertech/forge` (see Features above) only works when the server runs on your own machine via stdio, since it inspects your project's `node_modules`. A remotely hosted instance has no access to your local filesystem and always serves the bundled documentation baked into the deployed build.
+
 ## Core Concepts
 
 ### Forge Blocks
