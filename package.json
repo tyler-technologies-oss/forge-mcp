@@ -11,8 +11,10 @@
     "prepare": "husky",
     "prebuild": "rimraf dist",
     "build": "tsc && node scripts/bundle-manifests.js",
+    "heroku-postbuild": "pnpm run build",
     "dev": "tsc --watch",
     "start": "node dist/index.js",
+    "start:http": "node dist/http.js",
     "debug": "mcp-inspector dist/index.js",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -38,8 +40,7 @@
   },
   "packageManager": "pnpm@10.19.0",
   "engines": {
-    "node": ">=18",
-    "pnpm": ">=10"
+    "node": ">=18"
   },
   "files": [
     "dist",
