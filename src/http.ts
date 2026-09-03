@@ -4,6 +4,7 @@ import { createServer, IncomingMessage, ServerResponse } from 'http';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { createForgeDocsServer } from './core/server.js';
+import { getCEMLoader } from './services/cem-loader.js';
 
 const MCP_PATH = '/mcp';
 const MAX_BODY_BYTES = 4 * 1024 * 1024; // 4mb, matches SDK's own request size limit
@@ -153,7 +154,26 @@ const httpServer = createServer((req, res) => {
   sendJsonRpcError(res, 405, 'Method not allowed.');
 });
 
+async function primeCEMData(): Promise<void> {
+  try {
+    await getCEMLoader().loadCEM();
+    for (const pkg of getCEMLoader().getLoadedPackages()) {
+      console.warn(
+        `Forge MCP: loaded ${pkg.packageName} from ${pkg.manifestPath}`,
+      );
+    }
+  } catch (error) {
+    // Don't block startup - each request re-attempts loadCEM() via
+    // ResourcesHandler.initialize() until it succeeds.
+    console.warn(
+      `Forge MCP: failed to preload CEM data (will retry per-request): ${error instanceof Error ? error.message : error}`,
+    );
+  }
+}
+
 const port = Number(process.env.PORT) || 3000;
-httpServer.listen(port, () => {
-  console.warn(`Forge MCP Streamable HTTP server listening on port ${port}`);
+primeCEMData().then(() => {
+  httpServer.listen(port, () => {
+    console.warn(`Forge MCP Streamable HTTP server listening on port ${port}`);
+  });
 });

@@ -11,14 +11,20 @@ import {
   getBundledManifestLoader,
   BundledManifestLoader,
 } from './bundled-manifest-loader.js';
+import { fetchLatestForgeManifest } from './forge-version-fetcher.js';
+
+const FORGE_PACKAGE_NAME = '@tylertech/forge';
 
 /**
  * Service responsible for discovering, loading, and managing Custom Elements Manifest (CEM) data
- * from Tyler Tech packages. Provides both dynamic package discovery and bundled manifest fallback.
+ * from Tyler Tech packages. Provides dynamic package discovery, a latest-published-version fetch,
+ * and a bundled manifest fallback.
  *
- * The loader follows a two-tier approach:
- * 1. First attempts dynamic discovery from installed Tyler Tech packages
- * 2. Falls back to bundled manifests if no packages are found
+ * The loader follows a tiered approach:
+ * 1. First attempts dynamic discovery from installed Tyler Tech packages (accurate to the user's project)
+ * 2. If @tylertech/forge wasn't found locally, tries fetching the latest published version from npm/unpkg
+ *    (relevant when running with no local install, e.g. before setup or the remotely hosted transport)
+ * 3. Falls back to the bundled manifest snapshot if neither of the above found it
  *
  * Once loaded, builds a fast lookup map of components by tag name for efficient access.
  */
@@ -41,11 +47,6 @@ export class CEMLoader {
   /**
    * Discover and load Custom Elements Manifest data from Tyler Tech packages.
    *
-   * Uses a hybrid loading strategy:
-   * 1. Attempts dynamic package discovery from installed packages
-   * 2. Loads bundled manifests for packages not found in step 1
-   * 3. Builds component lookup map for efficient access
-   *
    * @param workingDirectory - Optional starting directory for package discovery (defaults to process.cwd())
    * @throws Error if no Tyler Tech packages or bundled manifests can be found
    */
@@ -53,12 +54,23 @@ export class CEMLoader {
     // First try to load from user's installed packages
     await this.loadFromPackageDiscovery(workingDirectory);
 
-    // Load bundled manifests for packages not already loaded
-    const bundledPackages =
-      await this._bundledManifestLoader.loadBundledManifests();
     const loadedPackageNames = new Set(
       this._loadedPackages.map(p => p.packageName),
     );
+
+    // No local install found for @tylertech/forge - try the latest published
+    // version from npm/unpkg before falling back to the bundled snapshot.
+    if (!loadedPackageNames.has(FORGE_PACKAGE_NAME)) {
+      const latestManifest = await fetchLatestForgeManifest();
+      if (latestManifest) {
+        this._loadedPackages.push(latestManifest);
+        loadedPackageNames.add(latestManifest.packageName);
+      }
+    }
+
+    // Load bundled manifests for packages not already loaded
+    const bundledPackages =
+      await this._bundledManifestLoader.loadBundledManifests();
 
     for (const bundledPackage of bundledPackages) {
       if (!loadedPackageNames.has(bundledPackage.packageName)) {

@@ -4,7 +4,7 @@ Access Tyler Forge™ web component documentation directly in AI clients. Discov
 
 ## Features
 
-- **Version-aware**: Detects your installed Tyler Forge version and provides matching documentation
+- **Version-aware**: Detects your installed Tyler Forge version and provides matching documentation, falling back to the latest published version (fetched from npm) if Forge isn't installed yet, and to a bundled snapshot as a last resort
 - **Forge Blocks**: Pre-built UI patterns showing components working together in context (forms, tables, layouts, dashboards)—the canonical source of Forge markup for both single components and larger patterns
 - **API Quick Reference**: Component docs lead with exact events, properties, attributes, slots, and CSS custom properties
 - **UI Plans**: Generate and validate a machine-checkable plan (scaffold, regions, typography roles, icons) before writing composition-scale markup
@@ -130,7 +130,7 @@ Once deployed, point any Streamable HTTP-capable client at `https://<your-deploy
 }
 ```
 
-> **Note**: Version-aware detection of your locally installed `@tylertech/forge` (see Features above) only works when the server runs on your own machine via stdio, since it inspects your project's `node_modules`. A remotely hosted instance has no access to your local filesystem and always serves the bundled documentation baked into the deployed build.
+> **Note**: Detection of your locally installed `@tylertech/forge` (see Features above) only works when the server runs on your own machine via stdio, since it inspects your project's `node_modules`. A remotely hosted instance has no access to your local filesystem, so it always falls through to the same latest-published-version fetch (from npm/unpkg) that stdio uses when Forge isn't installed locally yet. If that fetch fails too (e.g. npm/unpkg is unreachable), it falls back to the bundled documentation baked into the deployed build.
 
 ## Core Concepts
 
