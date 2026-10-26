@@ -1,3 +1,8 @@
+> [!IMPORTANT]
+> **This repository is archived and no longer maintained.**
+>
+> The Forge MCP server now lives as a package in the [Forge monorepo](https://github.com/tyler-technologies-oss/forge). Head there, or to the [Forge documentation website](https://tylerforge.design), for up-to-date installation instructions. The setup steps below may be out of date.
+
 # Tyler Forge™ MCP Server
 
 Access Tyler Forge™ web component documentation directly in AI clients. Discover components, generate framework-specific code, validate APIs, and use design tokens correctly.
@@ -256,6 +261,6 @@ Apache-2.0 License - see [LICENSE](LICENSE) file for details.
 
 ---
 
-> **Note**: Always validate AI output against [official documentation](https://forge.tylerdev.io).
+> **Note**: Always validate AI output against [official documentation](https://tylerforge.design).
 
 **Part of the [Tyler Technologies](https://tylerforge.design) Open Source initiative**
